@@ -63,6 +63,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .row2{display:grid;grid-template-columns:1fr 340px;gap:14px}
 .row2b{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:960px){.row2,.row2b{grid-template-columns:1fr}}
+.dt-table{width:100%;border-collapse:collapse;font-size:12px}
+.dt-table thead tr:first-child th{background:#F8FAFC;font-weight:700;padding:6px 8px;border-bottom:2px solid #E2E8F0;text-align:center;white-space:nowrap}
+.dt-table thead tr:last-child th{background:#F8FAFC;font-weight:500;color:#64748B;padding:3px 6px;border-bottom:1px solid #E2E8F0;text-align:center;font-size:11px}
+.dt-th{white-space:nowrap}
+.dt-sub{white-space:nowrap}
+.dt-table tbody tr:hover{background:#F0F9FF}
+.dt-table tfoot td{background:#F1F5F9;font-weight:700;border-top:2px solid #CBD5E1}
+.dt-date{padding:5px 8px;color:#374151;font-weight:600;white-space:nowrap;text-align:center}
+.dt-dow{padding:5px 4px;color:#6B7280;text-align:center;font-size:11px}
+.dt-td{padding:5px 8px;text-align:right;color:#1E293B;border-bottom:1px solid #F1F5F9}
+.dt-sum{font-weight:600;background:#F8FAFC}
+.dt-total{font-weight:700;color:#1E293B}
+.dt-wknd .dt-date,.dt-wknd .dt-dow{color:#EF4444}
+.dt-wknd td{background:#FFF5F5}
 
 /* ── 순위 테이블 ── */
 .rank-table{width:100%;border-collapse:collapse}
@@ -316,6 +330,7 @@ function render() {
       <div class="card" id="sec-prod"></div>
       <div class="card" id="sec-dow"></div>
     </div>
+    <div class="card" id="sec-daily"></div>
   `;
 
   renderPace(ad, yad, start, end, storesArr);
@@ -324,6 +339,7 @@ function render() {
   renderLine(start, end, ad, yad, storesArr);
   renderProd(ad, storesArr);
   renderDow(ad, storesArr);
+  renderDailyTable(ad, yad, storesArr);
 }
 
 // ── 1. 페이스 카드 ────────────────────────────────────────────────────────────
@@ -648,6 +664,79 @@ function renderDow(ad, stores) {
       }
     }
   });
+}
+
+// ── 7. 일자별 매장 상세 테이블 ──────────────────────────────────────────────
+function renderDailyTable(ad, yad, stores) {
+  const el = document.getElementById('sec-daily');
+  const allDates = dates(ad);
+  if (!allDates.length) { el.innerHTML = '<div class="card-title">일자별 매장 데이터</div><div style="color:#94A3B8;padding:12px">데이터 없음</div>'; return; }
+
+  // 합계행 계산
+  const totSales    = stores.reduce((a,s)=>a+storeSum(ad,s,'sales'),0);
+  const totReceipts = stores.reduce((a,s)=>a+storeSum(ad,s,'receipts'),0);
+
+  // 헤더
+  let th = '<th class="dt-th">날짜</th><th class="dt-th">요일</th>';
+  stores.forEach(s => { th += `<th class="dt-th" colspan="2" style="color:${COLORS[s]}">${s}</th>`; });
+  th += '<th class="dt-th" colspan="2">합계</th>';
+
+  let subTh = '<th></th><th></th>';
+  stores.forEach(() => { subTh += '<th class="dt-sub">매출</th><th class="dt-sub">영수</th>'; });
+  subTh += '<th class="dt-sub">매출</th><th class="dt-sub">영수</th>';
+
+  // 데이터 행
+  let rows = '';
+  allDates.forEach(dt => {
+    const dow = DOW[new Date(dt).getDay()];
+    const isWknd = new Date(dt).getDay()===0||new Date(dt).getDay()===6;
+    let daySales = 0, dayRec = 0;
+    let cells = '';
+    stores.forEach(s => {
+      const r = (ad[s]||[]).find(d=>d.date===dt);
+      const sv = r&&r.sales!=null ? r.sales : null;
+      const rv = r&&r.receipts!=null ? r.receipts : null;
+      if (sv!=null) daySales+=sv;
+      if (rv!=null) dayRec+=rv;
+      cells += `<td class="dt-td">${sv!=null?w(sv):'-'}</td><td class="dt-td">${rv!=null?n0(rv):'-'}</td>`;
+    });
+    rows += `<tr class="${isWknd?'dt-wknd':''}">
+      <td class="dt-date">${dt.slice(5)}</td>
+      <td class="dt-dow">${dow}</td>
+      ${cells}
+      <td class="dt-td dt-sum">${daySales>0?w(daySales):'-'}</td>
+      <td class="dt-td dt-sum">${dayRec>0?n0(dayRec):'-'}</td>
+    </tr>`;
+  });
+
+  // 합계행
+  let sumCells = '';
+  stores.forEach(s => {
+    const sv = storeSum(ad,s,'sales');
+    const rv = storeSum(ad,s,'receipts');
+    sumCells += `<td class="dt-td dt-total">${sv>0?w(sv):'-'}</td><td class="dt-td dt-total">${rv>0?n0(rv):'-'}</td>`;
+  });
+
+  el.innerHTML = `
+    <div class="card-title">일자별 매장 데이터</div>
+    <div style="overflow-x:auto">
+      <table class="dt-table">
+        <thead>
+          <tr>${th}</tr>
+          <tr>${subTh}</tr>
+        </thead>
+        <tbody>${rows}</tbody>
+        <tfoot>
+          <tr>
+            <td class="dt-date dt-total" colspan="2">합계</td>
+            ${sumCells}
+            <td class="dt-td dt-total">${totSales>0?w(totSales):'-'}</td>
+            <td class="dt-td dt-total">${totReceipts>0?n0(totReceipts):'-'}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  `;
 }
 
 // ── 초기 실행 ────────────────────────────────────────────────────────────────
