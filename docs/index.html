@@ -291,12 +291,12 @@ document.getElementById('endDate').value   = defE;
 // 숫자 포맷 — 한국어 단위
 const kor  = n => { // 억/만 자동
   if (n==null) return '-';
-  if (Math.abs(n)>=1e8) return (n/1e8).toFixed(1)+'억';
-  if (Math.abs(n)>=1e4) return Math.round(n/1e4).toLocaleString()+'만';
+  if (Math.abs(n)>=1e8) return Math.floor(n/1e8*10)/10+'억';
+  if (Math.abs(n)>=1e4) return Math.floor(n/1e4).toLocaleString()+'만';
   return n.toLocaleString();
 };
-const korW = n => n==null?'-':Math.round(n/10000).toLocaleString()+'만원'; // 항상 만원
-const w    = n => n==null?'-':Math.round(n/10000).toLocaleString()+'만';
+const korW = n => n==null?'-':Math.floor(n/10000).toLocaleString()+'만원'; // 항상 만원
+const w    = n => n==null?'-':Math.floor(n/10000).toLocaleString()+'만';
 const n0   = n => n==null?'-':Math.round(n).toLocaleString();
 const pct  = (a,b) => (b&&b>0) ? Math.round(a/b*100) : null;
 const pctSign = n => n==null?'-':(n>=0?'▲':'▼')+Math.abs(n).toFixed(1)+'%';
