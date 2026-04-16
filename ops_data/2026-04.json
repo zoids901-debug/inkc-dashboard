@@ -138,9 +138,9 @@
     {
       "date": "2026-04-16",
       "target": 844447,
-      "sales": null,
-      "receipts": null,
-      "per_receipt": null,
+      "sales": 32100,
+      "receipts": 2,
+      "per_receipt": 16050,
       "staff": null,
       "productivity": null
     },
@@ -410,11 +410,11 @@
     {
       "date": "2026-04-16",
       "target": 5600000,
-      "sales": null,
-      "receipts": null,
-      "per_receipt": null,
+      "sales": 46200,
+      "receipts": 5,
+      "per_receipt": 9240,
       "staff": 23,
-      "productivity": null
+      "productivity": 2009
     },
     {
       "date": "2026-04-17",
@@ -682,9 +682,9 @@
     {
       "date": "2026-04-16",
       "target": 5500000,
-      "sales": null,
-      "receipts": null,
-      "per_receipt": null,
+      "sales": 57500,
+      "receipts": 6,
+      "per_receipt": 9583,
       "staff": null,
       "productivity": null
     },
