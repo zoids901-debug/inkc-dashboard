@@ -313,7 +313,6 @@ STORES.forEach(s => {
   el.dataset.store = s;
   el.addEventListener('click', ()=>{
     if (activeStores.has(s)) {
-      if (activeStores.size===1) return;
       activeStores.delete(s);
       el.classList.remove('on');
       el.style.background = '';
