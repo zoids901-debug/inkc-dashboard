@@ -249,6 +249,21 @@ function storeSum(data, s, field) {
   return (data[s]||[]).reduce((a,d)=>a+(d[field]||0),0);
 }
 
+// 날짜 범위에 포함된 월들의 전체 월 목표 (날짜 필터 없이 월 전체 합산)
+function getMonthlyTargets(start, end) {
+  const res = {};
+  STORES.forEach(s => res[s] = 0);
+  let ym = start.slice(0,7);
+  const endM = end.slice(0,7);
+  while (ym <= endM) {
+    const md = ALL_DATA[ym];
+    if (md) STORES.forEach(s => (md[s]||[]).forEach(d => res[s] += (d.target||0)));
+    const [y, m] = ym.split('-').map(Number);
+    ym = m === 12 ? (y+1)+'-01' : y+'-'+String(m+1).padStart(2,'0');
+  }
+  return res;
+}
+
 // 날짜 목록
 function dates(data) {
   const s = new Set();
@@ -270,12 +285,21 @@ function updateAllBtn() {
 }
 allBtn.addEventListener('click', () => {
   const allOn = STORES.every(s => activeStores.has(s));
-  if (allOn) return;
-  STORES.forEach(s => activeStores.add(s));
-  document.querySelectorAll('.pill[data-store]').forEach(el => {
-    el.classList.add('on');
-    el.style.background = COLORS[el.dataset.store] + '22';
-  });
+  if (allOn) {
+    // 전체 해제
+    activeStores.clear();
+    document.querySelectorAll('.pill[data-store]').forEach(el => {
+      el.classList.remove('on');
+      el.style.background = '';
+    });
+  } else {
+    // 전체 선택
+    STORES.forEach(s => activeStores.add(s));
+    document.querySelectorAll('.pill[data-store]').forEach(el => {
+      el.classList.add('on');
+      el.style.background = COLORS[el.dataset.store] + '22';
+    });
+  }
   updateAllBtn();
   render();
 });
@@ -381,6 +405,11 @@ function render() {
 
   const storesArr = STORES.filter(s=>activeStores.has(s));
 
+  // 월 전체 목표 (활성 매장, 날짜 필터 없이)
+  const allMT = getMonthlyTargets(start, end);
+  const monthlyTargets = {};
+  storesArr.forEach(s => monthlyTargets[s] = allMT[s]||0);
+
   document.getElementById('main').innerHTML = `
     <div id="sec-pace"></div>
     <div class="row2">
@@ -395,8 +424,8 @@ function render() {
     <div class="card" id="sec-daily"></div>
   `;
 
-  renderPace(ad, yad, start, end, storesArr);
-  renderRank(ad, yad, storesArr);
+  renderPace(ad, yad, start, end, storesArr, monthlyTargets);
+  renderRank(ad, yad, storesArr, monthlyTargets);
   renderDonut(ad, storesArr);
   renderLine(start, end, ad, yad, storesArr);
   renderProd(ad, storesArr);
@@ -405,9 +434,9 @@ function render() {
 }
 
 // ── 1. 페이스 카드 ────────────────────────────────────────────────────────────
-function renderPace(ad, yad, start, end, stores) {
+function renderPace(ad, yad, start, end, stores, monthlyTargets) {
   const totalSales   = sum(ad,'sales');
-  const totalTarget  = sum(ad,'target');
+  const totalTarget  = Object.values(monthlyTargets).reduce((a,v)=>a+v,0);
   const totalReceipts= sum(ad,'receipts');
 
   const salesDays = [...new Set(Object.values(ad).flat().filter(d=>d.sales!=null).map(d=>d.date))].length;
@@ -420,15 +449,38 @@ function renderPace(ad, yad, start, end, stores) {
   const isMtd = start === start.slice(0,7)+'-01' && (end===today()||end<=today());
   let paceHtml = '';
   if (isMtd) {
-    const daysInMonth = new Date(+start.slice(0,4), +start.slice(5,7), 0).getDate();
-    const elapsed     = salesDays || 1;
-    const dailyAvg    = totalSales / elapsed;
-    const projected   = Math.round(dailyAvg * daysInMonth);
-    const remaining   = daysInMonth - elapsed;
+    const yr = +start.slice(0,4), mo = +start.slice(5,7);
+    const daysInMonth = new Date(yr, mo, 0).getDate();
+    const elapsed = salesDays || 1;
+
+    // 평일/주말 분리 일평균
+    const dateSalesMap = {};
+    Object.values(ad).flat().forEach(r => {
+      if (r.sales != null) dateSalesMap[r.date] = (dateSalesMap[r.date]||0) + r.sales;
+    });
+    const wdSales = [], weSales = [];
+    Object.entries(dateSalesMap).forEach(([dt, s]) => {
+      const dow = new Date(dt+'T00:00:00').getDay();
+      if (dow===0||dow===6||HOLIDAYS.has(dt)) weSales.push(s);
+      else wdSales.push(s);
+    });
+    const wdAvg = wdSales.length ? wdSales.reduce((a,v)=>a+v,0)/wdSales.length : 0;
+    const weAvg = weSales.length ? weSales.reduce((a,v)=>a+v,0)/weSales.length : 0;
+
+    // 잔여 평일/주말 카운트
+    let remWd = 0, remWe = 0;
+    for (let d = elapsed+1; d <= daysInMonth; d++) {
+      const dt = yr+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+      const dow = new Date(dt+'T00:00:00').getDay();
+      if (dow===0||dow===6||HOLIDAYS.has(dt)) remWe++; else remWd++;
+    }
+    const projected = Math.round(totalSales + wdAvg * remWd + weAvg * remWe);
+    const remaining = daysInMonth - elapsed;
+
     paceHtml = `<div class="pace-item">
       <div class="lbl">월말 예상</div>
       <div class="val" style="font-size:20px">${kor(projected)}</div>
-      <div class="sub">잔여 ${remaining}일 · 일평균 ${w(dailyAvg)}</div>
+      <div class="sub">잔여 ${remaining}일 (평일${remWd}/주말${remWe}) · 평 ${w(wdAvg)} 휴 ${w(weAvg)}</div>
     </div>`;
   }
 
@@ -467,13 +519,13 @@ function renderPace(ad, yad, start, end, stores) {
 }
 
 // ── 2. 순위 테이블 ────────────────────────────────────────────────────────────
-function renderRank(ad, yad, stores) {
+function renderRank(ad, yad, stores, monthlyTargets) {
   const el = document.getElementById('sec-rank');
   el.innerHTML = '<div class="card-title">매장별 실적</div>';
 
   const rows = stores.map(s => {
     const sales     = storeSum(ad, s, 'sales');
-    const target    = storeSum(ad, s, 'target');
+    const target    = monthlyTargets[s] || 0;
     const receipts  = storeSum(ad, s, 'receipts');
     const ySales    = storeSum(yad, s, 'sales');
     const yReceipts = storeSum(yad, s, 'receipts');
