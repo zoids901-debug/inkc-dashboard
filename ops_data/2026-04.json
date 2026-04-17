@@ -138,9 +138,9 @@
     {
       "date": "2026-04-16",
       "target": 844447,
-      "sales": 32100,
-      "receipts": 2,
-      "per_receipt": 16050,
+      "sales": 482640,
+      "receipts": 40,
+      "per_receipt": 12066,
       "staff": null,
       "productivity": null
     },
@@ -410,20 +410,20 @@
     {
       "date": "2026-04-16",
       "target": 5600000,
-      "sales": 46200,
-      "receipts": 5,
-      "per_receipt": 9240,
+      "sales": 4443760,
+      "receipts": 294,
+      "per_receipt": 15115,
       "staff": 23,
-      "productivity": 2009
+      "productivity": 193207
     },
     {
       "date": "2026-04-17",
       "target": 6000000,
-      "sales": null,
-      "receipts": null,
-      "per_receipt": null,
+      "sales": 9600,
+      "receipts": 1,
+      "per_receipt": 9600,
       "staff": 26,
-      "productivity": null
+      "productivity": 369
     },
     {
       "date": "2026-04-18",
@@ -682,18 +682,18 @@
     {
       "date": "2026-04-16",
       "target": 5500000,
-      "sales": 57500,
-      "receipts": 6,
-      "per_receipt": 9583,
+      "sales": 5491110,
+      "receipts": 319,
+      "per_receipt": 17214,
       "staff": null,
       "productivity": null
     },
     {
       "date": "2026-04-17",
       "target": 6000000,
-      "sales": null,
-      "receipts": null,
-      "per_receipt": null,
+      "sales": 43000,
+      "receipts": 2,
+      "per_receipt": 21500,
       "staff": null,
       "productivity": null
     },
@@ -954,11 +954,11 @@
     {
       "date": "2026-04-16",
       "target": 2000000,
-      "sales": null,
-      "receipts": null,
-      "per_receipt": null,
-      "staff": null,
-      "productivity": null
+      "sales": 2369200,
+      "receipts": 182,
+      "per_receipt": 13018,
+      "staff": 6,
+      "productivity": 394867
     },
     {
       "date": "2026-04-17",
@@ -1498,9 +1498,9 @@
     {
       "date": "2026-04-16",
       "target": 15000000,
-      "sales": null,
-      "receipts": null,
-      "per_receipt": null,
+      "sales": 10793100,
+      "receipts": 805,
+      "per_receipt": 13408,
       "staff": null,
       "productivity": null
     },
