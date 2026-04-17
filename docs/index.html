@@ -358,7 +358,7 @@ const kor  = n => { // 억/만/원 자동, 소수점1자리 버림
   return n.toLocaleString()+'원';
 };
 const korW = n => n==null?'-':_fmt(n/1000/10, '만원');
-const w    = n => n==null?'-':_fmt(n/1000/10, '만');
+const w    = n => { if(n==null) return '-'; return Math.abs(n)>=1e8 ? _fmt(n/1e8,'억') : _fmt(n/1e4,'만'); };
 const n0   = n => n==null?'-':Math.round(n).toLocaleString();
 const pct  = (a,b) => (b&&b>0) ? Math.round(a/b*100) : null;
 const pctSign = n => n==null?'-':(n>=0?'▲':'▼')+Math.abs(n).toFixed(1)+'%';
