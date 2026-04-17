@@ -213,11 +213,11 @@ function getRangeData(start, end) {
   // { store: [row, ...] }
   const res = {};
   STORES.forEach(s => res[s] = []);
-  let cur = new Date(start.slice(0,7)+'-01');
+  // 문자열 기반 월 순회 (타임존 버그 방지)
+  let ym = start.slice(0,7);
   const endM = end.slice(0,7);
-  while (toStr(cur).slice(0,7) <= endM) {
-    const mk = toStr(cur).slice(0,7);
-    const md = ALL_DATA[mk];
+  while (ym <= endM) {
+    const md = ALL_DATA[ym];
     if (md) {
       STORES.forEach(s => {
         (md[s]||[]).forEach(d => {
@@ -225,7 +225,10 @@ function getRangeData(start, end) {
         });
       });
     }
-    cur = new Date(cur.getFullYear(), cur.getMonth()+1, 1);
+    const [y, m] = ym.split('-').map(Number);
+    ym = m === 12
+      ? (y+1) + '-01'
+      : y + '-' + String(m+1).padStart(2,'0');
   }
   return res;
 }
