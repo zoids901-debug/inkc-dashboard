@@ -93,6 +93,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   .h200{height:170px}
   .donut-canvas-wrap{width:150px;height:150px}
   .dt-table{font-size:11px}
+  .dt-table thead tr:first-child th{top:84px}
+  .dt-table thead tr:last-child th{top:108px}
   .dt-date,.dt-td,.dt-dow{padding:4px 5px}
   .rank-table th,.rank-table td{padding:6px 6px;font-size:11px}
 }
@@ -115,10 +117,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   .h200{height:150px}
   .donut-canvas-wrap{width:130px;height:130px}
   .dt-table{font-size:10.5px}
+  .dt-table thead tr:first-child th{top:78px}
+  .dt-table thead tr:last-child th{top:100px}
 }
-.dt-table{width:100%;border-collapse:collapse;font-size:12px}
-.dt-table thead tr:first-child th{background:#F8FAFC;font-weight:700;padding:6px 8px;border-bottom:2px solid #E2E8F0;text-align:center;white-space:nowrap}
-.dt-table thead tr:last-child th{background:#F8FAFC;font-weight:500;color:#64748B;padding:3px 6px;border-bottom:1px solid #E2E8F0;text-align:center;font-size:11px}
+.dt-table{width:100%;border-collapse:separate;border-spacing:0;font-size:12px}
+.dt-table thead tr:first-child th{background:#F8FAFC;font-weight:700;padding:6px 8px;border-bottom:2px solid #E2E8F0;text-align:center;white-space:nowrap;position:sticky;top:98px;z-index:50}
+.dt-table thead tr:last-child th{background:#F8FAFC;font-weight:500;color:#64748B;padding:3px 6px;border-bottom:1px solid #E2E8F0;text-align:center;font-size:11px;position:sticky;top:127px;z-index:49}
 .dt-th{white-space:nowrap}
 .dt-sub{white-space:nowrap}
 .dt-table tbody tr:hover{background:#F0F9FF}

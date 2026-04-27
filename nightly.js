@@ -490,19 +490,64 @@ async function patchStoreSheet(store, yyyyMM, existing, okposRecords, gid) {
 
   // 빌드 + 배포
   if (process.env.SKIP_DEPLOY === '1') { log('=== 완료 (배포 생략) ==='); process.exit(0); }
-  try {
-    const { execSync } = require('child_process');
-    const cwd = __dirname;
-    log('빌드 중...');
-    execSync('node build.js', { cwd, stdio: 'inherit' });
-    const dateStr = new Date().toISOString().slice(0,10);
-    execSync(`git add docs/ ops_data/`, { cwd });
-    execSync(`git commit -m "nightly: ${dateStr} 데이터 업데이트"`, { cwd });
-    execSync(`git push`, { cwd });
-    log('GitHub Pages 배포 완료');
-  } catch(e) {
-    log('ERROR 배포:', e.message);
-  }
+  await deployWithRetry();
 
   log('=== 완료 ===');
 })();
+
+async function deployWithRetry() {
+  const { execSync } = require('child_process');
+  const cwd = __dirname;
+
+  // 1) 빌드
+  try {
+    log('빌드 중...');
+    execSync('node build.js', { cwd, stdio: 'inherit' });
+  } catch (e) {
+    log('ERROR 빌드 실패:', e.message);
+    return;
+  }
+
+  // 2) 커밋 (변경 없으면 스킵)
+  let hasCommit = true;
+  try {
+    execSync(`git add docs/ ops_data/`, { cwd });
+    const dateStr = new Date().toISOString().slice(0,10);
+    execSync(`git commit -m "nightly: ${dateStr} 데이터 업데이트"`, { cwd, stdio: 'pipe' });
+  } catch (e) {
+    if (/nothing to commit/i.test(e.stderr ? e.stderr.toString() : e.message)) {
+      log('변경사항 없음, 커밋 스킵');
+      hasCommit = false;
+    } else {
+      log('ERROR 커밋 실패:', (e.stderr || e.message).toString().split('\n')[0]);
+      return;
+    }
+  }
+
+  // 3) Push (최대 3회 재시도, 30초 간격)
+  const localHead = execSync('git rev-parse HEAD', { cwd }).toString().trim();
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      execSync(`git push 2>&1`, { cwd, stdio: 'pipe' });
+      // 검증: origin/main이 우리 HEAD인지 확인
+      execSync('git fetch origin main', { cwd, stdio: 'pipe' });
+      const remoteHead = execSync('git rev-parse origin/main', { cwd }).toString().trim();
+      if (remoteHead === localHead) {
+        log(`GitHub Pages 배포 완료${attempt > 1 ? ` (재시도 ${attempt}회만에 성공)` : ''}`);
+        return;
+      }
+      log(`WARN: push 후 origin이 일치하지 않음 (local=${localHead.slice(0,7)} remote=${remoteHead.slice(0,7)})`);
+    } catch (e) {
+      const msg = (e.stderr ? e.stderr.toString() : e.message).split('\n').slice(0,3).join(' | ');
+      log(`ERROR 배포 시도 ${attempt}/3 실패: ${msg}`);
+      if (attempt < 3) {
+        log(`  30초 대기 후 재시도...`);
+        await new Promise(r => setTimeout(r, 30000));
+      }
+    }
+  }
+  log('ERROR 배포 3회 시도 모두 실패. 수동 push 필요.');
+  // 실패 마커 파일: 다음 실행 시 또는 수동 점검 시 인지 가능
+  fs.writeFileSync(path.join(__dirname, 'logs', '_DEPLOY_FAILED.flag'),
+    `Last failure: ${new Date().toISOString()}\nLocal HEAD: ${localHead}\n`, 'utf8');
+}
