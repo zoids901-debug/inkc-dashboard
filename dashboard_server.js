@@ -25,6 +25,7 @@ function html(allData) {
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>인크커피 운영 대시보드</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F1F5F9;color:#1E293B;font-size:13px}
@@ -45,12 +46,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .preset-btn:hover{border-color:#3B82F6;color:#3B82F6}
 .preset-btn.active{background:#3B82F6;border-color:#3B82F6;color:#fff}
 
-/* 날짜 직접 입력 */
-.date-range{display:flex;align-items:center;gap:8px;background:#F8FAFC;border:1.5px solid #CBD5E1;border-radius:8px;padding:5px 12px}
+/* 날짜 범위 선택 */
+.date-range{display:flex;align-items:center;gap:8px;background:#F8FAFC;border:1.5px solid #CBD5E1;border-radius:8px;padding:5px 12px;cursor:pointer}
 .date-range .dr-label{font-size:11px;font-weight:700;color:#64748B;white-space:nowrap}
-.date-range input[type=date]{border:none;background:transparent;font-size:13px;font-weight:600;color:#1E293B;cursor:pointer;padding:0 4px;width:126px}
-.date-range input[type=date]:focus{outline:none;color:#3B82F6}
 .date-range .dr-sep{color:#94A3B8;font-weight:700}
+#dateRangeInput{border:none;background:transparent;font-size:13px;font-weight:600;color:#1E293B;cursor:pointer;padding:0 4px;width:200px;text-align:center}
+#dateRangeInput:focus{outline:none}
+.litepicker{--color-primary-btn:#3B82F6;--color-hover:#DBEAFE;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px}
+.litepicker .container__months{box-shadow:0 4px 20px rgba(0,0,0,.12);border-radius:12px;background:#fff}
+.litepicker .month-item-header button{color:#3B82F6}
+.litepicker .day-item.is-start-date,.litepicker .day-item.is-end-date{background:#3B82F6!important;color:#fff!important;border-radius:50%}
+.litepicker .day-item.is-in-range{background:#DBEAFE!important;color:#1E293B!important}
 .ctrl-sep{width:1px;height:24px;background:#E2E8F0;flex-shrink:0}
 
 /* 매장 필터 */
@@ -83,6 +89,67 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .row2{display:grid;grid-template-columns:1fr 340px;gap:14px}
 .row2b{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:960px){.row2,.row2b{grid-template-columns:1fr}}
+@media(max-width:900px){
+  .hdr{padding:0 12px;min-height:42px;gap:10px}
+  .hdr-title{font-size:13px}
+  .ctrl-bar{top:42px;padding:7px 12px;gap:10px;font-size:11px}
+  .preset-btn{padding:4px 9px;font-size:11px}
+  .date-range{padding:4px 9px;gap:5px}
+  #dateRangeInput{width:150px;font-size:12px}
+  .date-range .dr-label{font-size:10px}
+  .pills-label{font-size:10px}
+  .pill{padding:3px 10px;font-size:10.5px}
+  .main{padding:12px 10px;gap:10px}
+  .card{padding:13px 13px}
+  .card-title{font-size:11px;margin-bottom:10px}
+  .pace-card{grid-template-columns:repeat(2,1fr)}
+  .pace-item{padding:12px 14px}
+  .pace-item .val{font-size:19px}
+  .pace-item .lbl{font-size:10px}
+  .pace-item .sub{font-size:10px}
+  .row2,.row2b{grid-template-columns:1fr}
+  .h220{height:180px}
+  .h240{height:200px}
+  .h200{height:170px}
+  .donut-canvas-wrap{width:150px;height:150px}
+  .dt-table{font-size:11px}
+  .dt-date,.dt-td,.dt-dow{padding:4px 5px}
+  .rank-table th,.rank-table td{padding:6px 6px;font-size:11px}
+}
+@media(max-width:480px){
+  .hdr{padding:0 10px;min-height:40px}
+  .hdr-title{font-size:12px}
+  .ctrl-bar{top:40px;padding:6px 10px;gap:8px}
+  .preset-btn{padding:3px 7px;font-size:10px}
+  .date-range{padding:3px 7px}
+  #dateRangeInput{width:120px;font-size:11px}
+  .ctrl-sep{display:none}
+  .pill{padding:2px 8px;font-size:10px}
+  .main{padding:8px 6px;gap:8px}
+  .card{padding:10px 10px}
+  .pace-card{grid-template-columns:repeat(2,1fr)}
+  .pace-item{padding:10px 10px}
+  .pace-item .val{font-size:17px}
+  .h220{height:160px}
+  .h240{height:180px}
+  .h200{height:150px}
+  .donut-canvas-wrap{width:130px;height:130px}
+  .dt-table{font-size:10.5px}
+}
+.dt-table{width:100%;border-collapse:collapse;font-size:12px}
+.dt-table thead tr:first-child th{background:#F8FAFC;font-weight:700;padding:6px 8px;border-bottom:2px solid #E2E8F0;text-align:center;white-space:nowrap}
+.dt-table thead tr:last-child th{background:#F8FAFC;font-weight:500;color:#64748B;padding:3px 6px;border-bottom:1px solid #E2E8F0;text-align:center;font-size:11px}
+.dt-th{white-space:nowrap}
+.dt-sub{white-space:nowrap}
+.dt-table tbody tr:hover{background:#F0F9FF}
+.dt-table tfoot td{background:#F1F5F9;font-weight:700;border-top:2px solid #CBD5E1}
+.dt-date{padding:5px 8px;color:#374151;font-weight:600;white-space:nowrap;text-align:center}
+.dt-dow{padding:5px 4px;color:#6B7280;text-align:center;font-size:11px}
+.dt-td{padding:5px 8px;text-align:right;color:#1E293B;border-bottom:1px solid #F1F5F9}
+.dt-sum{font-weight:600;background:#F8FAFC}
+.dt-total{font-weight:700;color:#1E293B}
+.dt-wknd .dt-date,.dt-wknd .dt-dow{color:#EF4444}
+.dt-wknd td{background:#FFF5F5}
 
 /* ── 순위 테이블 ── */
 .rank-table{width:100%;border-collapse:collapse}
@@ -144,20 +211,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
   <div class="ctrl-sep"></div>
 
-  <!-- 날짜 직접 선택 (일 단위) -->
+  <!-- 날짜 범위 선택 -->
   <div class="date-range">
-    <span class="dr-label">시작일</span>
-    <input type="date" id="startDate" step="1">
-    <span class="dr-sep">→</span>
-    <span class="dr-label">종료일</span>
-    <input type="date" id="endDate" step="1">
+    <span class="dr-label">📅</span>
+    <input type="text" id="dateRangeInput" placeholder="날짜 범위 선택" readonly>
   </div>
 
   <div class="ctrl-sep"></div>
 
   <!-- 매장 필터 -->
   <span class="pills-label">매장</span>
-  <div class="store-pills" id="storePills"></div>
+  <div class="store-pills" id="storePills">
+    <button class="pill on" id="pillAll">전체</button>
+  </div>
 </div>
 
 <div class="main" id="main">
@@ -169,6 +235,17 @@ const ALL_DATA = ${JSON.stringify(allData)};
 const STORES   = ['하남','다산','가산','수원','광주','운정'];
 const COLORS   = {하남:'#3B82F6',다산:'#10B981',가산:'#F59E0B',수원:'#8B5CF6',광주:'#EF4444',운정:'#06B6D4'};
 const DOW      = ['일','월','화','수','목','금','토'];
+const HOLIDAYS = new Set([
+  // 2025
+  '2025-01-01','2025-01-28','2025-01-29','2025-01-30',
+  '2025-03-01','2025-05-05','2025-06-06','2025-08-15',
+  '2025-10-03','2025-10-05','2025-10-06','2025-10-07','2025-10-09','2025-12-25',
+  // 2026
+  '2026-01-01','2026-02-17','2026-02-18','2026-02-19',
+  '2026-03-01','2026-05-05','2026-05-24','2026-06-06','2026-08-15',
+  '2026-09-24','2026-09-25','2026-09-26',
+  '2026-10-03','2026-10-09','2026-12-25',
+]);
 const MONTHS   = Object.keys(ALL_DATA).sort();
 
 let activeStores = new Set(STORES);
@@ -203,11 +280,11 @@ function getRangeData(start, end) {
   // { store: [row, ...] }
   const res = {};
   STORES.forEach(s => res[s] = []);
-  let cur = new Date(start.slice(0,7)+'-01');
+  // 문자열 기반 월 순회 (타임존 버그 방지)
+  let ym = start.slice(0,7);
   const endM = end.slice(0,7);
-  while (toStr(cur).slice(0,7) <= endM) {
-    const mk = toStr(cur).slice(0,7);
-    const md = ALL_DATA[mk];
+  while (ym <= endM) {
+    const md = ALL_DATA[ym];
     if (md) {
       STORES.forEach(s => {
         (md[s]||[]).forEach(d => {
@@ -215,7 +292,10 @@ function getRangeData(start, end) {
         });
       });
     }
-    cur = new Date(cur.getFullYear(), cur.getMonth()+1, 1);
+    const [y, m] = ym.split('-').map(Number);
+    ym = m === 12
+      ? (y+1) + '-01'
+      : y + '-' + String(m+1).padStart(2,'0');
   }
   return res;
 }
@@ -236,6 +316,21 @@ function storeSum(data, s, field) {
   return (data[s]||[]).reduce((a,d)=>a+(d[field]||0),0);
 }
 
+// 날짜 범위에 포함된 월들의 전체 월 목표 (날짜 필터 없이 월 전체 합산)
+function getMonthlyTargets(start, end) {
+  const res = {};
+  STORES.forEach(s => res[s] = 0);
+  let ym = start.slice(0,7);
+  const endM = end.slice(0,7);
+  while (ym <= endM) {
+    const md = ALL_DATA[ym];
+    if (md) STORES.forEach(s => (md[s]||[]).forEach(d => res[s] += (d.target||0)));
+    const [y, m] = ym.split('-').map(Number);
+    ym = m === 12 ? (y+1)+'-01' : y+'-'+String(m+1).padStart(2,'0');
+  }
+  return res;
+}
+
 // 날짜 목록
 function dates(data) {
   const s = new Set();
@@ -245,6 +340,37 @@ function dates(data) {
 
 // ── 매장 필터 UI ─────────────────────────────────────────────────────────────
 const pillsEl = document.getElementById('storePills');
+
+// 전체 버튼
+const allBtn = document.getElementById('pillAll');
+function updateAllBtn() {
+  const allOn = STORES.every(s => activeStores.has(s));
+  allBtn.classList.toggle('on', allOn);
+  allBtn.style.background = allOn ? '#1E293B' : '';
+  allBtn.style.borderColor = '#1E293B';
+  allBtn.style.color = allOn ? '#fff' : '#1E293B';
+}
+allBtn.addEventListener('click', () => {
+  const allOn = STORES.every(s => activeStores.has(s));
+  if (allOn) {
+    // 전체 해제
+    activeStores.clear();
+    document.querySelectorAll('.pill[data-store]').forEach(el => {
+      el.classList.remove('on');
+      el.style.background = '';
+    });
+  } else {
+    // 전체 선택
+    STORES.forEach(s => activeStores.add(s));
+    document.querySelectorAll('.pill[data-store]').forEach(el => {
+      el.classList.add('on');
+      el.style.background = COLORS[el.dataset.store] + '22';
+    });
+  }
+  updateAllBtn();
+  render();
+});
+
 STORES.forEach(s => {
   const el = document.createElement('button');
   el.className = 'pill on';
@@ -254,7 +380,6 @@ STORES.forEach(s => {
   el.dataset.store = s;
   el.addEventListener('click', ()=>{
     if (activeStores.has(s)) {
-      if (activeStores.size===1) return;
       activeStores.delete(s);
       el.classList.remove('on');
       el.style.background = '';
@@ -262,10 +387,12 @@ STORES.forEach(s => {
       activeStores.add(s);
       el.classList.add('on');
     }
+    updateAllBtn();
     render();
   });
   pillsEl.appendChild(el);
 });
+updateAllBtn();
 
 // ── 프리셋 버튼 ──────────────────────────────────────────────────────────────
 let curPreset = 'mtd';
@@ -275,45 +402,70 @@ document.querySelectorAll('.preset-btn').forEach(btn => {
     document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     const [s,e] = presetDates(curPreset);
-    document.getElementById('startDate').value = s;
-    document.getElementById('endDate').value   = e;
+    fpStart = s; fpEnd = e;
+    picker.setDateRange(s, e);
     render();
   });
 });
 
-// ── 날짜 입력 ────────────────────────────────────────────────────────────────
+// ── 날짜 범위 선택 (litepicker - 독립 두달 달력) ────────────────────────────
+let fpStart = '', fpEnd = '';
 const [defS, defE] = presetDates('mtd');
-document.getElementById('startDate').value = defS;
-document.getElementById('endDate').value   = defE;
-['startDate','endDate'].forEach(id => {
-  document.getElementById(id).addEventListener('change', ()=>{
-    document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
-    curPreset = '';
-    render();
-  });
+fpStart = defS; fpEnd = defE;
+
+const picker = new Litepicker({
+  element: document.getElementById('dateRangeInput'),
+  singleMode: false,
+  numberOfMonths: 2,
+  numberOfColumns: 2,
+  splitView: true,
+  lang: 'ko-KR',
+  format: 'YYYY-MM-DD',
+  startDate: defS,
+  endDate: defE,
+  setup(p) {
+    p.on('selected', (s, e) => {
+      fpStart = s.format('YYYY-MM-DD');
+      fpEnd   = e.format('YYYY-MM-DD');
+      document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
+      curPreset = '';
+      render();
+    });
+  }
 });
 
 // ── 숫자 포맷 ────────────────────────────────────────────────────────────────
 // 숫자 포맷 — 한국어 단위
-const kor  = n => { // 억/만 자동
-  if (n==null) return '-';
-  if (Math.abs(n)>=1e8) return (n/1e8).toFixed(1)+'억';
-  if (Math.abs(n)>=1e4) return Math.round(n/1e4).toLocaleString()+'만';
-  return n.toLocaleString();
+const _fmt = (n, unit) => {
+  const v = Math.floor(n * 10) / 10;
+  return (v % 1 === 0 ? v.toLocaleString() : v.toFixed(1)) + unit;
 };
-const korW = n => n==null?'-':Math.round(n/10000).toLocaleString()+'만원'; // 항상 만원
-const w    = n => n==null?'-':Math.round(n/10000).toLocaleString()+'만';
+const kor  = n => { // 억/만/원 자동, 소수점1자리 버림
+  if (n==null) return '-';
+  const abs = Math.abs(n);
+  if (abs >= 1e8) return _fmt(n/1e7/10, '억');
+  if (abs >= 1e4) return _fmt(n/1000/10, '만');
+  return n.toLocaleString()+'원';
+};
+const korW = n => n==null?'-':_fmt(n/1000/10, '만원');
+const w    = n => { if(n==null) return '-'; return Math.abs(n)>=1e8 ? _fmt(n/1e8,'억') : _fmt(n/1e4,'만'); };
 const n0   = n => n==null?'-':Math.round(n).toLocaleString();
-const pct  = (a,b) => (b&&b>0) ? Math.round(a/b*100) : null;
-const pctSign = n => n==null?'-':(n>=0?'▲':'▼')+Math.abs(n).toFixed(1)+'%';
+const pct  = (a,b) => (b&&b>0) ? Math.floor(a/b*1000)/10 : null;
+const pctSign = n => n==null?'-':(n>=0?'▲':'▼')+(Math.floor(Math.abs(n)*10)/10).toFixed(1)+'%';
+const calcProductivity = entries => {
+  const v = entries.filter(d=>d.staff&&d.staff>0&&d.sales!=null);
+  if (!v.length) return null;
+  const s = v.reduce((a,d)=>a+d.sales,0), t = v.reduce((a,d)=>a+d.staff,0);
+  return t>0 ? Math.floor(s/t) : null;
+};
 
 // ── 차트 정리 ────────────────────────────────────────────────────────────────
 function dc(id) { if(charts[id]) { charts[id].destroy(); delete charts[id]; } }
 
 // ── 메인 렌더 ────────────────────────────────────────────────────────────────
 function render() {
-  const start = document.getElementById('startDate').value;
-  const end   = document.getElementById('endDate').value;
+  const start = fpStart;
+  const end   = fpEnd;
   if (!start||!end||start>end) return;
 
   const rangeData    = getRangeData(start, end);
@@ -324,6 +476,11 @@ function render() {
   const yad          = activeData(yRangeData);
 
   const storesArr = STORES.filter(s=>activeStores.has(s));
+
+  // 월 전체 목표 (활성 매장, 날짜 필터 없이)
+  const allMT = getMonthlyTargets(start, end);
+  const monthlyTargets = {};
+  storesArr.forEach(s => monthlyTargets[s] = allMT[s]||0);
 
   document.getElementById('main').innerHTML = \`
     <div id="sec-pace"></div>
@@ -336,20 +493,22 @@ function render() {
       <div class="card" id="sec-prod"></div>
       <div class="card" id="sec-dow"></div>
     </div>
+    <div class="card" id="sec-daily"></div>
   \`;
 
-  renderPace(ad, yad, start, end, storesArr);
-  renderRank(ad, yad, storesArr);
+  renderPace(ad, yad, start, end, storesArr, monthlyTargets);
+  renderRank(ad, yad, storesArr, monthlyTargets);
   renderDonut(ad, storesArr);
   renderLine(start, end, ad, yad, storesArr);
   renderProd(ad, storesArr);
   renderDow(ad, storesArr);
+  renderDailyTable(ad, yad, storesArr);
 }
 
 // ── 1. 페이스 카드 ────────────────────────────────────────────────────────────
-function renderPace(ad, yad, start, end, stores) {
+function renderPace(ad, yad, start, end, stores, monthlyTargets) {
   const totalSales   = sum(ad,'sales');
-  const totalTarget  = sum(ad,'target');
+  const totalTarget  = Object.values(monthlyTargets).reduce((a,v)=>a+v,0);
   const totalReceipts= sum(ad,'receipts');
 
   const salesDays = [...new Set(Object.values(ad).flat().filter(d=>d.sales!=null).map(d=>d.date))].length;
@@ -359,18 +518,42 @@ function renderPace(ad, yad, start, end, stores) {
   const yoyDelta = ySales>0 ? (totalSales-ySales)/ySales*100 : null;
 
   // 이번 달 페이스 (MTD 선택 시)
-  const isMtd = start === start.slice(0,7)+'-01' && (end===today()||end<=today());
+  const todayStr = today();
+  const isMtd = start.slice(0,7) === todayStr.slice(0,7) && start === start.slice(0,7)+'-01';
   let paceHtml = '';
   if (isMtd) {
-    const daysInMonth = new Date(+start.slice(0,4), +start.slice(5,7), 0).getDate();
-    const elapsed     = salesDays || 1;
-    const dailyAvg    = totalSales / elapsed;
-    const projected   = Math.round(dailyAvg * daysInMonth);
-    const remaining   = daysInMonth - elapsed;
+    const yr = +start.slice(0,4), mo = +start.slice(5,7);
+    const daysInMonth = new Date(yr, mo, 0).getDate();
+    const elapsed = salesDays || 1;
+
+    // 평일/주말 분리 일평균
+    const dateSalesMap = {};
+    Object.values(ad).flat().forEach(r => {
+      if (r.sales != null) dateSalesMap[r.date] = (dateSalesMap[r.date]||0) + r.sales;
+    });
+    const wdSales = [], weSales = [];
+    Object.entries(dateSalesMap).forEach(([dt, s]) => {
+      const dow = new Date(dt+'T00:00:00').getDay();
+      if (dow===0||dow===6||HOLIDAYS.has(dt)) weSales.push(s);
+      else wdSales.push(s);
+    });
+    const wdAvg = wdSales.length ? wdSales.reduce((a,v)=>a+v,0)/wdSales.length : 0;
+    const weAvg = weSales.length ? weSales.reduce((a,v)=>a+v,0)/weSales.length : 0;
+
+    // 잔여 평일/주말 카운트
+    let remWd = 0, remWe = 0;
+    for (let d = elapsed+1; d <= daysInMonth; d++) {
+      const dt = yr+'-'+String(mo).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+      const dow = new Date(dt+'T00:00:00').getDay();
+      if (dow===0||dow===6||HOLIDAYS.has(dt)) remWe++; else remWd++;
+    }
+    const projected = Math.floor(totalSales + wdAvg * remWd + weAvg * remWe);
+    const remaining = daysInMonth - elapsed;
+
     paceHtml = \`<div class="pace-item">
       <div class="lbl">월말 예상</div>
       <div class="val" style="font-size:20px">\${kor(projected)}</div>
-      <div class="sub">잔여 \${remaining}일 · 일평균 \${w(dailyAvg)}</div>
+      <div class="sub">잔여 \${remaining}일 (평일\${remWd}/주말\${remWe}) · 평 \${w(wdAvg)} 휴 \${w(weAvg)}</div>
     </div>\`;
   }
 
@@ -381,7 +564,7 @@ function renderPace(ad, yad, start, end, stores) {
       <div class="pace-item">
         <div class="lbl">실매출</div>
         <div class="val">\${kor(totalSales)}</div>
-        <div class="sub">\${Math.round(totalSales/10000).toLocaleString()}만원</div>
+        <div class="sub">\${_fmt(totalSales/1e4,'만원')}</div>
         <div class="progress"><div class="progress-fill" style="width:\${Math.min(achRate||0,100)}%;background:\${fillColor}"></div></div>
       </div>
       <div class="pace-item">
@@ -409,20 +592,18 @@ function renderPace(ad, yad, start, end, stores) {
 }
 
 // ── 2. 순위 테이블 ────────────────────────────────────────────────────────────
-function renderRank(ad, yad, stores) {
+function renderRank(ad, yad, stores, monthlyTargets) {
   const el = document.getElementById('sec-rank');
   el.innerHTML = '<div class="card-title">매장별 실적</div>';
 
   const rows = stores.map(s => {
     const sales     = storeSum(ad, s, 'sales');
-    const target    = storeSum(ad, s, 'target');
+    const target    = monthlyTargets[s] || 0;
     const receipts  = storeSum(ad, s, 'receipts');
     const ySales    = storeSum(yad, s, 'sales');
     const yReceipts = storeSum(yad, s, 'receipts');
-    const staffDays = (ad[s]||[]).filter(d=>d.staff&&d.sales!=null);
-    const prodArr   = staffDays.map(d=>d.sales/d.staff);
-    const prod      = prodArr.length ? Math.round(prodArr.reduce((a,v)=>a+v,0)/prodArr.length) : null;
-    const perRec    = receipts>0 ? Math.round(sales/receipts) : null;
+    const prod   = calcProductivity(ad[s]||[]);
+    const perRec = receipts>0 ? Math.floor(sales/receipts) : null;
     const achR      = pct(sales, target);
     const yoyPct    = ySales>0 ? (sales-ySales)/ySales*100 : null;
     return { s, sales, target, receipts, ySales, yReceipts, prod, perRec, achR, yoyPct };
@@ -439,8 +620,8 @@ function renderRank(ad, yad, stores) {
       <td>\${w(r.sales)}\${r.yoyPct!=null?'<span class="'+ySign+'">'+pctSign(r.yoyPct)+'</span>':''}</td>
       <td>\${r.achR!=null?'<span class="ach-chip '+achClass+'">'+r.achR+'%</span>':'-'}</td>
       <td>\${n0(r.receipts)}</td>
-      <td>\${r.perRec?Math.round(r.perRec/100)/10+'천원':'-'}</td>
-      <td>\${r.prod?Math.round(r.prod/10000)+'만원':'-'}</td>
+      <td>\${r.perRec?_fmt(r.perRec/1000,'천원'):'-'}</td>
+      <td>\${r.prod?_fmt(r.prod/1e4,'만원'):'-'}</td>
     </tr>\`;
   }).join('');
 
@@ -517,14 +698,14 @@ function renderLine(start, end, ad, yad, stores) {
   const yoyLabels = dList; // x축은 현재 날짜
   const yoySales  = yDList.map(yd=>{
     const v=stores.reduce((a,s)=>{const r=(yad[s]||[]).find(d=>d.date===yd);return a+(r&&r.sales!=null?r.sales:0)},0);
-    return v>0?Math.round(v/10000):null;
+    return v>0?Math.floor(v/1e4*10)/10:null;
   });
   const yoyRec = yDList.map(yd=>{
     const v=stores.reduce((a,s)=>{const r=(yad[s]||[]).find(d=>d.date===yd);return a+(r&&r.receipts!=null?r.receipts:0)},0);
     return v>0?v:null;
   });
 
-  const curSales   = sumByDate(ad,'sales',dList).map(v=>v?Math.round(v/10000):null);
+  const curSales   = sumByDate(ad,'sales',dList).map(v=>v?Math.floor(v/1e4*10)/10:null);
   const curReceipts= sumByDate(ad,'receipts',dList);
 
   const ctx = document.getElementById('lineCanvas').getContext('2d');
@@ -549,11 +730,34 @@ function renderLine(start, end, ad, yad, stores) {
         }
       }}},
       scales:{
-        x:{ ticks:{font:{size:10},maxRotation:0}, grid:{color:'#F1F5F9'} },
+        x:{ ticks:{font:{size:10},maxRotation:0,color:ctx2=>{
+          const dt=dList[ctx2.index];
+          if(!dt) return '#64748B';
+          const d=new Date(dt), dow=d.getDay();
+          return (dow===0||dow===6||HOLIDAYS.has(dt))?'#EF4444':'#64748B';
+        }}, grid:{color:'#F1F5F9'} },
         y:{ position:'left', ticks:{font:{size:10},callback:v=>v+'만'}, grid:{color:'#F1F5F9'} },
         y1:{ position:'right', ticks:{font:{size:10},callback:v=>v+'건'}, grid:{display:false} }
       }
-    }
+    },
+    plugins:[{
+      id:'wkndBg',
+      beforeDraw(chart){
+        const {ctx:c,chartArea:{left,right,top,bottom},scales:{x}}=chart;
+        dList.forEach((dt,i)=>{
+          const d=new Date(dt),dow=d.getDay();
+          const isHoliday=HOLIDAYS.has(dt);
+          const isWknd=dow===0||dow===6;
+          if(!isWknd&&!isHoliday) return;
+          const xPos=x.getPixelForValue(i);
+          const half=(x.getPixelForValue(1)-x.getPixelForValue(0))/2;
+          c.save();
+          c.fillStyle=isHoliday&&!isWknd?'#FEF3C720':'#FEE2E230';
+          c.fillRect(xPos-half,top,half*2,bottom-top);
+          c.restore();
+        });
+      }
+    }]
   });
 }
 
@@ -563,11 +767,7 @@ function renderProd(ad, stores) {
   const el = document.getElementById('sec-prod');
   el.innerHTML = '<div class="card-title">지점별 인당생산량</div><div class="chart-wrap h200"><canvas id="prodCanvas"></canvas></div>';
 
-  const prods = stores.map(s=>{
-    const days = (ad[s]||[]).filter(d=>d.staff&&d.staff>0&&d.sales!=null);
-    if (!days.length) return null;
-    return Math.round(days.reduce((a,d)=>a+d.sales/d.staff,0)/days.length);
-  });
+  const prods = stores.map(s => calcProductivity(ad[s]||[]));
 
   const ctx = document.getElementById('prodCanvas').getContext('2d');
   charts.prod = new Chart(ctx,{
@@ -592,7 +792,7 @@ function renderProd(ad, stores) {
       },
       scales:{
         x:{ ticks:{font:{size:11,weight:'bold'}}, grid:{display:false} },
-        y:{ ticks:{font:{size:10},callback:v=>v>=10000?Math.round(v/10000)+'만':''+v}, grid:{color:'#F1F5F9'},
+        y:{ ticks:{font:{size:10},callback:v=>v>=10000?_fmt(v/1e4,'만'):''+v}, grid:{color:'#F1F5F9'},
             suggestedMin:0, suggestedMax:600000 }
       }
     },
@@ -633,8 +833,8 @@ function renderDow(ad, stores) {
       if (d.staff) { dowStaff[dow]+=d.staff; dowStaffCnt[dow]++; }
     });
   });
-  const avgSales = dowSales.map((v,i)=>dowCnt[i]?Math.round(v/dowCnt[i]/10000):null);
-  const avgStaff = dowStaff.map((v,i)=>dowStaffCnt[i]?parseFloat((v/dowStaffCnt[i]).toFixed(1)):null);
+  const avgSales = dowSales.map((v,i)=>dowCnt[i]?Math.floor(v/dowCnt[i]/1e4*10)/10:null);
+  const avgStaff = dowStaff.map((v,i)=>dowStaffCnt[i]?Math.floor(v/dowStaffCnt[i]*10)/10:null);
 
   // 월~일 순서로 재배열
   const order=[1,2,3,4,5,6,0];
@@ -670,6 +870,79 @@ function renderDow(ad, stores) {
   });
 }
 
+// ── 7. 일자별 매장 상세 테이블 ──────────────────────────────────────────────
+function renderDailyTable(ad, yad, stores) {
+  const el = document.getElementById('sec-daily');
+  const allDates = dates(ad);
+  if (!allDates.length) { el.innerHTML = '<div class="card-title">일자별 매장 데이터</div><div style="color:#94A3B8;padding:12px">데이터 없음</div>'; return; }
+
+  // 합계행 계산
+  const totSales    = stores.reduce((a,s)=>a+storeSum(ad,s,'sales'),0);
+  const totReceipts = stores.reduce((a,s)=>a+storeSum(ad,s,'receipts'),0);
+
+  // 헤더
+  let th = '<th class="dt-th">날짜</th><th class="dt-th">요일</th>';
+  stores.forEach(s => { th += \`<th class="dt-th" colspan="2" style="color:\${COLORS[s]}">\${s}</th>\`; });
+  th += '<th class="dt-th" colspan="2">합계</th>';
+
+  let subTh = '<th></th><th></th>';
+  stores.forEach(() => { subTh += '<th class="dt-sub">매출</th><th class="dt-sub">영수</th>'; });
+  subTh += '<th class="dt-sub">매출</th><th class="dt-sub">영수</th>';
+
+  // 데이터 행
+  let rows = '';
+  allDates.forEach(dt => {
+    const dow = DOW[new Date(dt).getDay()];
+    const isWknd = new Date(dt).getDay()===0||new Date(dt).getDay()===6;
+    let daySales = 0, dayRec = 0;
+    let cells = '';
+    stores.forEach(s => {
+      const r = (ad[s]||[]).find(d=>d.date===dt);
+      const sv = r&&r.sales!=null ? r.sales : null;
+      const rv = r&&r.receipts!=null ? r.receipts : null;
+      if (sv!=null) daySales+=sv;
+      if (rv!=null) dayRec+=rv;
+      cells += \`<td class="dt-td">\${sv!=null?w(sv):'-'}</td><td class="dt-td">\${rv!=null?n0(rv):'-'}</td>\`;
+    });
+    rows += \`<tr class="\${isWknd?'dt-wknd':''}">
+      <td class="dt-date">\${dt.slice(5)}</td>
+      <td class="dt-dow">\${dow}</td>
+      \${cells}
+      <td class="dt-td dt-sum">\${daySales>0?w(daySales):'-'}</td>
+      <td class="dt-td dt-sum">\${dayRec>0?n0(dayRec):'-'}</td>
+    </tr>\`;
+  });
+
+  // 합계행
+  let sumCells = '';
+  stores.forEach(s => {
+    const sv = storeSum(ad,s,'sales');
+    const rv = storeSum(ad,s,'receipts');
+    sumCells += \`<td class="dt-td dt-total">\${sv>0?w(sv):'-'}</td><td class="dt-td dt-total">\${rv>0?n0(rv):'-'}</td>\`;
+  });
+
+  el.innerHTML = \`
+    <div class="card-title">일자별 매장 데이터</div>
+    <div style="overflow-x:auto">
+      <table class="dt-table">
+        <thead>
+          <tr>\${th}</tr>
+          <tr>\${subTh}</tr>
+        </thead>
+        <tbody>\${rows}</tbody>
+        <tfoot>
+          <tr>
+            <td class="dt-date dt-total" colspan="2">합계</td>
+            \${sumCells}
+            <td class="dt-td dt-total">\${totSales>0?w(totSales):'-'}</td>
+            <td class="dt-td dt-total">\${totReceipts>0?n0(totReceipts):'-'}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  \`;
+}
+
 // ── 초기 실행 ────────────────────────────────────────────────────────────────
 render();
 </script>
@@ -677,18 +950,21 @@ render();
 </html>`;
 }
 
-// ── 서버 ─────────────────────────────────────────────────────────────────────
-const server = http.createServer((req, res) => {
-  try {
-    const data = loadAllData();
-    res.writeHead(200, {'Content-Type':'text/html;charset=utf-8'});
-    res.end(html(data));
-  } catch(e) {
-    res.writeHead(500); res.end('Error: '+e.message);
-  }
-});
-
-server.listen(PORT, '127.0.0.1', () => {
-  console.log('✓ 대시보드: http://localhost:' + PORT);
-  console.log('  Ctrl+C 종료');
-});
+// ── 서버 / 모듈 분기 ────────────────────────────────────────────────────────
+if (require.main === module) {
+  const server = http.createServer((req, res) => {
+    try {
+      const data = loadAllData();
+      res.writeHead(200, {'Content-Type':'text/html;charset=utf-8'});
+      res.end(html(data));
+    } catch(e) {
+      res.writeHead(500); res.end('Error: '+e.message);
+    }
+  });
+  server.listen(PORT, '127.0.0.1', () => {
+    console.log('✓ 대시보드: http://localhost:' + PORT);
+    console.log('  Ctrl+C 종료');
+  });
+} else {
+  module.exports = { html, loadAllData };
+}
