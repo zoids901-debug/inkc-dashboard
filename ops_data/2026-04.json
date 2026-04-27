@@ -237,11 +237,11 @@
     {
       "date": "2026-04-27",
       "target": 844447,
-      "sales": 536400,
-      "receipts": 28,
-      "per_receipt": 19157,
+      "sales": 817400,
+      "receipts": 53,
+      "per_receipt": 15422,
       "staff": 4,
-      "productivity": 134100
+      "productivity": 204350
     },
     {
       "date": "2026-04-28",
@@ -509,11 +509,11 @@
     {
       "date": "2026-04-27",
       "target": 5600000,
-      "sales": 1782410,
-      "receipts": 114,
-      "per_receipt": 15635,
+      "sales": 4442950,
+      "receipts": 299,
+      "per_receipt": 14859,
       "staff": 22,
-      "productivity": 81018
+      "productivity": 201952
     },
     {
       "date": "2026-04-28",
@@ -781,9 +781,9 @@
     {
       "date": "2026-04-27",
       "target": 4000000,
-      "sales": 2100320,
-      "receipts": 108,
-      "per_receipt": 19447,
+      "sales": 3773240,
+      "receipts": 223,
+      "per_receipt": 16920,
       "staff": null,
       "productivity": null
     },
@@ -1053,11 +1053,11 @@
     {
       "date": "2026-04-27",
       "target": 2000000,
-      "sales": null,
-      "receipts": null,
-      "per_receipt": null,
-      "staff": null,
-      "productivity": null
+      "sales": 2349500,
+      "receipts": 184,
+      "per_receipt": 12769,
+      "staff": 6,
+      "productivity": 391583
     },
     {
       "date": "2026-04-28",
@@ -1325,11 +1325,11 @@
     {
       "date": "2026-04-27",
       "target": 3200000,
-      "sales": 1005400,
-      "receipts": 75,
-      "per_receipt": 13405,
+      "sales": 3044880,
+      "receipts": 225,
+      "per_receipt": 13532,
       "staff": 12,
-      "productivity": 83783
+      "productivity": 253740
     },
     {
       "date": "2026-04-28",
@@ -1597,11 +1597,11 @@
     {
       "date": "2026-04-27",
       "target": 1800000,
-      "sales": 725370,
-      "receipts": 39,
-      "per_receipt": 18599,
-      "staff": null,
-      "productivity": null
+      "sales": 1388220,
+      "receipts": 79,
+      "per_receipt": 17572,
+      "staff": 15,
+      "productivity": 92548
     },
     {
       "date": "2026-04-28",
