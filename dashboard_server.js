@@ -113,8 +113,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   .h200{height:170px}
   .donut-canvas-wrap{width:150px;height:150px}
   .dt-table{font-size:11px}
-  .dt-table thead tr:first-child th{top:84px}
-  .dt-table thead tr:last-child th{top:108px}
+  .dt-table thead tr:last-child th{top:25px}
+  .dt-scroll{max-height:55vh}
   .dt-date,.dt-td,.dt-dow{padding:4px 5px}
   .rank-table th,.rank-table td{padding:6px 6px;font-size:11px}
 }
@@ -137,12 +137,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   .h200{height:150px}
   .donut-canvas-wrap{width:130px;height:130px}
   .dt-table{font-size:10.5px}
-  .dt-table thead tr:first-child th{top:78px}
-  .dt-table thead tr:last-child th{top:100px}
+  .dt-table thead tr:last-child th{top:23px}
+  .dt-scroll{max-height:50vh}
 }
+.dt-scroll{overflow:auto;max-height:60vh}
 .dt-table{width:100%;border-collapse:separate;border-spacing:0;font-size:12px}
-.dt-table thead tr:first-child th{background:#F8FAFC;font-weight:700;padding:6px 8px;border-bottom:2px solid #E2E8F0;text-align:center;white-space:nowrap;position:sticky;top:98px;z-index:50}
-.dt-table thead tr:last-child th{background:#F8FAFC;font-weight:500;color:#64748B;padding:3px 6px;border-bottom:1px solid #E2E8F0;text-align:center;font-size:11px;position:sticky;top:127px;z-index:49}
+.dt-table thead tr:first-child th{background:#F8FAFC;font-weight:700;padding:6px 8px;border-bottom:2px solid #E2E8F0;text-align:center;white-space:nowrap;position:sticky;top:0;z-index:50}
+.dt-table thead tr:last-child th{background:#F8FAFC;font-weight:500;color:#64748B;padding:3px 6px;border-bottom:1px solid #E2E8F0;text-align:center;font-size:11px;position:sticky;top:29px;z-index:49}
 .dt-th{white-space:nowrap}
 .dt-sub{white-space:nowrap}
 .dt-table tbody tr:hover{background:#F0F9FF}
@@ -256,9 +257,17 @@ let activeStores = new Set(STORES);
 let charts = {};
 
 // ── 날짜 유틸 ────────────────────────────────────────────────────────────────
-const toStr = d => d.toISOString().slice(0,10);
+const toStr = d => {
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  return y+'-'+m+'-'+day;
+};
 const today = () => { const d=new Date(); return toStr(d); };
-const addDays = (s,n) => toStr(new Date(new Date(s).getTime()+n*864e5));
+const addDays = (s,n) => {
+  const [y,m,d] = s.split('-').map(Number);
+  return toStr(new Date(y, m-1, d+n));
+};
 const subYear = s => { const d=new Date(s); d.setFullYear(d.getFullYear()-1); return toStr(d); };
 
 function presetDates(p) {
@@ -927,7 +936,7 @@ function renderDailyTable(ad, yad, stores) {
 
   el.innerHTML = \`
     <div class="card-title">일자별 매장 데이터</div>
-    <div style="overflow-x:auto">
+    <div class="dt-scroll">
       <table class="dt-table">
         <thead>
           <tr>\${th}</tr>
