@@ -246,11 +246,11 @@
     {
       "date": "2026-04-28",
       "target": 844447,
-      "sales": null,
-      "receipts": null,
-      "per_receipt": null,
+      "sales": 814100,
+      "receipts": 55,
+      "per_receipt": 14801,
       "staff": 2,
-      "productivity": null
+      "productivity": 407050
     },
     {
       "date": "2026-04-29",
@@ -518,11 +518,11 @@
     {
       "date": "2026-04-28",
       "target": 5600000,
-      "sales": null,
-      "receipts": null,
-      "per_receipt": null,
+      "sales": 5435294,
+      "receipts": 309,
+      "per_receipt": 17589,
       "staff": 24,
-      "productivity": null
+      "productivity": 226470
     },
     {
       "date": "2026-04-29",
@@ -790,9 +790,9 @@
     {
       "date": "2026-04-28",
       "target": 4500000,
-      "sales": null,
-      "receipts": null,
-      "per_receipt": null,
+      "sales": 4014250,
+      "receipts": 236,
+      "per_receipt": 17009,
       "staff": null,
       "productivity": null
     },
@@ -1062,11 +1062,11 @@
     {
       "date": "2026-04-28",
       "target": 2000000,
-      "sales": null,
-      "receipts": null,
-      "per_receipt": null,
-      "staff": null,
-      "productivity": null
+      "sales": 2535700,
+      "receipts": 185,
+      "per_receipt": 13706,
+      "staff": 6,
+      "productivity": 422616
     },
     {
       "date": "2026-04-29",
@@ -1334,11 +1334,11 @@
     {
       "date": "2026-04-28",
       "target": 3400000,
-      "sales": null,
-      "receipts": null,
-      "per_receipt": null,
+      "sales": 3256400,
+      "receipts": 230,
+      "per_receipt": 14158,
       "staff": 14,
-      "productivity": null
+      "productivity": 232600
     },
     {
       "date": "2026-04-29",
@@ -1606,11 +1606,11 @@
     {
       "date": "2026-04-28",
       "target": 1800000,
-      "sales": null,
-      "receipts": null,
-      "per_receipt": null,
-      "staff": null,
-      "productivity": null
+      "sales": 1293940,
+      "receipts": 77,
+      "per_receipt": 16804,
+      "staff": 17,
+      "productivity": 76114
     },
     {
       "date": "2026-04-29",
