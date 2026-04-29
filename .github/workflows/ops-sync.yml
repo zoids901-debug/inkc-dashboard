@@ -1,0 +1,56 @@
+name: Ops Data Sync
+
+on:
+  schedule:
+    # 매일 KST 23:30 = UTC 14:30
+    - cron: '30 14 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Python deps
+        run: |
+          pip install playwright requests
+          python -m playwright install --with-deps chromium
+
+      - name: Run sync (OKPOS + TOSS + Sheets → ops_data/{YYYY-MM}.json)
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+          GH_REPO:  zoids901-debug/inkc-dashboard
+          OKPOS_ID: ${{ secrets.OKPOS_ID }}
+          OKPOS_PW: ${{ secrets.OKPOS_PW }}
+          TOSS_ID:  ${{ secrets.TOSS_ID }}
+          TOSS_PW:  ${{ secrets.TOSS_PW }}
+        run: python scripts/ops_actions_sync.py
+
+      - name: Build docs/index.html
+        run: node build.js
+
+      - name: Commit & push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add ops_data/ docs/
+          if git diff --cached --quiet; then
+            echo "변경 없음 — commit 생략"
+          else
+            git commit -m "auto: ops 데이터 동기화 ($(date -u +%Y-%m-%d))"
+            git push
+          fi
