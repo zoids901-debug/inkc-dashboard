@@ -1,0 +1,27 @@
+/* 운영 대시보드 컬러 그대로 */
+:root {
+  --bg: #F1F5F9;
+  --card: #FFFFFF;
+  --border: #E2E8F0;
+  --border-strong: #CBD5E1;
+  --text: #1E293B;
+  --text-soft: #64748B;
+  --text-mute: #94A3B8;
+  --accent: #3B82F6;
+  --accent-soft: #DBEAFE;
+  --gold: #F59E0B;
+  --good: #15803D;
+  --good-bg: #DCFCE7;
+  --warn: #B91C1C;
+  --warn-bg: #FEE2E2;
+  --header-bg: #1E293B;
+  --header-sep: #334155;
+
+  /* 매장 색 (운영 대시보드 동일) */
+  --store-하남: #3B82F6;
+  --store-다산: #10B981;
+  --store-가산: #F59E0B;
+  --store-수원: #8B5CF6;
+  --store-광주: #EF4444;
+  --store-운정: #06B6D4;
+}
