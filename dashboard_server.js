@@ -729,8 +729,8 @@ function renderLine(start, end, ad, yad, stores) {
     return v>0?v:null;
   });
 
-  // ── 기간에 따른 자동 집계: ≤60d 일별, 61~180d 주별, >180d 월별 ──
-  const aggMode = dList.length > 180 ? 'month' : dList.length > 60 ? 'week' : 'day';
+  // ── 기간에 따른 자동 집계: ≤90d 일별, 91~180d 주별, >180d 월별 ──
+  const aggMode = dList.length > 180 ? 'month' : dList.length > 90 ? 'week' : 'day';
   function bucketize(mode){
     if (mode==='day') return {
       labels: dList.map(d=>d.slice(5)),
