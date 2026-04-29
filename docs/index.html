@@ -698,19 +698,80 @@ function renderLine(start, end, ad, yad, stores) {
     return v>0?v:null;
   });
 
-  const curSales   = sumByDate(ad,'sales',dList).map(v=>v?Math.floor(v/1e4*10)/10:null);
-  const curReceipts= sumByDate(ad,'receipts',dList);
+  const curSalesRaw   = sumByDate(ad,'sales',dList);
+  const curReceiptsRaw= sumByDate(ad,'receipts',dList);
+  const yoySalesRaw   = yDList.map(yd=>{
+    const v=stores.reduce((a,s)=>{const r=(yad[s]||[]).find(d=>d.date===yd);return a+(r&&r.sales!=null?r.sales:0)},0);
+    return v>0?v:null;
+  });
+  const yoyRecRaw = yDList.map(yd=>{
+    const v=stores.reduce((a,s)=>{const r=(yad[s]||[]).find(d=>d.date===yd);return a+(r&&r.receipts!=null?r.receipts:0)},0);
+    return v>0?v:null;
+  });
+
+  // ── 기간에 따른 자동 집계: ≤60d 일별, 61~180d 주별, >180d 월별 ──
+  const aggMode = dList.length > 180 ? 'month' : dList.length > 60 ? 'week' : 'day';
+  function bucketize(mode){
+    if (mode==='day') {
+      return {
+        labels: dList.map(d=>d.slice(5)),
+        cs: curSalesRaw,    cr: curReceiptsRaw,
+        ys: yoySalesRaw,    yr: yoyRecRaw,
+        keyDates: dList,
+      };
+    }
+    const buckets = {};
+    dList.forEach((dt,i)=>{
+      const d=new Date(dt);
+      let key;
+      if (mode==='week') {
+        // ISO 주의 월요일을 키로
+        const day=(d.getDay()+6)%7;
+        const mon=new Date(d); mon.setDate(d.getDate()-day);
+        key=toStr(mon);
+      } else { // month
+        key=dt.slice(0,7);
+      }
+      if(!buckets[key]) buckets[key]={cs:0,cr:0,ys:0,yr:0,n:0};
+      buckets[key].cs += curSalesRaw[i]||0;
+      buckets[key].cr += curReceiptsRaw[i]||0;
+      buckets[key].ys += yoySalesRaw[i]||0;
+      buckets[key].yr += yoyRecRaw[i]||0;
+      buckets[key].n  += 1;
+    });
+    const keys = Object.keys(buckets).sort();
+    return {
+      labels: keys.map(k=> mode==='week' ? k.slice(5) + '주' : k.slice(2)),
+      cs: keys.map(k=>buckets[k].cs||null),
+      cr: keys.map(k=>buckets[k].cr||null),
+      ys: keys.map(k=>buckets[k].ys||null),
+      yr: keys.map(k=>buckets[k].yr||null),
+      keyDates: keys,
+    };
+  }
+  const agg = bucketize(aggMode);
+  const curSales    = agg.cs.map(v=>v?Math.floor(v/1e4*10)/10:null);
+  const curReceipts = agg.cr;
+  const yoyAggSales = agg.ys.map(v=>v?Math.floor(v/1e4*10)/10:null);
+  const yoyAggRec   = agg.yr;
+
+  // 차트 카드 제목 업데이트 (집계 단위 표시)
+  const titleEl = el.querySelector('.card-title');
+  if (titleEl) {
+    const unitLabel = aggMode==='month'?'월별':aggMode==='week'?'주별':'일별';
+    titleEl.textContent = `${unitLabel} 실매출 · 영수건수`;
+  }
 
   const ctx = document.getElementById('lineCanvas').getContext('2d');
   charts.line = new Chart(ctx,{
     type:'line',
     data:{
-      labels: dList.map(d=>d.slice(5)),
+      labels: agg.labels,
       datasets:[
         { label:'실매출', data:curSales, borderColor:'#3B82F6', backgroundColor:'#3B82F620', borderWidth:2, pointRadius:3, tension:.3, yAxisID:'y', spanGaps:false },
-        { label:'전년매출', data:yoySales, borderColor:'#3B82F660', borderDash:[5,4], borderWidth:1.5, pointRadius:2, tension:.3, yAxisID:'y', spanGaps:false },
+        { label:'전년매출', data:yoyAggSales, borderColor:'#3B82F660', borderDash:[5,4], borderWidth:1.5, pointRadius:2, tension:.3, yAxisID:'y', spanGaps:false },
         { label:'영수건수', data:curReceipts, borderColor:'#F59E0B', backgroundColor:'#F59E0B20', borderWidth:2, pointRadius:3, tension:.3, yAxisID:'y1', spanGaps:false },
-        { label:'전년영수', data:yoyRec, borderColor:'#F59E0B60', borderDash:[5,4], borderWidth:1.5, pointRadius:2, tension:.3, yAxisID:'y1', spanGaps:false },
+        { label:'전년영수', data:yoyAggRec, borderColor:'#F59E0B60', borderDash:[5,4], borderWidth:1.5, pointRadius:2, tension:.3, yAxisID:'y1', spanGaps:false },
       ]
     },
     options:{
@@ -724,7 +785,8 @@ function renderLine(start, end, ad, yad, stores) {
       }}},
       scales:{
         x:{ ticks:{font:{size:10},maxRotation:0,color:ctx2=>{
-          const dt=dList[ctx2.index];
+          if(aggMode!=='day') return '#64748B';
+          const dt=agg.keyDates[ctx2.index];
           if(!dt) return '#64748B';
           const d=new Date(dt), dow=d.getDay();
           return (dow===0||dow===6||HOLIDAYS.has(dt))?'#EF4444':'#64748B';
@@ -736,8 +798,9 @@ function renderLine(start, end, ad, yad, stores) {
     plugins:[{
       id:'wkndBg',
       beforeDraw(chart){
+        if (aggMode!=='day') return;  // 주/월 단위에선 주말 배경 의미 없음
         const {ctx:c,chartArea:{left,right,top,bottom},scales:{x}}=chart;
-        dList.forEach((dt,i)=>{
+        agg.keyDates.forEach((dt,i)=>{
           const d=new Date(dt),dow=d.getDay();
           const isHoliday=HOLIDAYS.has(dt);
           const isWknd=dow===0||dow===6;
