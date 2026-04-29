@@ -7,10 +7,12 @@ const fs   = require('fs');
 const path = require('path');
 const { html, loadAllData } = require('./dashboard_server');
 
-const OUT = path.join(__dirname, 'docs', 'index.html');
+const OUT = path.join(__dirname, 'docs', 'ops-only', 'index.html');
 
-if (!fs.existsSync(path.join(__dirname, 'docs'))) {
-  fs.mkdirSync(path.join(__dirname, 'docs'));
+const opsDir = path.join(__dirname, 'docs', 'ops-only');
+if (!fs.existsSync(opsDir)) fs.mkdirSync(opsDir, {recursive:true});
+if (false) {
+  fs.mkdirSync(path.join(__dirname, 'docs', 'ops-only'));
 }
 
 const data    = loadAllData();
