@@ -388,8 +388,8 @@ async def main():
             if not entry.get('sales'):
                 missing.append((store, entry['date']))
     if missing:
-        log(f'[누락 경고] {len(missing)}건 — 다음 cron에서 재수집됨', flush=True)
-        for s, d in missing[:10]: log(f'  - {s} {d}', flush=True)
+        log(f'[누락 경고] {len(missing)}건 — 다음 cron에서 재수집됨')
+        for s, d in missing[:10]: log(f'  - {s} {d}')
 
     # 저장
     with open(json_path, 'w', encoding='utf-8') as f:
