@@ -264,11 +264,11 @@
     {
       "date": "2026-04-30",
       "target": 844447,
-      "sales": 121340,
-      "receipts": 7,
-      "per_receipt": 17334,
+      "sales": 642540,
+      "receipts": 51,
+      "per_receipt": 12598,
       "staff": 3,
-      "productivity": 40446
+      "productivity": 214180
     }
   ],
   "다산": [
@@ -536,11 +536,11 @@
     {
       "date": "2026-04-30",
       "target": 6000000,
-      "sales": 628900,
-      "receipts": 39,
-      "per_receipt": 16125,
+      "sales": 4727620,
+      "receipts": 308,
+      "per_receipt": 15349,
       "staff": 24,
-      "productivity": 26204
+      "productivity": 196984
     }
   ],
   "가산": [
@@ -808,9 +808,9 @@
     {
       "date": "2026-04-30",
       "target": 5000000,
-      "sales": 362000,
-      "receipts": 19,
-      "per_receipt": 19052,
+      "sales": 5729708,
+      "receipts": 337,
+      "per_receipt": 17002,
       "staff": null,
       "productivity": null
     }
@@ -1071,11 +1071,11 @@
     {
       "date": "2026-04-29",
       "target": 2000000,
-      "sales": null,
+      "sales": 2147600,
       "receipts": null,
       "per_receipt": null,
       "staff": 6,
-      "productivity": null
+      "productivity": 357933
     },
     {
       "date": "2026-04-30",
@@ -1083,7 +1083,7 @@
       "sales": null,
       "receipts": null,
       "per_receipt": null,
-      "staff": null,
+      "staff": 7,
       "productivity": null
     }
   ],
@@ -1352,11 +1352,11 @@
     {
       "date": "2026-04-30",
       "target": 3500000,
-      "sales": 90700,
-      "receipts": 7,
-      "per_receipt": 12957,
+      "sales": 3737100,
+      "receipts": 241,
+      "per_receipt": 15506,
       "staff": 12,
-      "productivity": 7558
+      "productivity": 311425
     }
   ],
   "광주": [
@@ -1624,11 +1624,11 @@
     {
       "date": "2026-04-30",
       "target": 1800000,
-      "sales": 108050,
-      "receipts": 6,
-      "per_receipt": 18008,
-      "staff": null,
-      "productivity": null
+      "sales": 1573130,
+      "receipts": 91,
+      "per_receipt": 17287,
+      "staff": 24,
+      "productivity": 65547
     }
   ]
 }
