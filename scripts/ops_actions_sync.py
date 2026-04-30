@@ -150,7 +150,7 @@ def apply_okpos(records, existing):
     by_date_store = {}
     for row in records:
         store = SHOP_MAP.get(row['SHOP_CD'])
-        if not store or store == '수원': continue  # 수원은 시트 우선
+        if not store: continue  # 모든 매장 적재 (수원은 시트 fallback용으로 by_date_store에 보존)
         raw = row['SALE_DATE']
         dt = f'{raw[:4]}-{raw[4:6]}-{raw[6:8]}'
         gross = int(row.get('DCM_SALE_AMT', 0) or 0)
