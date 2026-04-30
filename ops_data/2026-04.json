@@ -255,20 +255,20 @@
     {
       "date": "2026-04-29",
       "target": 844447,
-      "sales": 659580,
-      "receipts": 50,
-      "per_receipt": 13191,
+      "sales": 786580,
+      "receipts": 59,
+      "per_receipt": 13331,
       "staff": 3,
-      "productivity": 219860
+      "productivity": 262193
     },
     {
       "date": "2026-04-30",
       "target": 844447,
-      "sales": null,
-      "receipts": null,
-      "per_receipt": null,
+      "sales": 45140,
+      "receipts": 4,
+      "per_receipt": 11285,
       "staff": 3,
-      "productivity": null
+      "productivity": 15046
     }
   ],
   "다산": [
@@ -527,20 +527,20 @@
     {
       "date": "2026-04-29",
       "target": 5600000,
-      "sales": 3405310,
-      "receipts": 220,
-      "per_receipt": 15478,
+      "sales": 4677380,
+      "receipts": 305,
+      "per_receipt": 15335,
       "staff": 24,
-      "productivity": 141887
+      "productivity": 194890
     },
     {
       "date": "2026-04-30",
       "target": 6000000,
-      "sales": null,
-      "receipts": null,
-      "per_receipt": null,
+      "sales": 355100,
+      "receipts": 22,
+      "per_receipt": 16140,
       "staff": 24,
-      "productivity": null
+      "productivity": 14795
     }
   ],
   "가산": [
@@ -766,8 +766,8 @@
       "sales": 6252616,
       "receipts": 376,
       "per_receipt": 16629,
-      "staff": null,
-      "productivity": null
+      "staff": 15,
+      "productivity": 416841
     },
     {
       "date": "2026-04-26",
@@ -775,8 +775,8 @@
       "sales": 7064700,
       "receipts": 372,
       "per_receipt": 18991,
-      "staff": null,
-      "productivity": null
+      "staff": 14,
+      "productivity": 504621
     },
     {
       "date": "2026-04-27",
@@ -784,8 +784,8 @@
       "sales": 3773240,
       "receipts": 223,
       "per_receipt": 16920,
-      "staff": null,
-      "productivity": null
+      "staff": 12,
+      "productivity": 314436
     },
     {
       "date": "2026-04-28",
@@ -793,24 +793,24 @@
       "sales": 4014250,
       "receipts": 236,
       "per_receipt": 17009,
-      "staff": null,
-      "productivity": null
+      "staff": 11,
+      "productivity": 364931
     },
     {
       "date": "2026-04-29",
       "target": 5000000,
-      "sales": 3788380,
-      "receipts": 236,
-      "per_receipt": 16052,
-      "staff": null,
-      "productivity": null
+      "sales": 5091290,
+      "receipts": 329,
+      "per_receipt": 15475,
+      "staff": 13,
+      "productivity": 391637
     },
     {
       "date": "2026-04-30",
       "target": 5000000,
-      "sales": null,
-      "receipts": null,
-      "per_receipt": null,
+      "sales": 186300,
+      "receipts": 13,
+      "per_receipt": 14330,
       "staff": null,
       "productivity": null
     }
@@ -1074,7 +1074,7 @@
       "sales": null,
       "receipts": null,
       "per_receipt": null,
-      "staff": null,
+      "staff": 6,
       "productivity": null
     },
     {
@@ -1343,20 +1343,20 @@
     {
       "date": "2026-04-29",
       "target": 3500000,
-      "sales": 2455300,
-      "receipts": 168,
-      "per_receipt": 14614,
+      "sales": 3400300,
+      "receipts": 233,
+      "per_receipt": 14593,
       "staff": 11,
-      "productivity": 223209
+      "productivity": 309118
     },
     {
       "date": "2026-04-30",
       "target": 3500000,
-      "sales": null,
-      "receipts": null,
-      "per_receipt": null,
+      "sales": 37600,
+      "receipts": 2,
+      "per_receipt": 18800,
       "staff": 12,
-      "productivity": null
+      "productivity": 3133
     }
   ],
   "광주": [
@@ -1615,18 +1615,18 @@
     {
       "date": "2026-04-29",
       "target": 1800000,
-      "sales": 1397350,
-      "receipts": 78,
-      "per_receipt": 17914,
-      "staff": null,
-      "productivity": null
+      "sales": 1771790,
+      "receipts": 100,
+      "per_receipt": 17717,
+      "staff": 19,
+      "productivity": 93252
     },
     {
       "date": "2026-04-30",
       "target": 1800000,
-      "sales": null,
-      "receipts": null,
-      "per_receipt": null,
+      "sales": 68150,
+      "receipts": 3,
+      "per_receipt": 22716,
       "staff": null,
       "productivity": null
     }
