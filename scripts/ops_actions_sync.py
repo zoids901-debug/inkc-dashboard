@@ -377,6 +377,38 @@ async def main():
         except Exception as e:
             log(f'[{store}] 시트 실패: {e}')
 
+    # 누락 감지 — 모든 매장 매장의 최근 7일 sales 체크
+    EXPECTED_STORES = {'가산','다산','수원','하남','광주','운정'}
+    today_str = today.isoformat()
+    week_ago = (today - timedelta(days=7)).isoformat()
+    missing = []
+    for store in EXPECTED_STORES:
+        for entry in existing.get(store, []):
+            if not (week_ago <= entry['date'] <= today_str): continue
+            if not entry.get('sales'):
+                missing.append((store, entry['date']))
+    if missing:
+        log(f'[누락 감지] {len(missing)}건 — 재시도 1회', flush=True)
+        for s, d in missing[:10]: log(f'  - {s} {d}', flush=True)
+        # OKPOS 한 번 더 fetch
+        try:
+            records2 = await scrape_okpos(yyyy_mm)
+            apply_okpos(records2, existing)
+            # 시트도 다시 (수원/운정 fallback 위해)
+            for store in SHEET_IDS:
+                try:
+                    patch_store_from_sheet(store, yyyy_mm, existing,
+                        {dt: {st: data for st, data in v.items()}
+                         for dt, v in __import__('builtins').dict.fromkeys([], None).items() or {}})
+                except Exception as e:
+                    log(f'[{store}] 시트 재시도 실패: {e}', flush=True)
+        except Exception as e:
+            log(f'[누락 재시도 실패] {e}', flush=True)
+        # 재확인
+        still = sum(1 for s in EXPECTED_STORES for e in existing.get(s, [])
+                    if week_ago <= e['date'] <= today_str and not e.get('sales'))
+        log(f'[누락 재시도 후] 잔여 누락: {still}건', flush=True)
+
     # 저장
     with open(json_path, 'w', encoding='utf-8') as f:
         json.dump(existing, f, ensure_ascii=False, indent=2)
