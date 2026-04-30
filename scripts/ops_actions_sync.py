@@ -393,13 +393,11 @@ async def main():
         # OKPOS 한 번 더 fetch
         try:
             records2 = await scrape_okpos(yyyy_mm)
-            apply_okpos(records2, existing)
-            # 시트도 다시 (수원/운정 fallback 위해)
+            okpos_by_date2 = apply_okpos(records2, existing)
+            # 시트도 다시 fetch (수원/운정 fallback)
             for store in SHEET_IDS:
                 try:
-                    patch_store_from_sheet(store, yyyy_mm, existing,
-                        {dt: {st: data for st, data in v.items()}
-                         for dt, v in __import__('builtins').dict.fromkeys([], None).items() or {}})
+                    patch_store_from_sheet(store, yyyy_mm, existing, okpos_by_date2)
                 except Exception as e:
                     log(f'[{store}] 시트 재시도 실패: {e}', flush=True)
         except Exception as e:
