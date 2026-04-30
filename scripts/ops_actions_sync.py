@@ -388,24 +388,8 @@ async def main():
             if not entry.get('sales'):
                 missing.append((store, entry['date']))
     if missing:
-        log(f'[누락 감지] {len(missing)}건 — 재시도 1회', flush=True)
+        log(f'[누락 경고] {len(missing)}건 — 다음 cron에서 재수집됨', flush=True)
         for s, d in missing[:10]: log(f'  - {s} {d}', flush=True)
-        # OKPOS 한 번 더 fetch
-        try:
-            records2 = await scrape_okpos(yyyy_mm)
-            okpos_by_date2 = apply_okpos(records2, existing)
-            # 시트도 다시 fetch (수원/운정 fallback)
-            for store in SHEET_IDS:
-                try:
-                    patch_store_from_sheet(store, yyyy_mm, existing, okpos_by_date2)
-                except Exception as e:
-                    log(f'[{store}] 시트 재시도 실패: {e}', flush=True)
-        except Exception as e:
-            log(f'[누락 재시도 실패] {e}', flush=True)
-        # 재확인
-        still = sum(1 for s in EXPECTED_STORES for e in existing.get(s, [])
-                    if week_ago <= e['date'] <= today_str and not e.get('sales'))
-        log(f'[누락 재시도 후] 잔여 누락: {still}건', flush=True)
 
     # 저장
     with open(json_path, 'w', encoding='utf-8') as f:
