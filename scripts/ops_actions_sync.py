@@ -350,8 +350,12 @@ async def main():
     # 기존 ops_data 로드 (워크플로우의 checkout이 이미 받아옴 — 로컬 파일에서)
     json_path = f'ops_data/{yyyy_mm}.json'
     if not os.path.exists(json_path):
-        log(f'{json_path} 없음 — 새 월 파일 초기화')
-        existing = {s: [] for s in ['가산','다산','수원','하남','광주','운정']}
+        import calendar as _cal
+        _y, _m = map(int, yyyy_mm.split('-'))
+        _last = _cal.monthrange(_y, _m)[1]
+        log(f'{json_path} 없음 — 새 월 파일 초기화 (1~{_last}일 빈 entry)')
+        existing = {s: [{'date': f'{_y:04d}-{_m:02d}-{d:02d}'} for d in range(1, _last + 1)]
+                    for s in ['가산','다산','수원','하남','광주','운정']}
     else:
         with open(json_path, 'r', encoding='utf-8') as f:
             existing = json.load(f)
