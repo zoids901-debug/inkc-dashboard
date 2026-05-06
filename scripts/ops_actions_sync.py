@@ -350,10 +350,11 @@ async def main():
     # 기존 ops_data 로드 (워크플로우의 checkout이 이미 받아옴 — 로컬 파일에서)
     json_path = f'ops_data/{yyyy_mm}.json'
     if not os.path.exists(json_path):
-        log(f'ERROR: {json_path} 없음')
-        sys.exit(1)
-    with open(json_path, 'r', encoding='utf-8') as f:
-        existing = json.load(f)
+        log(f'{json_path} 없음 — 새 월 파일 초기화')
+        existing = {s: [] for s in ['가산','다산','수원','하남','광주','운정']}
+    else:
+        with open(json_path, 'r', encoding='utf-8') as f:
+            existing = json.load(f)
 
     # 1) OKPOS
     okpos_by_date = {}
