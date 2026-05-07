@@ -351,6 +351,34 @@
       b.addEventListener('click', () => showTab(b.dataset.tab));
     });
 
+    // 엑셀 다운로드 (현재 탭의 iframe 내부 함수 호출)
+    const excelBtn = document.getElementById('btnExcelUnified');
+    if (excelBtn) {
+      excelBtn.addEventListener('click', () => {
+        const tab = App.state.activeTab || 'ops';
+        if (tab === 'pl') {
+          alert('손익 탭은 엑셀 다운로드가 별도 시트에서 제공됩니다');
+          return;
+        }
+        const panel = document.getElementById(`tab-${tab}`);
+        const frame = panel && panel.querySelector('iframe.tab-frame');
+        if (!frame || !frame.contentWindow) {
+          alert('탭 iframe을 찾지 못했습니다');
+          return;
+        }
+        try {
+          const fn = frame.contentWindow.downloadExcel;
+          if (typeof fn !== 'function') {
+            alert('현재 탭은 엑셀 다운로드 미지원');
+            return;
+          }
+          fn();
+        } catch (e) {
+          alert('엑셀 다운로드 실패: ' + e.message);
+        }
+      });
+    }
+
     // 서브탭 (손익 → 대시보드/업로드)
     document.querySelectorAll('.subtab').forEach(b => {
       b.addEventListener('click', () => {
