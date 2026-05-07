@@ -74,6 +74,10 @@
       case 'ytd': {
         start = new Date(now.getFullYear(), 0, 1); end = now; break;
       }
+      case 'last_year': {
+        const y = now.getFullYear() - 1;
+        start = new Date(y, 0, 1); end = new Date(y, 11, 31); break;
+      }
       default: return null;
     }
     return { preset, start: toStr(start), end: toStr(end) };
@@ -452,6 +456,7 @@
         format: 'YYYY-MM-DD',
         startDate: def.start,
         endDate: def.end,
+        dropdowns: { minYear: 2021, maxYear: null, months: true, years: true },
         setup(p) {
           p.on('selected', (s, e) => {
             // 프로그램이 picker.setDateRange() 호출했을 때는 무시

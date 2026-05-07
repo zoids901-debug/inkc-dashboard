@@ -211,7 +211,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <button class="preset-btn" data-p="week">이번 주</button>
     <button class="preset-btn active" data-p="mtd">이번 달</button>
     <button class="preset-btn" data-p="last_month">지난 달</button>
-    <button class="preset-btn" data-p="30d">최근 30일</button>
+    <button class="preset-btn" data-p="this_year">올해</button>
+    <button class="preset-btn" data-p="last_year">작년</button>
   </div>
 
   <div class="ctrl-sep"></div>
@@ -283,6 +284,11 @@ function presetDates(p) {
     const d=new Date(now.getFullYear(), now.getMonth()-1, 1);
     const e=new Date(now.getFullYear(), now.getMonth(), 0);
     return [toStr(d), toStr(e)];
+  }
+  if (p==='this_year') return [now.getFullYear()+'-01-01', t];
+  if (p==='last_year'){
+    const y=now.getFullYear()-1;
+    return [y+'-01-01', y+'-12-31'];
   }
   if (p==='30d')       return [addDays(t,-29), t];
   return [t.slice(0,7)+'-01', t];
@@ -436,6 +442,7 @@ const picker = new Litepicker({
   format: 'YYYY-MM-DD',
   startDate: defS,
   endDate: defE,
+  dropdowns: { minYear: 2021, maxYear: null, months: true, years: true },
   setup(p) {
     p.on('selected', (s, e) => {
       fpStart = s.format('YYYY-MM-DD');
@@ -572,28 +579,52 @@ function renderPace(ad, yad, start, end, stores, monthlyTargets) {
 
   const fillColor = achRate==null?'#94A3B8':achRate>=100?'#10B981':achRate>=85?'#F59E0B':'#EF4444';
 
+  // 전년 동기 메트릭
+  const yReceipts  = sum(yad,'receipts');
+  const yTarget    = sum(yad,'target');
+  const yAchRate   = pct(ySales, yTarget);
+  const perRec     = totalReceipts>0 ? Math.floor(totalSales/totalReceipts) : null;
+  const yPerRec    = yReceipts>0    ? Math.floor(ySales/yReceipts)         : null;
+
+  // 전년 대비 (양수=증가)
+  const yoySales    = ySales>0     ? (totalSales-ySales)/ySales*100         : null;
+  const yoyReceipts = yReceipts>0  ? (totalReceipts-yReceipts)/yReceipts*100: null;
+  const yoyPerRec   = (perRec!=null && yPerRec!=null && yPerRec>0)
+                       ? (perRec-yPerRec)/yPerRec*100 : null;
+  const yoyAch      = (achRate!=null && yAchRate!=null) ? (achRate-yAchRate) : null; // 포인트 차
+
+  const yoyHtml = (val, suffix) => val==null
+    ? '<div class="sub" style="color:#94A3B8">전년 -</div>'
+    : \`<div class="sub" style="color:\${val>=0?'#10B981':'#EF4444'};font-weight:700">
+         \${val>=0?'▲':'▼'}\${Math.abs(val).toFixed(1)}\${suffix}
+       </div>\`;
+
   document.getElementById('sec-pace').innerHTML = \`
     <div class="pace-card">
-      <div class="pace-item">
-        <div class="lbl">실매출</div>
-        <div class="val">\${kor(totalSales)}</div>
-        <div class="sub">\${_fmt(totalSales/1e4,'만원')}</div>
-        <div class="progress"><div class="progress-fill" style="width:\${Math.min(achRate||0,100)}%;background:\${fillColor}"></div></div>
-      </div>
       <div class="pace-item">
         <div class="lbl">목표 달성률</div>
         <div class="val" style="color:\${fillColor}">\${achRate!=null?achRate+'%':'-'}</div>
         <div class="sub">목표 \${kor(totalTarget)}</div>
+        \${yoyHtml(yoyAch, 'p')}
+        <div class="progress"><div class="progress-fill" style="width:\${Math.min(achRate||0,100)}%;background:\${fillColor}"></div></div>
+      </div>
+      <div class="pace-item">
+        <div class="lbl">실매출</div>
+        <div class="val">\${kor(totalSales)}</div>
+        <div class="sub">전년 \${kor(ySales)}</div>
+        \${yoyHtml(yoySales, '%')}
+      </div>
+      <div class="pace-item">
+        <div class="lbl">객단가</div>
+        <div class="val">\${perRec!=null?_fmt(perRec/1000,'천원'):'-'}</div>
+        <div class="sub">전년 \${yPerRec!=null?_fmt(yPerRec/1000,'천원'):'-'}</div>
+        \${yoyHtml(yoyPerRec, '%')}
       </div>
       <div class="pace-item">
         <div class="lbl">영수건수</div>
         <div class="val">\${n0(totalReceipts)}</div>
-        <div class="sub">영업일 \${salesDays}일</div>
-      </div>
-      <div class="pace-item">
-        <div class="lbl">전년 대비</div>
-        <div class="val" style="font-size:20px;\${yoyDelta!=null&&yoyDelta<0?'color:#EF4444':'color:#10B981'}">\${yoyDelta!=null?(yoyDelta>=0?'▲':'▼')+Math.abs(yoyDelta).toFixed(1)+'%':'-'}</div>
-        <div class="sub">전년 \${kor(ySales)}</div>
+        <div class="sub">전년 \${n0(yReceipts)}</div>
+        \${yoyHtml(yoyReceipts, '%')}
       </div>
       \${paceHtml}
     </div>
