@@ -168,9 +168,13 @@ def apply_okpos(records, existing):
             ds = by_date_store.get(entry['date'], {}).get(store)
             if not ds: continue
             if ds['sales'] > 0:
+                # invalid receipts 가드: =1 + 매출>20만은 영수증 시스템 미작동 시기
+                rec = ds['receipts']
+                if rec == 1 and ds['sales'] > 200_000:
+                    rec = None
                 entry['sales']    = ds['sales']
-                entry['receipts'] = ds['receipts']
-                entry['per_receipt'] = (ds['sales'] // ds['receipts']) if ds['receipts'] else None
+                entry['receipts'] = rec
+                entry['per_receipt'] = (ds['sales'] // rec) if rec else None
                 if entry.get('staff') and entry['staff'] > 0:
                     entry['productivity'] = ds['sales'] // entry['staff']
                 updated += 1
@@ -330,10 +334,16 @@ def patch_store_from_sheet(store, yyyy_mm, existing, okpos_by_date):
             if sd.get('receipts') is not None: entry['receipts'] = int(sd['receipts'])
         # 기타 매장(하남/가산/다산/광주): 매출/영수는 OKPOS 유지
 
+        # invalid receipts 가드: =1 + 매출>20만 → None (영수증 시스템 미작동 시기)
+        if entry.get('receipts') == 1 and (entry.get('sales') or 0) > 200_000:
+            entry['receipts'] = None
+
         if sd.get('target') is not None: entry['target'] = int(sd['target'])
         if sd.get('staff')  is not None: entry['staff']  = int(sd['staff'])
         if entry.get('sales') and entry.get('receipts'):
             entry['per_receipt'] = entry['sales'] // entry['receipts']
+        else:
+            entry['per_receipt'] = None
         if entry.get('sales') and entry.get('staff'):
             entry['productivity'] = entry['sales'] // entry['staff']
         if entry.get('sales'): updated += 1
