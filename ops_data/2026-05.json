@@ -269,7 +269,10 @@
     {
       "date": "2026-05-06",
       "staff": 6,
-      "receipts": 2
+      "receipts": 2,
+      "sales": 1892400,
+      "per_receipt": 946200,
+      "productivity": 315400
     },
     {
       "date": "2026-05-07"

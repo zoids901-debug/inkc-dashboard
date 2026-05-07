@@ -1080,11 +1080,11 @@
     {
       "date": "2026-04-30",
       "target": 2234100,
-      "sales": null,
+      "sales": 2565200,
       "receipts": 1,
-      "per_receipt": null,
+      "per_receipt": 2565200,
       "staff": 7,
-      "productivity": null
+      "productivity": 366457
     }
   ],
   "운정": [

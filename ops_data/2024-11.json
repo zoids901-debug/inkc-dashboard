@@ -1035,19 +1035,19 @@
     {
       "date": "2024-11-25",
       "target": null,
-      "sales": 2220000,
+      "sales": 2210780,
       "receipts": 1,
       "staff": null,
-      "per_receipt": 2220000,
+      "per_receipt": 2210780,
       "productivity": null
     },
     {
       "date": "2024-11-26",
       "target": null,
-      "sales": 2571000,
+      "sales": 2566180,
       "receipts": 1,
       "staff": null,
-      "per_receipt": 2571000,
+      "per_receipt": 2566180,
       "productivity": null
     },
     {
@@ -1062,10 +1062,10 @@
     {
       "date": "2024-11-28",
       "target": null,
-      "sales": 1666700,
+      "sales": 1663640,
       "receipts": 1,
       "staff": null,
-      "per_receipt": 1666700,
+      "per_receipt": 1663640,
       "productivity": null
     },
     {

@@ -324,9 +324,13 @@ def patch_store_from_sheet(store, yyyy_mm, existing, okpos_by_date):
         sd = sheet_by_date.get(entry['date'], {})
         # 매장별 우선순위
         if store == '수원':
-            if sd.get('sales'): entry['sales'] = int(sd['sales'])
-            elif okpos_by_date.get(entry['date'], {}).get('수원'):
-                entry['sales'] = okpos_by_date[entry['date']]['수원']['sales']
+            # 매출은 OK POS 우선 (시트와 source 차이 회피)
+            okp = okpos_by_date.get(entry['date'], {}).get('수원')
+            if okp and okp['sales'] > 0:
+                entry['sales'] = okp['sales']
+            elif sd.get('sales'):
+                entry['sales'] = int(sd['sales'])
+            # 영수건수는 시트 우선 (OK POS 수원은 백화점 일괄 결제로 영수가 0/1)
             if sd.get('receipts') is not None: entry['receipts'] = int(sd['receipts'])
         elif store == '운정':
             # TOSS가 우선이지만 시트 매출이 있으면 시트 사용 (사람 검증 우선)
