@@ -630,8 +630,8 @@ function renderPace(ad, yad, start, end, stores, monthlyTargets) {
       </div>
       <div class="pace-item">
         <div class="lbl">객단가</div>
-        <div class="val">\${perRec!=null?_fmt(perRec/1000,'천원'):'-'}</div>
-        <div class="sub">전년 \${yPerRec!=null?_fmt(yPerRec/1000,'천원'):'-'}</div>
+        <div class="val">\${perRec!=null?perRec.toLocaleString()+'원':'-'}</div>
+        <div class="sub">전년 \${yPerRec!=null?yPerRec.toLocaleString()+'원':'-'}</div>
         \${yoyHtml(yoyPerRec, '%')}
       </div>
       <div class="pace-item">
@@ -678,7 +678,7 @@ function renderRank(ad, yad, stores, monthlyTargets) {
       <td>\${w(r.sales)}\${r.yoyPct!=null?'<span class="'+ySign+'">'+pctSign(r.yoyPct)+'</span>':''}</td>
       <td>\${r.achR!=null?'<span class="ach-chip '+achClass+'">'+r.achR+'%</span>':'-'}</td>
       <td>\${n0(r.receipts)}</td>
-      <td>\${r.perRec?_fmt(r.perRec/1000,'천원'):'-'}</td>
+      <td>\${r.perRec?r.perRec.toLocaleString()+'원':'-'}</td>
       <td>\${r.prod?_fmt(r.prod/1e4,'만원'):'-'}</td>
     </tr>\`;
   }).join('');
