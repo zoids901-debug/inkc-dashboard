@@ -303,6 +303,20 @@ def patch_store_from_sheet(store, yyyy_mm, existing, okpos_by_date):
     target_col   = find_col(rows, ['목표매출'])
     staff_col    = STAFF_COL.get(store)  # 매장별 하드코딩 (gviz 컬럼 인덱스)
 
+    # 수원 시트는 영역 B (일자 1~31 두 번째 영역)에 영수건수 있음 — col 3
+    suwon_receipts_by_day = {}
+    if store == '수원':
+        seen_one = 0
+        for r in rows:
+            if not r or not r[0].strip().isdigit(): continue
+            d = int(r[0])
+            if d < 1 or d > 31 or str(d) != r[0].strip(): continue
+            if d == 1: seen_one += 1
+            if seen_one < 2: continue  # 첫 영역(영역 A) 통과
+            if len(r) > 3:
+                v = parse_num(r[3])
+                if v is not None: suwon_receipts_by_day[d] = v
+
     # 일자별 시트 데이터
     sheet_by_date = {}
     seen = set()
@@ -312,9 +326,14 @@ def patch_store_from_sheet(store, yyyy_mm, existing, okpos_by_date):
         if d < 1 or d > 31 or str(d) != r[0].strip() or d in seen: continue
         seen.add(d)
         dt = f'{y}-{m}-{d:02d}'
+        # 수원: 영수는 영역 B에서, 그 외 기본 로직
+        if store == '수원':
+            rec_val = suwon_receipts_by_day.get(d)
+        else:
+            rec_val = parse_num(r[receipts_col]) if receipts_col is not None and receipts_col < len(r) else None
         sheet_by_date[dt] = {
             'sales':    parse_num(r[sales_col])    if sales_col    is not None and sales_col    < len(r) else None,
-            'receipts': parse_num(r[receipts_col]) if receipts_col is not None and receipts_col < len(r) else None,
+            'receipts': rec_val,
             'staff':    parse_num(r[staff_col])    if staff_col    is not None and staff_col    < len(r) else None,
             'target':   parse_num(r[target_col])   if target_col   is not None and target_col   < len(r) else None,
         }
