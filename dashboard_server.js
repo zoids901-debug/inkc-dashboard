@@ -594,8 +594,11 @@ function renderPace(ad, yad, start, end, stores, monthlyTargets) {
   const yReceipts  = sum(yad,'receipts');
   const yTarget    = sum(yad,'target');
   const yAchRate   = pct(ySales, yTarget);
-  const perRec     = totalReceipts>0 ? Math.floor(totalSales/totalReceipts) : null;
-  const yPerRec    = yReceipts>0    ? Math.floor(ySales/yReceipts)         : null;
+  // 객단가: 영수 있는 일자의 매출만 합산해서 나눔 (수원처럼 시트 매출 + OKPOS 영수 누락 케이스 보정)
+  const salesGated  = Object.values(ad).flat().reduce((a,d)=>a+((d.receipts||0)>0?(d.sales||0):0),0);
+  const ySalesGated = Object.values(yad).flat().reduce((a,d)=>a+((d.receipts||0)>0?(d.sales||0):0),0);
+  const perRec     = totalReceipts>0 ? Math.floor(salesGated/totalReceipts) : null;
+  const yPerRec    = yReceipts>0    ? Math.floor(ySalesGated/yReceipts)    : null;
 
   // 전년 대비 (양수=증가)
   const yoySales    = ySales>0     ? (totalSales-ySales)/ySales*100         : null;

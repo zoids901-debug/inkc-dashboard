@@ -14,8 +14,14 @@
     하남: '#3B82F6', 다산: '#10B981', 가산: '#F59E0B',
     수원: '#8B5CF6', 광주: '#EF4444', 운정: '#06B6D4'
   };
+  // 매장 오픈일자 (정상 영업 시작일)
+  const STORE_OPEN = {
+    '하남': '2021-05-29', '가산': '2021-09-09', '다산': '2023-12-21',
+    '수원': '2024-01-24', '광주': '2024-03-21', '운정': '2025-12-03'
+  };
   App.STORES = STORES;
   App.COLORS = COLORS;
+  App.STORE_OPEN = STORE_OPEN;
 
   // ── 전역 상태 ─────────────────────────────────
   App.state = {
@@ -425,6 +431,7 @@
       el.style.color = COLORS[s];
       el.style.background = COLORS[s] + '22';
       el.dataset.store = s;
+      if (STORE_OPEN[s]) el.title = `오픈 ${STORE_OPEN[s]}`;
       el.addEventListener('click', () => {
         if (App.state.activeStores.has(s)) {
           App.state.activeStores.delete(s);

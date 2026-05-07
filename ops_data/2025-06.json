@@ -492,8 +492,8 @@
       "date": "2025-06-25",
       "target": null,
       "sales": 2904280,
-      "receipts": 7,
-      "per_receipt": 414897,
+      "receipts": null,
+      "per_receipt": null,
       "staff": null,
       "productivity": null
     },

@@ -231,40 +231,40 @@
       "sales": 6737400,
       "staff": 8,
       "productivity": 842175,
-      "receipts": 1,
-      "per_receipt": 6737400
+      "receipts": null,
+      "per_receipt": null
     },
     {
       "date": "2026-05-02",
       "sales": 6186000,
       "staff": 9,
       "productivity": 687333,
-      "receipts": 1,
-      "per_receipt": 6186000
+      "receipts": null,
+      "per_receipt": null
     },
     {
       "date": "2026-05-03",
       "sales": 6752300,
       "staff": 8,
       "productivity": 844037,
-      "receipts": 1,
-      "per_receipt": 6752300
+      "receipts": null,
+      "per_receipt": null
     },
     {
       "date": "2026-05-04",
       "sales": 4389700,
       "staff": 7,
       "productivity": 627100,
-      "receipts": 1,
-      "per_receipt": 4389700
+      "receipts": null,
+      "per_receipt": null
     },
     {
       "date": "2026-05-05",
       "staff": 8,
       "sales": 5293600,
       "productivity": 661700,
-      "receipts": 1,
-      "per_receipt": 5293600
+      "receipts": null,
+      "per_receipt": null
     },
     {
       "date": "2026-05-06",
