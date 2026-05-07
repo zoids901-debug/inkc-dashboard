@@ -390,6 +390,16 @@ allBtn.addEventListener('click', () => {
   render();
 });
 
+// 매장별 오픈일자 (정상 영업 시작일 기준)
+const STORE_OPEN = {
+  '하남': '2021-05-29',
+  '가산': '2021-09-09',
+  '다산': '2023-12-21',
+  '수원': '2024-01-24',
+  '광주': '2024-03-21',
+  '운정': '2025-12-03',
+};
+
 STORES.forEach(s => {
   const el = document.createElement('button');
   el.className = 'pill on';
@@ -397,6 +407,7 @@ STORES.forEach(s => {
   el.style.borderColor = COLORS[s];
   el.style.color = COLORS[s];
   el.dataset.store = s;
+  if (STORE_OPEN[s]) el.title = \`오픈 \${STORE_OPEN[s]}\`;
   el.addEventListener('click', ()=>{
     if (activeStores.has(s)) {
       activeStores.delete(s);
