@@ -1072,8 +1072,8 @@
       "date": "2026-04-29",
       "target": 2000000,
       "sales": 2147600,
-      "receipts": null,
-      "per_receipt": null,
+      "receipts": 1,
+      "per_receipt": 2147600,
       "staff": 6,
       "productivity": 357933
     },
@@ -1081,7 +1081,7 @@
       "date": "2026-04-30",
       "target": 2234100,
       "sales": null,
-      "receipts": null,
+      "receipts": 1,
       "per_receipt": null,
       "staff": 7,
       "productivity": null

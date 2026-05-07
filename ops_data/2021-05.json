@@ -256,27 +256,27 @@
       "date": "2021-05-29",
       "target": null,
       "sales": 1847700,
-      "receipts": null,
+      "receipts": 77,
       "staff": null,
-      "per_receipt": null,
+      "per_receipt": 23996,
       "productivity": null
     },
     {
       "date": "2021-05-30",
       "target": null,
-      "sales": 1292900,
-      "receipts": null,
+      "sales": 1284555,
+      "receipts": 73,
       "staff": null,
-      "per_receipt": null,
+      "per_receipt": 17596,
       "productivity": null
     },
     {
       "date": "2021-05-31",
       "target": null,
-      "sales": 743900,
-      "receipts": null,
+      "sales": 736455,
+      "receipts": 61,
       "staff": null,
-      "per_receipt": null,
+      "per_receipt": 12073,
       "productivity": null
     }
   ]
