@@ -26,6 +26,7 @@ function html(allData) {
 <title>인크커피 운영 대시보드</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F1F5F9;color:#1E293B;font-size:13px}
@@ -230,6 +231,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="store-pills" id="storePills">
     <button class="pill on" id="pillAll">전체</button>
   </div>
+
+  <button id="btnExcel" title="현재 기간/매장 기준 엑셀 다운로드"
+    style="margin-left:auto;border:1px solid #10B981;background:#10B981;color:#fff;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:5px">
+    <span>⬇</span><span>엑셀</span>
+  </button>
 </div>
 
 <div class="main" id="main">
@@ -492,6 +498,55 @@ const calcProductivity = entries => {
 
 // ── 차트 정리 ────────────────────────────────────────────────────────────────
 function dc(id) { if(charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+// ── 엑셀 다운로드 (현재 기간 + 활성 매장 기준) ──────────────────────────────
+function downloadExcel() {
+  const wb = XLSX.utils.book_new();
+  const stores = STORES.filter(s => activeStores.has(s));
+  const DOW2 = ['일','월','화','수','목','금','토'];
+  const rangeData = getRangeData(fpStart, fpEnd);
+
+  // 매장별 합계 시트
+  const sumRows = [['매장','매출일수','총매출','총영수','평균객단가','총목표','달성률(%)']];
+  stores.forEach(s => {
+    const entries = rangeData[s] || [];
+    const days = entries.filter(e => (e.sales||0) > 0).length;
+    const sales = entries.reduce((a,e)=>a+(e.sales||0),0);
+    const rec   = entries.reduce((a,e)=>a+(e.receipts||0),0);
+    const sgated = entries.reduce((a,e)=>a+((e.receipts||0)>0?(e.sales||0):0),0);
+    const target = entries.reduce((a,e)=>a+(e.target||0),0);
+    const per = rec>0 ? Math.floor(sgated/rec) : 0;
+    const ach = target>0 ? +(sales/target*100).toFixed(1) : null;
+    sumRows.push([s, days, sales, rec, per, target, ach]);
+  });
+  const wsSum = XLSX.utils.aoa_to_sheet(sumRows);
+  wsSum['!cols'] = [{wch:8},{wch:10},{wch:14},{wch:12},{wch:12},{wch:14},{wch:10}];
+  XLSX.utils.book_append_sheet(wb, wsSum, '합계');
+
+  // 매장별 일자 시트
+  stores.forEach(s => {
+    const entries = (rangeData[s] || []).slice().sort((a,b)=>a.date.localeCompare(b.date));
+    const rows = [['날짜','요일','매출','영수','객단가','목표','직원','생산량']];
+    entries.forEach(e => {
+      const dt = new Date(e.date+'T00:00:00');
+      rows.push([
+        e.date, DOW2[dt.getDay()],
+        e.sales ?? null, e.receipts ?? null, e.per_receipt ?? null,
+        e.target ?? null, e.staff ?? null, e.productivity ?? null
+      ]);
+    });
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols'] = [{wch:12},{wch:6},{wch:12},{wch:10},{wch:10},{wch:12},{wch:8},{wch:12}];
+    XLSX.utils.book_append_sheet(wb, ws, s);
+  });
+
+  const fname = \`인크커피_운영_\${fpStart}_\${fpEnd}.xlsx\`;
+  XLSX.writeFile(wb, fname);
+}
+setTimeout(() => {
+  const b = document.getElementById('btnExcel');
+  if (b && !b._bound) { b._bound = true; b.addEventListener('click', downloadExcel); }
+}, 50);
 
 // ── 메인 렌더 ────────────────────────────────────────────────────────────────
 function render() {
