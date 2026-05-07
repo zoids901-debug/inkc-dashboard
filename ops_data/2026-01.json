@@ -1290,8 +1290,8 @@
       "date": "2026-01-19",
       "target": 1652893,
       "sales": 194950,
-      "receipts": 1,
-      "per_receipt": 194950,
+      "receipts": null,
+      "per_receipt": null,
       "staff": 11,
       "productivity": 17723
     },
