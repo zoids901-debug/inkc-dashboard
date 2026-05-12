@@ -113,6 +113,12 @@
     tablin:  '.hdr',  // 테이블린 자체 타이틀("테이블린 운영 대시보드") 숨김 — 통합 탭 라벨로 충분
   };
 
+  // 탭별 추가 주입 CSS (헤더 숨김 후 레이아웃 보정 등)
+  const EXTRA_INJECT_CSS = {
+    // 테이블린 ctrl-bar는 sticky top:48px(없어진 .hdr 높이) → 0으로 보정해 빈 공간 제거
+    tablin: '.ctrl-bar { top: 0 !important; } body { margin-top: 0 !important; }',
+  };
+
   function injectFrameStyles(name, frame) {
     try {
       const doc = frame.contentDocument;
@@ -129,6 +135,7 @@
         ${sel} { display: none !important; }
         body { padding-top: 0 !important; }
         .wrap, .container, .main { padding-top: 12px !important; }
+        ${EXTRA_INJECT_CSS[name] || ''}
       `;
     } catch (e) {
       console.warn('[App] frame style inject failed:', e);
