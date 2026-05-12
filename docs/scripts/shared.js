@@ -334,8 +334,8 @@
       }
       else if (name === 'tablin') {
         const cw = frame.contentWindow;
-        // 테이블린 로딩(데이터 fetch) 완료 전이면 잠시 후 재시도
-        if (!cw || typeof cw.render !== 'function' || !cw.DATA || !cw.DATA.records) {
+        // 테이블린 로딩(data.json fetch) 완료 전이면 잠시 후 재시도 (DATA.records 가 채워졌는지로 판정)
+        if (!cw || typeof cw.render !== 'function' || !cw.DATA || !cw.DATA.records || !cw.DATA.records.length) {
           setTimeout(() => syncFrame(name, frame), 800);
           return;
         }
