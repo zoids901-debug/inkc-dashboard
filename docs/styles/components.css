@@ -109,8 +109,45 @@ body {
 .preset-btn.active { background: #3B82F6 !important; border-color: #3B82F6 !important; color: #fff !important; box-shadow: 0 2px 6px rgba(59,130,246,.35); font-weight: 700; }
 /* 어제·이번 주: 운영/상품에서 가능 (상품도 일 단위 모드 지원), 손익은 월만 */
 body[data-tab="pl"] .preset-btn.ops-only { display: none; }
-/* 최근 3·6개월은 운영 탭에선 숨김 (월 단위 분석은 상품·손익에서) */
-body[data-tab="ops"] .preset-btn.month-trend { display: none; }
+/* 최근 3·6개월: 운영 탭 전용 (상품·손익·테이블린에선 숨김) */
+body[data-tab="product"] .preset-btn.month-trend,
+body[data-tab="pl"] .preset-btn.month-trend,
+body[data-tab="tablin"] .preset-btn.month-trend { display: none; }
+
+/* 올해·작년 분기 드롭다운 */
+.preset-btn .q-caret { font-size: 9px; opacity: .7; margin-left: 1px; vertical-align: middle; }
+.preset-popup {
+  position: absolute;
+  z-index: 300;
+  background: #fff;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  box-shadow: 0 6px 22px rgba(0,0,0,.16);
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 120px;
+}
+.preset-popup[hidden] { display: none; }
+.preset-popup .q-opt {
+  border: none;
+  background: none;
+  text-align: left;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+}
+.preset-popup .q-opt:hover { background: #EFF6FF; color: #2563EB; }
+.preset-popup .q-opt.active { background: #3B82F6; color: #fff; }
+.preset-popup .q-opt:disabled { color: #CBD5E1; cursor: default; }
+.preset-popup .q-opt:disabled:hover { background: none; color: #CBD5E1; }
+.preset-popup .q-divider { height: 1px; background: #E2E8F0; margin: 3px 2px; }
 
 .date-range {
   display: flex;

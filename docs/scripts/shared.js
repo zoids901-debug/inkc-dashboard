@@ -84,15 +84,34 @@
         const y = now.getFullYear() - 1;
         start = new Date(y, 0, 1); end = new Date(y, 11, 31); break;
       }
-      default: return null;
+      default: {
+        // 분기: 'q1'~'q4' (올해), 'ly_q1'~'ly_q4' (작년)
+        const mTY = /^q([1-4])$/.exec(preset);
+        const mLY = /^ly_q([1-4])$/.exec(preset);
+        if (mTY || mLY) {
+          const q = parseInt((mTY || mLY)[1], 10);
+          const y = (mLY ? now.getFullYear() - 1 : now.getFullYear());
+          start = new Date(y, (q - 1) * 3, 1);
+          end = new Date(y, q * 3, 0);  // 분기 마지막 날
+          if (end > now) end = now;     // 미래 구간은 오늘까지로 절단
+          if (start > now) return null; // 아직 시작도 안 한 분기
+          break;
+        }
+        return null;
+      }
     }
     return { preset, start: toStr(start), end: toStr(end) };
   }
+  App.computePeriod = computePeriod;
 
   function setPeriod(period) {
     App.state.period = period;
     document.querySelectorAll('.preset-btn').forEach(b => {
-      b.classList.toggle('active', b.dataset.p === period.preset);
+      let on = b.dataset.p === period.preset;
+      // 분기 선택 시 해당 연도 버튼(올해/작년) 활성 유지
+      if (!on && b.dataset.p === 'ytd' && /^q[1-4]$/.test(period.preset)) on = true;
+      if (!on && b.dataset.p === 'last_year' && /^ly_q[1-4]$/.test(period.preset)) on = true;
+      b.classList.toggle('active', on);
     });
     const inp = document.getElementById('dateRangeInput');
     if (inp) inp.value = `${fmt(period.start)} ~ ${fmt(period.end)}`;
@@ -411,21 +430,66 @@
       if (t !== App.state.activeTab) showTab(t);
     });
 
+    // ── 분기 드롭다운 (올해/작년) ──────────────────
+    const popup = document.getElementById('presetPopup');
+    function applyPreset(presetKey) {
+      const p = computePeriod(presetKey);
+      if (!p) return;
+      App._programmaticPicker = true;
+      try { if (App.picker && App.picker.setDateRange) App.picker.setDateRange(p.start, p.end); }
+      finally { App._programmaticPicker = false; }
+      setPeriod(p);
+    }
+    function closeQuarterPopup() { if (popup) { popup.hidden = true; popup.innerHTML = ''; popup.dataset.base = ''; } }
+    function openQuarterPopup(btn, base) {
+      if (!popup) return;
+      const isLY = (base === 'last_year');
+      const yearLabel = isLY ? '작년' : '올해';
+      const wholeKey = base; // 'ytd' or 'last_year'
+      const qKey = (q) => isLY ? `ly_q${q}` : `q${q}`;
+      const cur = App.state.period?.preset;
+      const now = new Date();
+      popup.innerHTML = '';
+      popup.dataset.base = base;
+      const mkOpt = (key, text, disabled) => {
+        const b = document.createElement('button');
+        b.className = 'q-opt' + (cur === key ? ' active' : '');
+        b.textContent = text;
+        if (disabled) b.disabled = true;
+        else b.addEventListener('click', () => { applyPreset(key); closeQuarterPopup(); });
+        return b;
+      };
+      popup.appendChild(mkOpt(wholeKey, `${yearLabel} 전체`));
+      const div = document.createElement('div'); div.className = 'q-divider'; popup.appendChild(div);
+      for (let q = 1; q <= 4; q++) {
+        // 올해의 미래 분기(아직 시작 안 함)는 비활성
+        const qStartDate = new Date((isLY ? now.getFullYear() - 1 : now.getFullYear()), (q - 1) * 3, 1);
+        const disabled = !isLY && qStartDate > now;
+        popup.appendChild(mkOpt(qKey(q), `${q}분기 (${q*3-2}~${q*3}월)`, disabled));
+      }
+      // 위치: 버튼 아래
+      const r = btn.getBoundingClientRect();
+      popup.hidden = false;
+      popup.style.left = (window.scrollX + r.left) + 'px';
+      popup.style.top  = (window.scrollY + r.bottom + 4) + 'px';
+    }
+    document.addEventListener('click', (e) => {
+      if (popup && !popup.hidden && !popup.contains(e.target) && !e.target.closest('.preset-btn.has-quarter')) closeQuarterPopup();
+    });
+
     // 프리셋 버튼
     document.querySelectorAll('.preset-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        const p = computePeriod(btn.dataset.p);
+        const key = btn.dataset.p;
+        const p = computePeriod(key);
         if (!p) return;
-        // picker.setDateRange가 selected 이벤트 발화 시 무시하도록 플래그
         App._programmaticPicker = true;
-        try {
-          if (App.picker && App.picker.setDateRange) {
-            App.picker.setDateRange(p.start, p.end);
-          }
-        } finally {
-          App._programmaticPicker = false;
-        }
+        try { if (App.picker && App.picker.setDateRange) App.picker.setDateRange(p.start, p.end); }
+        finally { App._programmaticPicker = false; }
         setPeriod(p);
+        // 올해/작년 → 분기 드롭다운 열기 (전체 기간으로 설정 + 분기 선택지 제공)
+        if (btn.classList.contains('has-quarter')) openQuarterPopup(btn, key);
+        else closeQuarterPopup();
       });
     });
 
