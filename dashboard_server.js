@@ -174,6 +174,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .ach-g{background:#DCFCE7;color:#15803D}
 .ach-y{background:#FEF9C3;color:#92400E}
 .ach-r{background:#FEE2E2;color:#B91C1C}
+.warn-flag{display:inline-block;margin-left:4px;color:#D97706;cursor:help;font-size:11px;font-weight:700;vertical-align:middle}
+.tmode-wrap{display:inline-flex;border:1px solid #CBD5E1;border-radius:6px;overflow:hidden}
+.tmode-btn{padding:3px 9px;background:#fff;color:#64748B;border:none;cursor:pointer;font-weight:600;font-size:11px;white-space:nowrap}
+.tmode-btn.active{background:#3B82F6;color:#fff}
+.tmode-btn+.tmode-btn{border-left:1px solid #CBD5E1}
+.range-note{font-size:10px;color:#94A3B8;font-weight:600;margin-left:4px}
 
 /* ── 차트 ── */
 .chart-wrap{position:relative}
@@ -354,6 +360,38 @@ function getMonthlyTargets(start, end) {
     ym = m === 12 ? (y+1)+'-01' : y+'-'+String(m+1).padStart(2,'0');
   }
   return res;
+}
+
+// 목표 표시 기준: 'month' = 월 전체 목표 / 'range' = 선택 기간 목표
+let TARGET_MODE = 'month';
+function setTargetMode(m){ if (m===TARGET_MODE) return; TARGET_MODE = m; render(); }
+
+// 선택 범위 [start,end]가 (한 개 이상의) 달 전체를 정확히 덮는지
+function isFullMonthRange(start, end){
+  if (start.slice(8) !== '01') return false;
+  const [ey, em] = end.split('-').map(Number);
+  return +end.slice(8) === new Date(ey, em, 0).getDate();
+}
+
+// 한 매장의 선택 범위 내 목표/실매출 일자 정합성
+//   rows = ad[s] (이미 선택 범위로 필터된 해당 매장 행들)
+function targetCoverage(rows, fullMonth){
+  const td = today();
+  let salesDays=0, targetDays=0, salesNoTarget=0, pastTargetNoSales=0;
+  const rangeTarget = (rows||[]).reduce((a,d)=>a+(d.target||0),0);
+  (rows||[]).forEach(d=>{
+    const hasS = d.sales!=null, hasT = d.target!=null;
+    if (hasS) salesDays++;
+    if (hasT) targetDays++;
+    if (hasS && !hasT) salesNoTarget++;          // 실매출 있는데 목표 없음 → 달성률 과대
+    if (hasT && !hasS && d.date <= td) pastTargetNoSales++; // 지난 날인데 실매출 누락 의심
+  });
+  // 경고: 목표/실매출 일자 자체가 어긋날 때만 (부분기간 표시는 별도 안내)
+  const mismatch = salesNoTarget>0 || pastTargetNoSales>0;
+  let title = '';
+  if (salesNoTarget>0)     title += \`실매출 \${salesNoTarget}일에 목표 없음(달성률 과대) \`;
+  if (pastTargetNoSales>0) title += \`목표는 있으나 실매출 누락 \${pastTargetNoSales}일 \`;
+  return { salesDays, targetDays, salesNoTarget, pastTargetNoSales, rangeTarget, mismatch, title: title.trim() };
 }
 
 // 날짜 목록
@@ -594,7 +632,16 @@ function render() {
 // ── 1. 페이스 카드 ────────────────────────────────────────────────────────────
 function renderPace(ad, yad, start, end, stores, monthlyTargets) {
   const totalSales   = sum(ad,'sales');
-  const totalTarget  = Object.values(monthlyTargets).reduce((a,v)=>a+v,0);
+  const fullMonth    = isFullMonthRange(start, end);
+  const totalTarget  = TARGET_MODE==='range'
+    ? sum(ad,'target')
+    : Object.values(monthlyTargets).reduce((a,v)=>a+v,0);
+  // 목표/실매출 일자 불일치 매장 안내
+  const badStores = stores.filter(s => targetCoverage(ad[s]||[], fullMonth).mismatch);
+  const targetNote = (TARGET_MODE==='month' && !fullMonth) ? ' <span class="range-note">(월 전체)</span>' : '';
+  const targetFlag = badStores.length
+    ? \` <span class="warn-flag" title="목표/실매출 일자 불일치: \${badStores.map(s=>s+'점').join(', ')} — 매장별 실적 표 ⚠ 참고">⚠</span>\`
+    : '';
   const totalReceipts= sum(ad,'receipts');
 
   const salesDays = [...new Set(Object.values(ad).flat().filter(d=>d.sales!=null).map(d=>d.date))].length;
@@ -672,8 +719,8 @@ function renderPace(ad, yad, start, end, stores, monthlyTargets) {
     <div class="pace-card">
       <div class="pace-item">
         <div class="lbl">목표 달성률</div>
-        <div class="val" style="color:\${fillColor}">\${achRate!=null?achRate+'%':'-'}</div>
-        <div class="sub">목표 \${kor(totalTarget)}</div>
+        <div class="val" style="color:\${fillColor}">\${achRate!=null?achRate+'%':'-'}\${targetFlag}</div>
+        <div class="sub">목표 \${kor(totalTarget)}\${targetNote}</div>
         \${yoyHtml(yoyAch, 'p')}
         <div class="progress"><div class="progress-fill" style="width:\${Math.min(achRate||0,100)}%;background:\${fillColor}"></div></div>
       </div>
@@ -707,11 +754,13 @@ function renderPace(ad, yad, start, end, stores, monthlyTargets) {
 // ── 2. 순위 테이블 ────────────────────────────────────────────────────────────
 function renderRank(ad, yad, stores, monthlyTargets) {
   const el = document.getElementById('sec-rank');
-  el.innerHTML = '<div class="card-title">매장별 실적</div>';
+  const fullMonth = isFullMonthRange(fpStart, fpEnd);
+  const modeLabel = TARGET_MODE==='range' ? '선택 기간 목표' : '월 전체 목표';
 
   const rows = stores.map(s => {
     const sales     = storeSum(ad, s, 'sales');
-    const target    = monthlyTargets[s] || 0;
+    const cov       = targetCoverage(ad[s]||[], fullMonth);
+    const target    = TARGET_MODE==='range' ? cov.rangeTarget : (monthlyTargets[s] || 0);
     const receipts  = storeSum(ad, s, 'receipts');
     const ySales    = storeSum(yad, s, 'sales');
     const yReceipts = storeSum(yad, s, 'receipts');
@@ -719,32 +768,43 @@ function renderRank(ad, yad, stores, monthlyTargets) {
     const perRec = receipts>0 ? Math.floor(sales/receipts) : null;
     const achR      = pct(sales, target);
     const yoyPct    = ySales>0 ? (sales-ySales)/ySales*100 : null;
-    return { s, sales, target, receipts, ySales, yReceipts, prod, perRec, achR, yoyPct };
+    return { s, sales, target, receipts, ySales, yReceipts, prod, perRec, achR, yoyPct, cov };
   }).sort((a,b)=>b.sales-a.sales);
 
   const tbody = rows.map((r,i)=>{
     const achClass = r.achR==null?'':r.achR>=100?'ach-g':r.achR>=85?'ach-y':'ach-r';
     const ySign    = r.yoyPct==null?'':r.yoyPct>=0?'delta up':'delta dn';
     const noSales  = r.sales===0;
+    const flag     = r.cov.mismatch ? \`<span class="warn-flag" title="\${r.cov.title} — 달성률 참고용">⚠</span>\` : '';
     return \`<tr style="\${noSales?'opacity:.4':''}">
       <td>\${i+1}</td>
       <td><span class="store-dot" style="background:\${COLORS[r.s]}"></span>\${r.s}점</td>
-      <td>\${w(r.target)}</td>
+      <td>\${w(r.target)}\${flag}</td>
       <td>\${w(r.sales)}\${r.yoyPct!=null?'<span class="'+ySign+'">'+pctSign(r.yoyPct)+'</span>':''}</td>
-      <td>\${r.achR!=null?'<span class="ach-chip '+achClass+'">'+r.achR+'%</span>':'-'}</td>
+      <td>\${r.achR!=null?'<span class="ach-chip '+achClass+'">'+r.achR+'%</span>'+flag:'-'}</td>
       <td>\${n0(r.receipts)}</td>
       <td>\${r.perRec?r.perRec.toLocaleString()+'원':'-'}</td>
       <td>\${r.prod?_fmt(r.prod/1e4,'만원'):'-'}</td>
     </tr>\`;
   }).join('');
 
-  el.innerHTML += \`<table class="rank-table">
-    <thead><tr>
-      <th>#</th><th>매장</th><th>목표</th><th>실매출</th><th>달성%</th>
-      <th>영수</th><th>객단가</th><th>인당생산량</th>
-    </tr></thead>
-    <tbody>\${tbody}</tbody>
-  </table>\`;
+  el.innerHTML = \`
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+      <div class="card-title" style="margin:0">매장별 실적
+        \${!fullMonth ? '<span class="range-note">· 부분 기간 ('+modeLabel+')</span>' : ''}
+      </div>
+      <div class="tmode-wrap" title="목표 표시 기준: 월 전체 = 선택 범위가 걸친 달의 전체 목표 / 선택 기간 = 선택한 날짜 범위의 목표만 합산">
+        <button class="tmode-btn \${TARGET_MODE==='month'?'active':''}" onclick="setTargetMode('month')">월 전체 목표</button>
+        <button class="tmode-btn \${TARGET_MODE==='range'?'active':''}" onclick="setTargetMode('range')">선택 기간 목표</button>
+      </div>
+    </div>
+    <table class="rank-table">
+      <thead><tr>
+        <th>#</th><th>매장</th><th>목표</th><th>실매출</th><th>달성%</th>
+        <th>영수</th><th>객단가</th><th>인당생산량</th>
+      </tr></thead>
+      <tbody>\${tbody}</tbody>
+    </table>\`;
 }
 
 // ── 3. 매출 비중 도넛 ─────────────────────────────────────────────────────────
