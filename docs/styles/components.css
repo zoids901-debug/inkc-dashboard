@@ -134,7 +134,7 @@ body[data-tab="tablin"] .preset-btn.month-trend { display: none; }
   border: none;
   background: none;
   text-align: left;
-  padding: 6px 10px;
+  padding: 6px 10px 6px 24px;
   font-size: 12px;
   font-weight: 600;
   color: #475569;
@@ -142,12 +142,19 @@ body[data-tab="tablin"] .preset-btn.month-trend { display: none; }
   cursor: pointer;
   font-family: inherit;
   white-space: nowrap;
+  position: relative;
 }
+.preset-popup .q-opt::before { content: '✓'; position: absolute; left: 8px; opacity: 0; font-size: 11px; }
+.preset-popup .q-opt.on::before { opacity: 1; color: #2563EB; }
+.preset-popup .q-opt.on { color: #2563EB; }
 .preset-popup .q-opt:hover { background: #EFF6FF; color: #2563EB; }
 .preset-popup .q-opt.active { background: #3B82F6; color: #fff; }
 .preset-popup .q-opt:disabled { color: #CBD5E1; cursor: default; }
 .preset-popup .q-opt:disabled:hover { background: none; color: #CBD5E1; }
 .preset-popup .q-divider { height: 1px; background: #E2E8F0; margin: 3px 2px; }
+/* 손익 브랜드 그룹 pill */
+.pill.brand-pill.partial { font-style: normal; }
+.pill .brand-cnt { font-size: 9px; opacity: .75; margin-left: 1px; vertical-align: middle; }
 
 .date-range {
   display: flex;
