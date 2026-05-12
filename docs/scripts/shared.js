@@ -8,17 +8,24 @@
     M: (n) => (n == null ? '-' : (Math.round(n / 1e4) / 100).toLocaleString('ko-KR') + 'M'),
   };
 
-  // ── 매장 정의 (운영 대시보드와 동일 순서/색) ─────
-  const STORES = ['하남','다산','가산','수원','광주','운정'];
-  const COLORS = {
-    하남: '#3B82F6', 다산: '#10B981', 가산: '#F59E0B',
-    수원: '#8B5CF6', 광주: '#EF4444', 운정: '#06B6D4'
+  // ── 매장 정의 (탭 그룹별로 다름) ─────
+  const STORE_SETS = {
+    inkc: {  // 운영/상품/손익 탭 공용
+      stores: ['하남','다산','가산','수원','광주','운정'],
+      colors: { 하남:'#3B82F6', 다산:'#10B981', 가산:'#F59E0B', 수원:'#8B5CF6', 광주:'#EF4444', 운정:'#06B6D4' },
+      open:   { '하남':'2021-05-29','가산':'2021-09-09','다산':'2023-12-21','수원':'2024-01-24','광주':'2024-03-21','운정':'2025-12-03' },
+    },
+    tablin: {  // 테이블린 탭
+      stores: ['다산점','하남점','운정점'],
+      colors: { '다산점':'#3B82F6','하남점':'#10B981','운정점':'#F59E0B' },
+      open:   {},
+    },
   };
-  // 매장 오픈일자 (정상 영업 시작일)
-  const STORE_OPEN = {
-    '하남': '2021-05-29', '가산': '2021-09-09', '다산': '2023-12-21',
-    '수원': '2024-01-24', '광주': '2024-03-21', '운정': '2025-12-03'
-  };
+  // 현재 탭에 맞는 매장 셋 (showTab → App.setStoreSetForTab 에서 갱신)
+  let STORES = STORE_SETS.inkc.stores;
+  let COLORS = STORE_SETS.inkc.colors;
+  let STORE_OPEN = STORE_SETS.inkc.open;
+  App.STORE_SETS = STORE_SETS;
   App.STORES = STORES;
   App.COLORS = COLORS;
   App.STORE_OPEN = STORE_OPEN;
@@ -26,9 +33,13 @@
   // ── 전역 상태 ─────────────────────────────────
   App.state = {
     period: { preset: 'mtd', start: null, end: null },
-    activeStores: new Set(STORES),
+    activeStores: new Set(STORE_SETS.inkc.stores),    // 인크 탭(운영/상품/손익)용
+    tablinStores: new Set(STORE_SETS.tablin.stores),  // 테이블린 탭용
     activeTab: null,
   };
+  // 현재 탭의 활성 매장 Set
+  const curStoreSet = () => (App.state.activeTab === 'tablin' ? App.state.tablinStores : App.state.activeStores);
+  App.curStoreSet = curStoreSet;
   App.events = new EventTarget();
 
   // ── 날짜 유틸 ─────────────────────────────────
@@ -198,9 +209,6 @@
     '하남':'미사점','가산':'가산점','다산':'다산점',
     '수원':'수원점','광주':'광주점','운정':'운정점',
   };
-  // 부모 표준명 → 테이블린 지점명 (테이블린엔 다산·하남·운정 3개만 — 나머지는 무시)
-  const TABLIN_STORE_MAP = { '하남':'하남점', '다산':'다산점', '운정':'운정점' };
-  const TABLIN_STORES_ALL = ['다산점', '하남점', '운정점'];
 
   // ── iframe 동기화 (탭별 다른 필터 메커니즘 처리) ──────
   function syncFrame(name, frame) {
@@ -209,9 +217,10 @@
     const doc = frame.contentDocument;
     if (!doc) return;
 
-    // 매장 상태
-    const stores = [...App.state.activeStores];
-    const isAllStores = stores.length === STORES.length;
+    // 매장 상태 — 프레임(탭)별 셋이 다름 (인크 6개 vs 테이블린 3개)
+    const isTablin = (name === 'tablin');
+    const stores = [...(isTablin ? App.state.tablinStores : App.state.activeStores)];
+    const isAllStores = stores.length === (isTablin ? STORE_SETS.tablin.stores : STORE_SETS.inkc.stores).length;
 
     try {
       if (name === 'product') {
@@ -330,9 +339,8 @@
           setTimeout(() => syncFrame(name, frame), 800);
           return;
         }
-        // 부모 매장 선택 → 테이블린 지점명으로 매핑 (없으면 전체)
-        let tStores = stores.map(s => TABLIN_STORE_MAP[s]).filter(Boolean);
-        if (!tStores.length) tStores = TABLIN_STORES_ALL.slice();
+        // stores 는 이미 테이블린 지점명(다산점/하남점/운정점). 비면 전체.
+        const tStores = stores.length ? stores : STORE_SETS.tablin.stores.slice();
         runInFrame(frame, `
           try {
             fpStart = '${period.start}'; fpEnd = '${period.end}';
@@ -357,6 +365,7 @@
   function showTab(name) {
     if (!TABS.includes(name)) name = 'ops';
     App.state.activeTab = name;
+    if (App.setStoreSetForTab) App.setStoreSetForTab(name);  // 인크 ↔ 테이블린 매장 pill 교체
     document.body.dataset.tab = name;  // CSS에서 일 단위 프리셋 숨김에 활용
     document.querySelectorAll('.hdr-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
     document.querySelectorAll('.tab-panel').forEach(p => {
@@ -529,58 +538,65 @@
     const allBtn = document.getElementById('pillAll');
 
     function updateAllBtn() {
-      const allOn = STORES.every(s => App.state.activeStores.has(s));
+      const set = curStoreSet();
+      const allOn = STORES.every(s => set.has(s));
       allBtn.classList.toggle('on', allOn);
       allBtn.style.background = allOn ? '#1E293B' : '';
       allBtn.style.borderColor = '#1E293B';
       allBtn.style.color = allOn ? '#fff' : '#1E293B';
     }
     allBtn.addEventListener('click', () => {
-      const allOn = STORES.every(s => App.state.activeStores.has(s));
+      const set = curStoreSet();
+      const allOn = STORES.every(s => set.has(s));
       if (allOn) {
-        App.state.activeStores.clear();
-        document.querySelectorAll('.pill[data-store]').forEach(el => {
-          el.classList.remove('on');
-          el.style.background = '';
-        });
+        set.clear();
+        pillsEl.querySelectorAll('.pill[data-store]').forEach(el => { el.classList.remove('on'); el.style.background = ''; });
       } else {
-        STORES.forEach(s => App.state.activeStores.add(s));
-        document.querySelectorAll('.pill[data-store]').forEach(el => {
-          el.classList.add('on');
-          el.style.background = COLORS[el.dataset.store] + '22';
-        });
+        STORES.forEach(s => set.add(s));
+        pillsEl.querySelectorAll('.pill[data-store]').forEach(el => { el.classList.add('on'); el.style.background = COLORS[el.dataset.store] + '22'; });
       }
       updateAllBtn();
-      App.events.dispatchEvent(new CustomEvent('stores', { detail: [...App.state.activeStores] }));
+      App.events.dispatchEvent(new CustomEvent('stores', { detail: [...set] }));
       syncAllFrames();
     });
 
-    STORES.forEach(s => {
-      const el = document.createElement('button');
-      el.className = 'pill on';
-      el.innerHTML = `<span class="store-dot" style="background:${COLORS[s]}"></span>${s}`;
-      el.style.borderColor = COLORS[s];
-      el.style.color = COLORS[s];
-      el.style.background = COLORS[s] + '22';
-      el.dataset.store = s;
-      if (STORE_OPEN[s]) el.title = `오픈 ${STORE_OPEN[s]}`;
-      el.addEventListener('click', () => {
-        if (App.state.activeStores.has(s)) {
-          App.state.activeStores.delete(s);
-          el.classList.remove('on');
-          el.style.background = '';
-        } else {
-          App.state.activeStores.add(s);
-          el.classList.add('on');
-          el.style.background = COLORS[s] + '22';
-        }
-        updateAllBtn();
-        App.events.dispatchEvent(new CustomEvent('stores', { detail: [...App.state.activeStores] }));
-      syncAllFrames();
+    // 현재 매장 셋(STORES/COLORS)에 맞춰 pill 다시 그림
+    function buildPills() {
+      pillsEl.querySelectorAll('.pill[data-store]').forEach(el => el.remove());
+      const set = curStoreSet();
+      STORES.forEach(s => {
+        const on = set.has(s);
+        const el = document.createElement('button');
+        el.className = 'pill' + (on ? ' on' : '');
+        el.innerHTML = `<span class="store-dot" style="background:${COLORS[s]}"></span>${s}`;
+        el.style.borderColor = COLORS[s];
+        el.style.color = COLORS[s];
+        el.style.background = on ? COLORS[s] + '22' : '';
+        el.dataset.store = s;
+        if (STORE_OPEN[s]) el.title = `오픈 ${STORE_OPEN[s]}`;
+        el.addEventListener('click', () => {
+          const cs = curStoreSet();
+          if (cs.has(s)) { cs.delete(s); el.classList.remove('on'); el.style.background = ''; }
+          else { cs.add(s); el.classList.add('on'); el.style.background = COLORS[s] + '22'; }
+          updateAllBtn();
+          App.events.dispatchEvent(new CustomEvent('stores', { detail: [...cs] }));
+          syncAllFrames();
+        });
+        pillsEl.appendChild(el);
       });
-      pillsEl.appendChild(el);
-    });
+    }
+    buildPills();
     updateAllBtn();
+
+    // 탭 그룹 전환 시 매장 셋 교체 (인크 ↔ 테이블린)
+    App.setStoreSetForTab = (tab) => {
+      const want = (tab === 'tablin') ? STORE_SETS.tablin : STORE_SETS.inkc;
+      if (STORES === want.stores) return;  // 이미 해당 셋
+      STORES = want.stores; COLORS = want.colors; STORE_OPEN = want.open;
+      App.STORES = STORES; App.COLORS = COLORS; App.STORE_OPEN = STORE_OPEN;
+      buildPills();
+      updateAllBtn();
+    };
 
     // Litepicker
     if (window.Litepicker) {
