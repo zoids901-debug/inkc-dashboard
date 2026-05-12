@@ -311,19 +311,16 @@
         `);
       }
       else if (name === 'pl') {
-        // PL 형식: selYears = Set('YYYY'), selMonths = Set('M월') (비우면 전체)
-        const years = new Set();
-        let [y, m] = period.start.slice(0, 7).split('-').map(Number);
-        const [endY, endM] = period.end.slice(0, 7).split('-').map(Number);
-        while (y < endY || (y === endY && m <= endM)) {
-          years.add(String(y));
-          m++; if (m > 12) { m = 1; y++; }
-        }
-        const yearArr = [...years];
-        // 손익 매장 선택 — App.state.plStores 는 이미 PL 매장명(미사점·테이블린하남·CGV·본사 등)
+        // PL 형식: selYears = Set('YYYY'), selMonths = Set('M월') (비우면 전체 월)
+        const [sY, sM] = period.start.slice(0, 7).split('-').map(Number);
+        const [eY, eM] = period.end.slice(0, 7).split('-').map(Number);
+        const yearArr = []; for (let y = sY; y <= eY; y++) yearArr.push(String(y));
+        // 같은 해 안의 범위면 그 월들을 push → 분기/월 프리셋이 PL에도 먹힘.
+        // 여러 해에 걸치면 selMonths 비움(전체 월) — 연도×월 교차 오선택 방지.
+        let monthArr = [];
+        if (sY === eY) for (let mo = sM; mo <= eM; mo++) monthArr.push(mo + '월');
         const plStores = [...App.state.plStores];
         const isAllPL = plStores.length === PL_ALL_STORES.length;
-        // selMonths는 비움 — unified의 기간 필터가 이미 시각화되므로 PL 내부 월 dim 불필요
         runInFrame(frame, `
           try {
             if (typeof selYears !== 'undefined') {
@@ -332,6 +329,7 @@
             }
             if (typeof selMonths !== 'undefined') {
               selMonths.clear();
+              ${JSON.stringify(monthArr)}.forEach(m => selMonths.add(m));
             }
             if (typeof selStores !== 'undefined') {
               selStores.clear();
