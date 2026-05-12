@@ -467,15 +467,28 @@
         const disabled = !isLY && qStartDate > now;
         popup.appendChild(mkOpt(qKey(q), `${q}분기 (${q*3-2}~${q*3}월)`, disabled));
       }
-      // 위치: 버튼 아래
-      const r = btn.getBoundingClientRect();
+      // 위치: 버튼 바로 아래 (fixed → 뷰포트 기준)
       popup.hidden = false;
-      popup.style.left = (window.scrollX + r.left) + 'px';
-      popup.style.top  = (window.scrollY + r.bottom + 4) + 'px';
+      const r = btn.getBoundingClientRect();
+      popup.style.left = Math.round(r.left) + 'px';
+      popup.style.top  = Math.round(r.bottom + 4) + 'px';
     }
     document.addEventListener('click', (e) => {
       if (popup && !popup.hidden && !popup.contains(e.target) && !e.target.closest('.preset-btn.has-quarter')) closeQuarterPopup();
     });
+
+    // 올해/작년 버튼에 마우스 올리면 분기 팝업 (버튼↔팝업 사이 이동 시 닫히지 않게 딜레이)
+    let _qTimer = null;
+    const _qClear = () => { if (_qTimer) { clearTimeout(_qTimer); _qTimer = null; } };
+    const _qCloseSoon = () => { _qClear(); _qTimer = setTimeout(closeQuarterPopup, 220); };
+    document.querySelectorAll('.preset-btn.has-quarter').forEach(b => {
+      b.addEventListener('mouseenter', () => { _qClear(); openQuarterPopup(b, b.dataset.p); });
+      b.addEventListener('mouseleave', _qCloseSoon);
+    });
+    if (popup) {
+      popup.addEventListener('mouseenter', _qClear);
+      popup.addEventListener('mouseleave', _qCloseSoon);
+    }
 
     // 프리셋 버튼
     document.querySelectorAll('.preset-btn').forEach(btn => {
