@@ -21,6 +21,17 @@
       open:   {},
     },
   };
+  // 손익 탭은 브랜드 그룹 pill — 브랜드 → PL 매장명 (새 매장 추가 시 여기 갱신)
+  const PL_BRANDS = {
+    '인크':     ['미사점','가산점','가산팩토리','다산점','수원점','광주점','운정점'],
+    '테이블린': ['테이블린하남','테이블린다산','테이블린운정'],
+    '극장':     ['롯데시네마 하남점','CGV'],
+    '본사':     ['본사'],
+  };
+  const PL_BRAND_COLOR = { '인크':'#8B5CF6', '테이블린':'#EF4444', '극장':'#3B82F6', '본사':'#64748B' };
+  const PL_ALL_STORES = Object.values(PL_BRANDS).flat();
+  App.PL_BRANDS = PL_BRANDS;
+
   // 현재 탭에 맞는 매장 셋 (showTab → App.setStoreSetForTab 에서 갱신)
   let STORES = STORE_SETS.inkc.stores;
   let COLORS = STORE_SETS.inkc.colors;
@@ -33,12 +44,17 @@
   // ── 전역 상태 ─────────────────────────────────
   App.state = {
     period: { preset: 'mtd', start: null, end: null },
-    activeStores: new Set(STORE_SETS.inkc.stores),    // 인크 탭(운영/상품/손익)용
+    activeStores: new Set(STORE_SETS.inkc.stores),    // 운영/상품 탭용 (인크 6개)
     tablinStores: new Set(STORE_SETS.tablin.stores),  // 테이블린 탭용
+    plStores: new Set(PL_ALL_STORES),                 // 손익 탭용 (브랜드 그룹, PL 매장명)
     activeTab: null,
   };
   // 현재 탭의 활성 매장 Set
-  const curStoreSet = () => (App.state.activeTab === 'tablin' ? App.state.tablinStores : App.state.activeStores);
+  const curStoreSet = () => (
+    App.state.activeTab === 'tablin' ? App.state.tablinStores :
+    App.state.activeTab === 'pl'     ? App.state.plStores :
+    App.state.activeStores
+  );
   App.curStoreSet = curStoreSet;
   App.events = new EventTarget();
 
@@ -204,11 +220,6 @@
     }
   }
 
-  // 매장명 매핑 (부모 표준명 → pl 표시명)
-  const PL_STORE_MAP = {
-    '하남':'미사점','가산':'가산점','다산':'다산점',
-    '수원':'수원점','광주':'광주점','운정':'운정점',
-  };
 
   // ── iframe 동기화 (탭별 다른 필터 메커니즘 처리) ──────
   function syncFrame(name, frame) {
@@ -309,8 +320,9 @@
           m++; if (m > 12) { m = 1; y++; }
         }
         const yearArr = [...years];
-        // 매장명 변환 (하남 → 미사점 등)
-        const plStores = stores.map(s => PL_STORE_MAP[s]).filter(Boolean);
+        // 손익 매장 선택 — App.state.plStores 는 이미 PL 매장명(미사점·테이블린하남·CGV·본사 등)
+        const plStores = [...App.state.plStores];
+        const isAllPL = plStores.length === PL_ALL_STORES.length;
         // selMonths는 비움 — unified의 기간 필터가 이미 시각화되므로 PL 내부 월 dim 불필요
         runInFrame(frame, `
           try {
@@ -323,7 +335,7 @@
             }
             if (typeof selStores !== 'undefined') {
               selStores.clear();
-              ${isAllStores ? '' : `${JSON.stringify(plStores)}.forEach(s => selStores.add(s));`}
+              ${isAllPL ? '' : `${JSON.stringify(plStores)}.forEach(s => selStores.add(s));`}
             }
             if (typeof buildYearChecks === 'function') buildYearChecks();
             if (typeof buildMonthChecks === 'function') buildMonthChecks();
@@ -501,7 +513,7 @@
       popup.style.top  = Math.round(r.bottom + 4) + 'px';
     }
     document.addEventListener('click', (e) => {
-      if (popup && !popup.hidden && !popup.contains(e.target) && !e.target.closest('.preset-btn.has-quarter')) closeQuarterPopup();
+      if (popup && !popup.hidden && !popup.contains(e.target) && !e.target.closest('.preset-btn.has-quarter, .pill.brand-pill')) closeQuarterPopup();
     });
 
     // 올해/작년 버튼에 마우스 올리면 분기 팝업 (버튼↔팝업 사이 이동 시 닫히지 않게 딜레이)
@@ -537,9 +549,14 @@
     const pillsEl = document.getElementById('storePills');
     const allBtn = document.getElementById('pillAll');
 
+    function emitStores(set) {
+      App.events.dispatchEvent(new CustomEvent('stores', { detail: [...set] }));
+      syncAllFrames();
+    }
     function updateAllBtn() {
       const set = curStoreSet();
-      const allOn = STORES.every(s => set.has(s));
+      const ref = (App.state.activeTab === 'pl') ? PL_ALL_STORES : STORES;
+      const allOn = ref.every(s => set.has(s));
       allBtn.classList.toggle('on', allOn);
       allBtn.style.background = allOn ? '#1E293B' : '';
       allBtn.style.borderColor = '#1E293B';
@@ -547,22 +564,13 @@
     }
     allBtn.addEventListener('click', () => {
       const set = curStoreSet();
-      const allOn = STORES.every(s => set.has(s));
-      if (allOn) {
-        set.clear();
-        pillsEl.querySelectorAll('.pill[data-store]').forEach(el => { el.classList.remove('on'); el.style.background = ''; });
-      } else {
-        STORES.forEach(s => set.add(s));
-        pillsEl.querySelectorAll('.pill[data-store]').forEach(el => { el.classList.add('on'); el.style.background = COLORS[el.dataset.store] + '22'; });
-      }
-      updateAllBtn();
-      App.events.dispatchEvent(new CustomEvent('stores', { detail: [...set] }));
-      syncAllFrames();
+      const ref = (App.state.activeTab === 'pl') ? PL_ALL_STORES : STORES;
+      if (ref.every(s => set.has(s))) set.clear(); else ref.forEach(s => set.add(s));
+      buildPills(); updateAllBtn(); emitStores(set);
     });
 
-    // 현재 매장 셋(STORES/COLORS)에 맞춰 pill 다시 그림
-    function buildPills() {
-      pillsEl.querySelectorAll('.pill[data-store]').forEach(el => el.remove());
+    // ── flat pill (운영/상품/테이블린): 매장 1개당 1개 ──
+    function buildFlatPills() {
       const set = curStoreSet();
       STORES.forEach(s => {
         const on = set.has(s);
@@ -570,30 +578,89 @@
         el.className = 'pill' + (on ? ' on' : '');
         el.innerHTML = `<span class="store-dot" style="background:${COLORS[s]}"></span>${s}`;
         el.style.borderColor = COLORS[s];
-        el.style.color = COLORS[s];
+        el.style.color = on ? COLORS[s] : '#94A3B8';
         el.style.background = on ? COLORS[s] + '22' : '';
         el.dataset.store = s;
         if (STORE_OPEN[s]) el.title = `오픈 ${STORE_OPEN[s]}`;
         el.addEventListener('click', () => {
           const cs = curStoreSet();
-          if (cs.has(s)) { cs.delete(s); el.classList.remove('on'); el.style.background = ''; }
-          else { cs.add(s); el.classList.add('on'); el.style.background = COLORS[s] + '22'; }
-          updateAllBtn();
-          App.events.dispatchEvent(new CustomEvent('stores', { detail: [...cs] }));
-          syncAllFrames();
+          if (cs.has(s)) cs.delete(s); else cs.add(s);
+          buildPills(); updateAllBtn(); emitStores(cs);
         });
         pillsEl.appendChild(el);
       });
     }
+
+    // ── 브랜드 그룹 pill (손익): 인크/테이블린/극장/본사 + 마우스오버 시 지점 선택 팝업 ──
+    function buildBrandPills() {
+      const set = App.state.plStores;
+      for (const brand of Object.keys(PL_BRANDS)) {
+        const brStores = PL_BRANDS[brand];
+        const onCnt = brStores.filter(s => set.has(s)).length;
+        const allOn = onCnt === brStores.length, someOn = onCnt > 0;
+        const color = PL_BRAND_COLOR[brand] || '#64748B';
+        const el = document.createElement('button');
+        el.className = 'pill brand-pill' + (allOn ? ' on' : someOn ? ' partial' : '');
+        el.dataset.brand = brand;
+        el.style.borderColor = color;
+        el.style.color = (allOn || someOn) ? color : '#94A3B8';
+        el.style.background = allOn ? color + '22' : someOn ? color + '11' : '';
+        el.innerHTML = `<span class="store-dot" style="background:${color}"></span>${brand}` +
+          (someOn && !allOn && brStores.length > 1 ? ` <span class="brand-cnt">${onCnt}/${brStores.length}</span>` : '') +
+          (brStores.length > 1 ? ` <span class="q-caret">▾</span>` : '');
+        el.addEventListener('click', () => {
+          const turnOn = !brStores.every(s => set.has(s));
+          brStores.forEach(s => turnOn ? set.add(s) : set.delete(s));
+          closeQuarterPopup();
+          buildPills(); updateAllBtn(); emitStores(set);
+        });
+        if (brStores.length > 1) {
+          el.addEventListener('mouseenter', () => { _qClear(); openBrandPopup(el, brStores); });
+          el.addEventListener('mouseleave', _qCloseSoon);
+        }
+        pillsEl.appendChild(el);
+      }
+    }
+    function openBrandPopup(btn, brStores) {
+      if (!popup) return;
+      const set = App.state.plStores;
+      popup.innerHTML = '';
+      brStores.forEach(s => {
+        const b = document.createElement('button');
+        b.className = 'q-opt' + (set.has(s) ? ' on' : '');
+        b.textContent = s;
+        b.addEventListener('click', () => {
+          if (set.has(s)) set.delete(s); else set.add(s);
+          b.classList.toggle('on', set.has(s));
+          buildPills(); updateAllBtn(); emitStores(set);
+        });
+        popup.appendChild(b);
+      });
+      popup.hidden = false;
+      const r = btn.getBoundingClientRect();
+      popup.style.left = Math.round(r.left) + 'px';
+      popup.style.top  = Math.round(r.bottom + 4) + 'px';
+    }
+
+    function buildPills() {
+      pillsEl.querySelectorAll('.pill[data-store], .pill[data-brand]').forEach(el => el.remove());
+      if (App.state.activeTab === 'pl') buildBrandPills();
+      else buildFlatPills();
+    }
     buildPills();
     updateAllBtn();
 
-    // 탭 그룹 전환 시 매장 셋 교체 (인크 ↔ 테이블린)
+    // 탭 전환 시 pill 모드 교체 (인크 6개 ↔ 테이블린 3개 ↔ 손익 브랜드그룹)
+    let _pillKey = 'inkc';
     App.setStoreSetForTab = (tab) => {
-      const want = (tab === 'tablin') ? STORE_SETS.tablin : STORE_SETS.inkc;
-      if (STORES === want.stores) return;  // 이미 해당 셋
-      STORES = want.stores; COLORS = want.colors; STORE_OPEN = want.open;
-      App.STORES = STORES; App.COLORS = COLORS; App.STORE_OPEN = STORE_OPEN;
+      const key = (tab === 'pl') ? 'pl' : (tab === 'tablin') ? 'tablin' : 'inkc';
+      if (key === _pillKey) return;
+      _pillKey = key;
+      if (key !== 'pl') {
+        const want = (tab === 'tablin') ? STORE_SETS.tablin : STORE_SETS.inkc;
+        STORES = want.stores; COLORS = want.colors; STORE_OPEN = want.open;
+        App.STORES = STORES; App.COLORS = COLORS; App.STORE_OPEN = STORE_OPEN;
+      }
       buildPills();
       updateAllBtn();
     };
