@@ -8,8 +8,10 @@
 <link rel="stylesheet" href="styles/tokens.css">
 <link rel="stylesheet" href="styles/components.css">
 <style>
-  /* 테이블린 탭은 자체 헤더/컨트롤을 가진 독립 대시보드 — 통합 컨트롤바 숨김 */
-  body[data-tab="tablin"] .ctrl-bar { display: none; }
+  /* 테이블린 탭에는 테이블린에 없는 매장(가산·수원·광주) pill 숨김 — 통합 컨트롤바를 같이 씀 */
+  body[data-tab="tablin"] .pill[data-store="가산"],
+  body[data-tab="tablin"] .pill[data-store="수원"],
+  body[data-tab="tablin"] .pill[data-store="광주"] { display: none; }
 </style>
 </head>
 <body>
