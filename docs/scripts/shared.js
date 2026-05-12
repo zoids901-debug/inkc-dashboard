@@ -110,6 +110,7 @@
     product: '.hdr, .sticky-bar',
     ops:     '.hdr, .ctrl-bar',
     pl:      '.header, .sel-card',
+    tablin:  '.hdr',  // 테이블린 자체 타이틀("테이블린 운영 대시보드") 숨김 — 통합 탭 라벨로 충분
   };
 
   function injectFrameStyles(name, frame) {
