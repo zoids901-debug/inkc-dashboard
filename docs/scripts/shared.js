@@ -124,19 +124,16 @@
   const TABS = ['ops', 'product', 'pl', 'tablin'];
   // 'tablin'은 HIDE_SELECTORS/syncFrame 케이스 없음 — 자체 헤더·컨트롤 그대로 노출
 
-  // 각 iframe 내부에서 숨길 selector (제목 + 자체 필터바)
+  // 각 iframe 내부에서 숨길 selector (제목 + 자체 필터바) — 통합 헤더·컨트롤바를 쓰므로
   const HIDE_SELECTORS = {
     product: '.hdr, .sticky-bar',
     ops:     '.hdr, .ctrl-bar',
     pl:      '.header, .sel-card',
-    tablin:  '.hdr',  // 테이블린 자체 타이틀("테이블린 운영 대시보드") 숨김 — 통합 탭 라벨로 충분
+    tablin:  '.hdr, .ctrl-bar',  // 테이블린 자체 타이틀 + 컨트롤바 숨김 → 통합 컨트롤바가 구동
   };
 
   // 탭별 추가 주입 CSS (헤더 숨김 후 레이아웃 보정 등)
-  const EXTRA_INJECT_CSS = {
-    // 테이블린 ctrl-bar는 sticky top:48px(없어진 .hdr 높이) → 0으로 보정해 빈 공간 제거
-    tablin: '.ctrl-bar { top: 0 !important; } body { margin-top: 0 !important; }',
-  };
+  const EXTRA_INJECT_CSS = {};
 
   function injectFrameStyles(name, frame) {
     try {
@@ -201,6 +198,9 @@
     '하남':'미사점','가산':'가산점','다산':'다산점',
     '수원':'수원점','광주':'광주점','운정':'운정점',
   };
+  // 부모 표준명 → 테이블린 지점명 (테이블린엔 다산·하남·운정 3개만 — 나머지는 무시)
+  const TABLIN_STORE_MAP = { '하남':'하남점', '다산':'다산점', '운정':'운정점' };
+  const TABLIN_STORES_ALL = ['다산점', '하남점', '운정점'];
 
   // ── iframe 동기화 (탭별 다른 필터 메커니즘 처리) ──────
   function syncFrame(name, frame) {
@@ -321,6 +321,24 @@
             if (typeof buildStorePanel === 'function') buildStorePanel();
             if (typeof updateAll === 'function') updateAll();
           } catch (e) { console.warn('[pl sync]', e); }
+        `);
+      }
+      else if (name === 'tablin') {
+        const cw = frame.contentWindow;
+        // 테이블린 로딩(데이터 fetch) 완료 전이면 잠시 후 재시도
+        if (!cw || typeof cw.render !== 'function' || !cw.DATA || !cw.DATA.records) {
+          setTimeout(() => syncFrame(name, frame), 800);
+          return;
+        }
+        // 부모 매장 선택 → 테이블린 지점명으로 매핑 (없으면 전체)
+        let tStores = stores.map(s => TABLIN_STORE_MAP[s]).filter(Boolean);
+        if (!tStores.length) tStores = TABLIN_STORES_ALL.slice();
+        runInFrame(frame, `
+          try {
+            fpStart = '${period.start}'; fpEnd = '${period.end}';
+            activeStores = new Set(${JSON.stringify(tStores)});
+            render();
+          } catch (e) { console.warn('[tablin sync]', e); }
         `);
       }
     } catch (e) {
