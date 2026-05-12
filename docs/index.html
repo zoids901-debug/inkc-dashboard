@@ -7,6 +7,10 @@
 <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
 <link rel="stylesheet" href="styles/tokens.css">
 <link rel="stylesheet" href="styles/components.css">
+<style>
+  /* 테이블린 탭은 자체 헤더/컨트롤을 가진 독립 대시보드 — 통합 컨트롤바 숨김 */
+  body[data-tab="tablin"] .ctrl-bar { display: none; }
+</style>
 </head>
 <body>
 
@@ -17,6 +21,7 @@
     <button class="hdr-tab" data-tab="ops">운영</button>
     <button class="hdr-tab" data-tab="product">상품</button>
     <button class="hdr-tab" data-tab="pl">손익</button>
+    <button class="hdr-tab" data-tab="tablin">테이블린</button>
   </div>
 </div>
 
@@ -72,6 +77,9 @@
     <div id="pl-upload" class="subtab-panel" hidden>
       <iframe class="tab-frame upload-frame" data-src="https://zoids901-debug.github.io/pl-dashboard/uploader.html" loading="lazy"></iframe>
     </div>
+  </section>
+  <section id="tab-tablin" class="tab-panel" hidden>
+    <iframe class="tab-frame" data-src="https://zoids901-debug.github.io/tablin-dashboard/" loading="lazy"></iframe>
   </section>
 </div>
 
