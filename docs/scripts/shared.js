@@ -102,7 +102,8 @@
   }
 
   // ── 탭 라우팅 (lazy iframe 로드) ──────────────
-  const TABS = ['ops', 'product', 'pl'];
+  const TABS = ['ops', 'product', 'pl', 'tablin'];
+  // 'tablin'은 HIDE_SELECTORS/syncFrame 케이스 없음 — 자체 헤더·컨트롤 그대로 노출
 
   // 각 iframe 내부에서 숨길 selector (제목 + 자체 필터바)
   const HIDE_SELECTORS = {
