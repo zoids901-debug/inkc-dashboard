@@ -68,35 +68,47 @@
       "date": "2026-05-09",
       "per_receipt": 17859,
       "sales": 6768760,
-      "receipts": 379
+      "receipts": 379,
+      "staff": 13,
+      "productivity": 520673
     },
     {
       "date": "2026-05-10",
       "per_receipt": 16983,
       "sales": 6368880,
-      "receipts": 375
+      "receipts": 375,
+      "staff": 13,
+      "productivity": 489913
     },
     {
       "date": "2026-05-11",
       "per_receipt": 17607,
       "sales": 3908850,
-      "receipts": 222
+      "receipts": 222,
+      "staff": 12,
+      "productivity": 325737
     },
     {
       "date": "2026-05-12",
       "per_receipt": 16277,
       "sales": 4118250,
-      "receipts": 253
+      "receipts": 253,
+      "staff": 11,
+      "productivity": 374386
     },
     {
       "date": "2026-05-13",
       "per_receipt": 16416,
       "sales": 4334070,
-      "receipts": 264
+      "receipts": 264,
+      "staff": 12,
+      "productivity": 361172
     },
     {
       "date": "2026-05-14",
-      "per_receipt": null
+      "per_receipt": 16741,
+      "sales": 4252430,
+      "receipts": 254
     },
     {
       "date": "2026-05-15",
@@ -248,7 +260,9 @@
     },
     {
       "date": "2026-05-14",
-      "per_receipt": null
+      "per_receipt": 15647,
+      "sales": 4052580,
+      "receipts": 259
     },
     {
       "date": "2026-05-15",
@@ -418,13 +432,17 @@
     },
     {
       "date": "2026-05-13",
-      "per_receipt": null,
+      "per_receipt": 11716,
       "receipts": 207,
-      "staff": 6
+      "staff": 6,
+      "sales": 2425380,
+      "productivity": 404230
     },
     {
       "date": "2026-05-14",
-      "per_receipt": null
+      "per_receipt": null,
+      "receipts": 182,
+      "staff": 6
     },
     {
       "date": "2026-05-15",
@@ -603,7 +621,10 @@
     {
       "date": "2026-05-14",
       "staff": 2,
-      "per_receipt": null
+      "per_receipt": 11135,
+      "sales": 801760,
+      "receipts": 72,
+      "productivity": 400880
     },
     {
       "date": "2026-05-15",
@@ -770,7 +791,9 @@
     },
     {
       "date": "2026-05-14",
-      "per_receipt": null
+      "per_receipt": 13889,
+      "sales": 12556120,
+      "receipts": 904
     },
     {
       "date": "2026-05-15",
