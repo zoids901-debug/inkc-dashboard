@@ -183,72 +183,68 @@ def apply_okpos(records, existing):
 
 
 # ── TOSS 운정 ─────────────────────────────────────
-async def scrape_toss(yyyy_mm):
+def scrape_toss(yyyy_mm):
+    """HTTP API 직접 호출 — 본사(DASHBOARD_USER) email 로그인 + dashboard-workspace-id 헤더.
+    옛 playwright 방식은 매장(PLACE_USER) phone ID 폐기로 작동 안 함.
+    """
     log('TOSS scraping:', yyyy_mm)
-    async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
-        try:
-            ctx = await browser.new_context()
-            page = await ctx.new_page()
-            captured = {}
-            async def on_req(req):
-                if 'api-public.tossplace.com' in req.url:
-                    h = await req.all_headers()
-                    auth = h.get('authorization')
-                    wpid = h.get('toss-workplace-id')
-                    if auth and 'Bearer' in auth and wpid:
-                        captured['headers'] = {
-                            'Authorization': auth if auth.startswith('Bearer') else 'Bearer '+auth,
-                            'toss-workplace-id': wpid,
-                            'toss-place-user-id': h.get('toss-place-user-id', ''),
-                            'Content-Type': 'application/json',
-                            'User-Agent': h.get('user-agent', 'Mozilla/5.0'),
-                        }
-            page.on('request', on_req)
-            await page.goto('https://dashboard.tossplace.com/login', wait_until='networkidle', timeout=30000)
-            await page.wait_for_selector('input[autocomplete="username"]', timeout=10000)
-            await page.fill('input[autocomplete="username"]', TOSS_ID)
-            await page.fill('input[autocomplete="current-password"]', TOSS_PW)
-            await page.click('button[type="submit"]')
-            for _ in range(30):
-                await asyncio.sleep(1)
-                if 'headers' in captured: break
-            if 'headers' not in captured:
-                try:
-                    await page.goto('https://dashboard.tossplace.com/sales-detail/period', wait_until='networkidle', timeout=15000)
-                    await asyncio.sleep(3)
-                except: pass
-            if 'headers' not in captured:
-                raise RuntimeError('TOSS 헤더 캡쳐 실패')
-            headers = captured['headers']
-
-            y, m = yyyy_mm.split('-')
-            days_in_month = (date(int(y), int(m) % 12 + 1, 1) - timedelta(days=1)).day if int(m) < 12 else 31
-            today = date.today()
-            last_day = today.day if today.year == int(y) and today.month == int(m) else days_in_month
-            body = {
-                'merchantIds': [TOSS_MERCHANT],
-                'startDate': f'{y}-{m}-01',
-                'endDate': f'{y}-{m}-{last_day:02d}',
-                'includeMerchantAsColumn': False,
-            }
-            req = urllib.request.Request(
-                f'{TOSS_BASE}/dashboard/v1/reports/period/daily',
-                data=json.dumps(body).encode(), headers=headers, method='POST')
-            with urllib.request.urlopen(req, timeout=30) as r:
-                result = json.loads(r.read())
-            if result.get('resultType') != 'SUCCESS':
-                raise RuntimeError(f'TOSS API 오류: {result.get("error")}')
-            records = []
-            for r in result.get('success', {}).get('report', []):
-                sales = r.get('content', {}).get('sales', {}).get('netSalesAmount', 0) or 0
-                receipts = r.get('content', {}).get('sales', {}).get('paymentCount', 0) or 0
-                if sales > 0:
-                    records.append({'date': r['date'], 'sales': sales, 'receipts': receipts})
-            log(f'  TOSS records: {len(records)}')
-            return records
-        finally:
-            await browser.close()
+    # 1) 로그인
+    body = {'id': TOSS_ID, 'password': TOSS_PW, 'loginType': 'DASHBOARD_USER'}
+    req = urllib.request.Request(
+        f'{TOSS_BASE}/api-public/dashboard/v2/auth/login',
+        data=json.dumps(body).encode(),
+        headers={'Content-Type':'application/json','User-Agent':'Mozilla/5.0',
+                 'Origin':'https://dashboard.tossplace.com','Accept':'application/json'},
+        method='POST')
+    with urllib.request.urlopen(req, timeout=30) as r:
+        data = json.loads(r.read())
+    if data.get('resultType') != 'SUCCESS':
+        raise RuntimeError(f"TOSS 로그인 실패: {data.get('error')}")
+    token = data['success']['accessToken']
+    # 2) workspace id
+    req = urllib.request.Request(
+        f'{TOSS_BASE}/api-public/dashboard/v1/workspaces?type=BRAND',
+        headers={'Authorization':f'Bearer {token}','User-Agent':'Mozilla/5.0',
+                 'Origin':'https://dashboard.tossplace.com','Accept':'application/json'})
+    with urllib.request.urlopen(req, timeout=15) as r:
+        items = ((json.loads(r.read()).get('success') or {}).get('items') or [])
+    if not items:
+        raise RuntimeError("TOSS workspace(type=BRAND) 없음")
+    wsid = items[0]['id']
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'dashboard-workspace-id': str(wsid),
+        'Content-Type': 'application/json',
+        'User-Agent': 'Mozilla/5.0',
+        'Origin': 'https://dashboard.tossplace.com',
+        'Accept': 'application/json',
+    }
+    # 3) period/daily
+    y, m = yyyy_mm.split('-')
+    days_in_month = (date(int(y), int(m) % 12 + 1, 1) - timedelta(days=1)).day if int(m) < 12 else 31
+    today = date.today()
+    last_day = today.day if today.year == int(y) and today.month == int(m) else days_in_month
+    body = {
+        'merchantIds': [TOSS_MERCHANT],
+        'startDate': f'{y}-{m}-01',
+        'endDate': f'{y}-{m}-{last_day:02d}',
+        'includeMerchantAsColumn': False,
+    }
+    req = urllib.request.Request(
+        f'{TOSS_BASE}/dashboard/v1/reports/period/daily',
+        data=json.dumps(body).encode(), headers=headers, method='POST')
+    with urllib.request.urlopen(req, timeout=30) as r:
+        result = json.loads(r.read())
+    if result.get('resultType') != 'SUCCESS':
+        raise RuntimeError(f'TOSS API 오류: {result.get("error")}')
+    records = []
+    for r in result.get('success', {}).get('report', []):
+        sales = r.get('content', {}).get('sales', {}).get('netSalesAmount', 0) or 0
+        receipts = r.get('content', {}).get('sales', {}).get('paymentCount', 0) or 0
+        if sales > 0:
+            records.append({'date': r['date'], 'sales': sales, 'receipts': receipts})
+    log(f'  TOSS records: {len(records)}')
+    return records
 
 
 def apply_toss(records, existing):
@@ -408,7 +404,7 @@ async def main():
 
     # 2) TOSS 운정
     try:
-        toss_records = await scrape_toss(yyyy_mm)
+        toss_records = scrape_toss(yyyy_mm)
         apply_toss(toss_records, existing)
     except Exception as e:
         log(f'TOSS 실패: {e}')
