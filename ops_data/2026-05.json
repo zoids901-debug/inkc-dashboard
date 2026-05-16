@@ -118,7 +118,9 @@
     },
     {
       "date": "2026-05-16",
-      "per_receipt": null
+      "per_receipt": 16857,
+      "sales": 6034910,
+      "receipts": 358
     },
     {
       "date": "2026-05-17",
@@ -274,7 +276,9 @@
     },
     {
       "date": "2026-05-16",
-      "per_receipt": null
+      "per_receipt": 18672,
+      "sales": 10213766,
+      "receipts": 547
     },
     {
       "date": "2026-05-17",
@@ -452,13 +456,17 @@
     },
     {
       "date": "2026-05-15",
-      "per_receipt": null,
+      "per_receipt": 13575,
       "receipts": 200,
-      "staff": 7
+      "staff": 7,
+      "sales": 2715100,
+      "productivity": 387871
     },
     {
       "date": "2026-05-16",
-      "per_receipt": null
+      "per_receipt": null,
+      "receipts": 402,
+      "staff": 9
     },
     {
       "date": "2026-05-17",
@@ -644,7 +652,9 @@
     },
     {
       "date": "2026-05-16",
-      "per_receipt": null
+      "per_receipt": 12085,
+      "sales": 676780,
+      "receipts": 56
     },
     {
       "date": "2026-05-17",
@@ -814,7 +824,9 @@
     },
     {
       "date": "2026-05-16",
-      "per_receipt": null
+      "per_receipt": 21455,
+      "sales": 3861930,
+      "receipts": 180
     },
     {
       "date": "2026-05-17",
@@ -970,7 +982,9 @@
     },
     {
       "date": "2026-05-16",
-      "per_receipt": null
+      "per_receipt": 15041,
+      "sales": 6212020,
+      "receipts": 413
     },
     {
       "date": "2026-05-17",
