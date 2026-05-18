@@ -108,29 +108,39 @@
       "date": "2026-05-14",
       "per_receipt": 16741,
       "sales": 4252430,
-      "receipts": 254
+      "receipts": 254,
+      "staff": 11,
+      "productivity": 386584
     },
     {
       "date": "2026-05-15",
       "per_receipt": 16135,
       "sales": 5195630,
-      "receipts": 322
+      "receipts": 322,
+      "staff": 11,
+      "productivity": 472330
     },
     {
       "date": "2026-05-16",
       "per_receipt": 16857,
       "sales": 6034910,
-      "receipts": 358
+      "receipts": 358,
+      "staff": 12,
+      "productivity": 502909
     },
     {
       "date": "2026-05-17",
       "per_receipt": 17014,
       "sales": 6278274,
-      "receipts": 369
+      "receipts": 369,
+      "staff": 12,
+      "productivity": 523189
     },
     {
       "date": "2026-05-18",
-      "per_receipt": null
+      "per_receipt": 16938,
+      "sales": 3963566,
+      "receipts": 234
     },
     {
       "date": "2026-05-19",
@@ -290,7 +300,9 @@
     },
     {
       "date": "2026-05-18",
-      "per_receipt": null
+      "per_receipt": 16714,
+      "sales": 4262164,
+      "receipts": 255
     },
     {
       "date": "2026-05-19",
@@ -476,13 +488,17 @@
     },
     {
       "date": "2026-05-17",
-      "per_receipt": null,
+      "per_receipt": 13827,
       "receipts": 336,
-      "staff": 8
+      "staff": 8,
+      "sales": 4646080,
+      "productivity": 580760
     },
     {
       "date": "2026-05-18",
-      "per_receipt": null
+      "per_receipt": null,
+      "receipts": 195,
+      "staff": 6
     },
     {
       "date": "2026-05-19",
@@ -675,7 +691,10 @@
     {
       "date": "2026-05-18",
       "staff": 2,
-      "per_receipt": null
+      "per_receipt": 11949,
+      "sales": 800640,
+      "receipts": 67,
+      "productivity": 400320
     },
     {
       "date": "2026-05-19",
@@ -847,7 +866,9 @@
     },
     {
       "date": "2026-05-18",
-      "per_receipt": null
+      "per_receipt": 18877,
+      "sales": 1812280,
+      "receipts": 96
     },
     {
       "date": "2026-05-19",
@@ -1007,7 +1028,9 @@
     },
     {
       "date": "2026-05-18",
-      "per_receipt": null
+      "per_receipt": 14266,
+      "sales": 3038800,
+      "receipts": 213
     },
     {
       "date": "2026-05-19",
