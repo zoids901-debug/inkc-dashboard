@@ -110,6 +110,8 @@
 .hp-store-icon.warn{color:#F59E0B}
 .hp-store-icon.bad{color:#EF4444}
 .hp-store-icon.missing{color:#EF4444}
+.hp-store-icon.info{color:#0EA5E9}
+.hp-section-title{padding:8px 14px 4px;font-weight:700;color:#334155;background:#F1F5F9;border-top:1px solid #E2E8F0;border-bottom:1px solid #E2E8F0;font-size:11px}
 .hp-store-name{font-weight:600;color:#1E293B}
 .hp-store-z{color:#94A3B8;font-size:11px;margin-left:auto;font-variant-numeric:tabular-nums}
 .hp-store-date{color:#64748B;font-size:10px;margin-left:auto;background:#F1F5F9;padding:1px 6px;border-radius:8px;font-weight:500}
@@ -179,7 +181,29 @@
         <span class="hp-close" onclick="event.stopPropagation();document.getElementById('healthPanel').hidden=true">×</span>
       </div>
       <div class="health-panel-body">${rows}</div>
-      <div class="hp-footer">학습 기간: 최근 3년 매장×요일별 평균 · 검사 시각: ${_health.checked_at}<br>수원점은 1일 딜레이로 이틀 전 데이터로 검사합니다.</div>
+      ${_health.cross_check ? `
+        <div class="hp-section-title">교차 검증 · OK포스 ↔ 운영 대시보드 (${_health.cross_check.yyyy_mm || ''})</div>
+        <div class="health-panel-body">${
+          _health.cross_check.overall === 'no_data'
+            ? `<div class="hp-store-msg" style="padding:4px 0;color:#94A3B8">${_health.cross_check.message || '데이터 없음'}</div>`
+            : (_health.cross_check.stores || []).map(s => {
+                const cIcon = {ok:'✓', warn:'⚠', bad:'✗', info:'ⓘ'}[s.level] || '·';
+                const diffFmt = (Math.abs(s.diff) >= 1e8 ? (s.diff/1e8).toFixed(2)+'억' :
+                               Math.abs(s.diff) >= 1e4 ? Math.round(s.diff/1e4).toLocaleString()+'만' :
+                               s.diff.toLocaleString())+'원';
+                const sign = s.diff > 0 ? '+' : '';
+                return `<div class="hp-store">
+                  <div class="hp-store-hdr">
+                    <span class="hp-store-icon ${s.level}">${cIcon}</span>
+                    <span class="hp-store-name">${s.store}점</span>
+                    <span class="hp-store-date">${sign}${diffFmt} (${s.pct.toFixed(1)}%)</span>
+                  </div>
+                  <div class="hp-store-msg">${s.message}</div>
+                </div>`;
+              }).join('')
+        }</div>
+      ` : ''}
+      <div class="hp-footer">학습 기간: 최근 3년 매장×요일별 평균 · 검사 시각: ${_health.checked_at}<br>수원점은 1일 딜레이로 이틀 전 데이터로 검사합니다. 교차 검증은 OK포스 원본과 대시보드 표시값의 월 합산 차이를 봅니다.</div>
     `;
     panel.hidden = false;
   };
