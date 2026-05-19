@@ -22,14 +22,18 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Run anomaly detector
+      - name: Run cross checker (OK포스 raw vs 대시보드)
+        run: python scripts/cross_checker.py
+        continue-on-error: true  # raw_okpos 없는 초기엔 fail 가능 — 비치명
+
+      - name: Run anomaly detector (시계열 + 교차 검증 통합)
         run: python scripts/anomaly_detector.py
 
       - name: Commit health.json
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add ops_data/health.json
+          git add ops_data/health.json ops_data/cross_check.json
           if git diff --cached --quiet; then
             echo "health.json 변경 없음 — commit 생략"
           else
