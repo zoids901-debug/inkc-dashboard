@@ -34,10 +34,6 @@ jobs:
           echo "ym=$PREV" >> $GITHUB_OUTPUT
           echo "직전 월: $PREV"
 
-      - name: import 검증 (디버그)
-        run: |
-          cd scripts && python -c "from ops_actions_sync import scrape_okpos_range, apply_okpos; print('import OK')"
-
       - name: 직전 월 OK포스 backfill (단일 월)
         env:
           OKPOS_ID: ${{ secrets.OKPOS_ID }}
