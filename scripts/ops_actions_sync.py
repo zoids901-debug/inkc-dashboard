@@ -399,6 +399,23 @@ async def main():
     try:
         records = await scrape_okpos(yyyy_mm)
         okpos_by_date = apply_okpos(records, existing)
+        # OK포스 raw 별도 저장 (교차 검증용 — 보정 전 원본)
+        raw_by_store = {s: [] for s in EXPECTED_STORES}
+        for dt in sorted(okpos_by_date.keys()):
+            for store in EXPECTED_STORES:
+                rec = okpos_by_date.get(dt, {}).get(store)
+                if rec:
+                    raw_by_store[store].append({
+                        'date': dt,
+                        'sales': rec.get('sales', 0),
+                        'receipts': rec.get('receipts', 0),
+                    })
+        raw_dir = 'ops_data/raw_okpos'
+        os.makedirs(raw_dir, exist_ok=True)
+        raw_path = f'{raw_dir}/{yyyy_mm}.json'
+        with open(raw_path, 'w', encoding='utf-8') as f:
+            json.dump(raw_by_store, f, ensure_ascii=False, indent=2)
+        log(f'  OK포스 raw 저장: {raw_path} ({sum(len(v) for v in raw_by_store.values())}건)')
     except Exception as e:
         log(f'OKPOS 실패: {e}')
 
