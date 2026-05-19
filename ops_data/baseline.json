@@ -1,0 +1,516 @@
+{
+  "trained_at": "2026-05-19",
+  "cutoff_from": "2023-05-01",
+  "stores": {
+    "가산": {
+      "by_dow": {
+        "0": {
+          "dow_name": "월",
+          "n": 160,
+          "sales_mean": 4204610,
+          "sales_std": 1103565,
+          "sales_min": 2595140,
+          "sales_max": 11387866,
+          "receipts_mean": 267,
+          "receipts_std": 61
+        },
+        "1": {
+          "dow_name": "화",
+          "n": 159,
+          "sales_mean": 4653842,
+          "sales_std": 1234217,
+          "sales_min": 2615460,
+          "sales_max": 9819684,
+          "receipts_mean": 289,
+          "receipts_std": 61
+        },
+        "2": {
+          "dow_name": "수",
+          "n": 159,
+          "sales_mean": 4836240,
+          "sales_std": 1365856,
+          "sales_min": 2663920,
+          "sales_max": 12603630,
+          "receipts_mean": 301,
+          "receipts_std": 69
+        },
+        "3": {
+          "dow_name": "목",
+          "n": 159,
+          "sales_mean": 4850888,
+          "sales_std": 1264328,
+          "sales_min": 1830360,
+          "sales_max": 11688840,
+          "receipts_mean": 299,
+          "receipts_std": 64
+        },
+        "4": {
+          "dow_name": "금",
+          "n": 159,
+          "sales_mean": 5542602,
+          "sales_std": 1301771,
+          "sales_min": 3028580,
+          "sales_max": 13742164,
+          "receipts_mean": 342,
+          "receipts_std": 72
+        },
+        "5": {
+          "dow_name": "토",
+          "n": 159,
+          "sales_mean": 6121293,
+          "sales_std": 1348467,
+          "sales_min": 4010960,
+          "sales_max": 15277940,
+          "receipts_mean": 366,
+          "receipts_std": 68
+        },
+        "6": {
+          "dow_name": "일",
+          "n": 159,
+          "sales_mean": 6369815,
+          "sales_std": 1164853,
+          "sales_min": 4348676,
+          "sales_max": 13573470,
+          "receipts_mean": 387,
+          "receipts_std": 63
+        }
+      },
+      "overall": {
+        "n": 1114,
+        "sales_mean": 5224696,
+        "sales_std": 1458618,
+        "receipts_mean": 322,
+        "receipts_std": 77
+      },
+      "data_range": [
+        "2023-05-01",
+        "2026-05-18"
+      ]
+    },
+    "광주": {
+      "by_dow": {
+        "0": {
+          "dow_name": "월",
+          "n": 113,
+          "sales_mean": 3540676,
+          "sales_std": 6041909,
+          "sales_min": 194950,
+          "sales_max": 48078750,
+          "receipts_mean": 202,
+          "receipts_std": 367
+        },
+        "1": {
+          "dow_name": "화",
+          "n": 112,
+          "sales_mean": 6487318,
+          "sales_std": 7470205,
+          "sales_min": 844400,
+          "sales_max": 34049430,
+          "receipts_mean": 412,
+          "receipts_std": 510
+        },
+        "2": {
+          "dow_name": "수",
+          "n": 113,
+          "sales_mean": 7620024,
+          "sales_std": 9497838,
+          "sales_min": 4900,
+          "sales_max": 43610700,
+          "receipts_mean": 488,
+          "receipts_std": 609
+        },
+        "3": {
+          "dow_name": "목",
+          "n": 113,
+          "sales_mean": 6314220,
+          "sales_std": 7270053,
+          "sales_min": 249400,
+          "sales_max": 39399940,
+          "receipts_mean": 412,
+          "receipts_std": 501
+        },
+        "4": {
+          "dow_name": "금",
+          "n": 113,
+          "sales_mean": 7181069,
+          "sales_std": 9065545,
+          "sales_min": 1021490,
+          "sales_max": 32427740,
+          "receipts_mean": 432,
+          "receipts_std": 571
+        },
+        "5": {
+          "dow_name": "토",
+          "n": 113,
+          "sales_mean": 12607405,
+          "sales_std": 13220851,
+          "sales_min": 2135640,
+          "sales_max": 49933230,
+          "receipts_mean": 689,
+          "receipts_std": 770
+        },
+        "6": {
+          "dow_name": "일",
+          "n": 113,
+          "sales_mean": 12436511,
+          "sales_std": 13576023,
+          "sales_min": 669200,
+          "sales_max": 54612105,
+          "receipts_mean": 697,
+          "receipts_std": 823
+        }
+      },
+      "overall": {
+        "n": 790,
+        "sales_mean": 8028695,
+        "sales_std": 10273100,
+        "receipts_mean": 476,
+        "receipts_std": 630
+      },
+      "data_range": [
+        "2024-03-20",
+        "2026-05-18"
+      ]
+    },
+    "다산": {
+      "by_dow": {
+        "0": {
+          "dow_name": "월",
+          "n": 126,
+          "sales_mean": 6562146,
+          "sales_std": 3396187,
+          "sales_min": 3595778,
+          "sales_max": 21793486,
+          "receipts_mean": 386,
+          "receipts_std": 157
+        },
+        "1": {
+          "dow_name": "화",
+          "n": 125,
+          "sales_mean": 6563384,
+          "sales_std": 2670860,
+          "sales_min": 3418610,
+          "sales_max": 18168233,
+          "receipts_mean": 384,
+          "receipts_std": 116
+        },
+        "2": {
+          "dow_name": "수",
+          "n": 125,
+          "sales_mean": 6888870,
+          "sales_std": 3109388,
+          "sales_min": 142200,
+          "sales_max": 19883980,
+          "receipts_mean": 402,
+          "receipts_std": 151
+        },
+        "3": {
+          "dow_name": "목",
+          "n": 126,
+          "sales_mean": 6871577,
+          "sales_std": 3358174,
+          "sales_min": 4052580,
+          "sales_max": 28158920,
+          "receipts_mean": 400,
+          "receipts_std": 131
+        },
+        "4": {
+          "dow_name": "금",
+          "n": 126,
+          "sales_mean": 7120688,
+          "sales_std": 2508533,
+          "sales_min": 4535410,
+          "sales_max": 18896950,
+          "receipts_mean": 420,
+          "receipts_std": 114
+        },
+        "5": {
+          "dow_name": "토",
+          "n": 126,
+          "sales_mean": 12832825,
+          "sales_std": 2572072,
+          "sales_min": 8394792,
+          "sales_max": 21593610,
+          "receipts_mean": 671,
+          "receipts_std": 128
+        },
+        "6": {
+          "dow_name": "일",
+          "n": 126,
+          "sales_mean": 13374900,
+          "sales_std": 2790413,
+          "sales_min": 9002394,
+          "sales_max": 22529140,
+          "receipts_mean": 697,
+          "receipts_std": 134
+        }
+      },
+      "overall": {
+        "n": 880,
+        "sales_mean": 8606319,
+        "sales_std": 4091086,
+        "receipts_mean": 480,
+        "receipts_std": 186
+      },
+      "data_range": [
+        "2023-12-21",
+        "2026-05-18"
+      ]
+    },
+    "수원": {
+      "by_dow": {
+        "0": {
+          "dow_name": "월",
+          "n": 120,
+          "sales_mean": 3166537,
+          "sales_std": 1435022,
+          "sales_min": 1550500,
+          "sales_max": 8209210,
+          "receipts_mean": 273,
+          "receipts_std": 99
+        },
+        "1": {
+          "dow_name": "화",
+          "n": 120,
+          "sales_mean": 3019479,
+          "sales_std": 1279641,
+          "sales_min": 1617000,
+          "sales_max": 7891500,
+          "receipts_mean": 268,
+          "receipts_std": 100
+        },
+        "2": {
+          "dow_name": "수",
+          "n": 121,
+          "sales_mean": 3168631,
+          "sales_std": 1476113,
+          "sales_min": 1391000,
+          "sales_max": 8158500,
+          "receipts_mean": 270,
+          "receipts_std": 99
+        },
+        "3": {
+          "dow_name": "목",
+          "n": 121,
+          "sales_mean": 3173601,
+          "sales_std": 1416454,
+          "sales_min": 1663640,
+          "sales_max": 8780450,
+          "receipts_mean": 278,
+          "receipts_std": 109
+        },
+        "4": {
+          "dow_name": "금",
+          "n": 121,
+          "sales_mean": 3600061,
+          "sales_std": 1322589,
+          "sales_min": 2024200,
+          "sales_max": 9472900,
+          "receipts_mean": 287,
+          "receipts_std": 94
+        },
+        "5": {
+          "dow_name": "토",
+          "n": 121,
+          "sales_mean": 6148909,
+          "sales_std": 930770,
+          "sales_min": 4353100,
+          "sales_max": 8858700,
+          "receipts_mean": 347,
+          "receipts_std": 110
+        },
+        "6": {
+          "dow_name": "일",
+          "n": 121,
+          "sales_mean": 5760823,
+          "sales_std": 983796,
+          "sales_min": 3967000,
+          "sales_max": 9329900,
+          "receipts_mean": 337,
+          "receipts_std": 102
+        }
+      },
+      "overall": {
+        "n": 845,
+        "sales_mean": 4007594,
+        "sales_std": 1785398,
+        "receipts_mean": 294,
+        "receipts_std": 106
+      },
+      "data_range": [
+        "2024-01-24",
+        "2026-05-17"
+      ]
+    },
+    "운정": {
+      "by_dow": {
+        "0": {
+          "dow_name": "월",
+          "n": 22,
+          "sales_mean": 4982857,
+          "sales_std": 1921401,
+          "sales_min": 3038800,
+          "sales_max": 9510273,
+          "receipts_mean": 341,
+          "receipts_std": 115
+        },
+        "1": {
+          "dow_name": "화",
+          "n": 21,
+          "sales_mean": 4973123,
+          "sales_std": 2228840,
+          "sales_min": 2577640,
+          "sales_max": 9895364,
+          "receipts_mean": 332,
+          "receipts_std": 116
+        },
+        "2": {
+          "dow_name": "수",
+          "n": 23,
+          "sales_mean": 4880360,
+          "sales_std": 2024666,
+          "sales_min": 2490927,
+          "sales_max": 9169090,
+          "receipts_mean": 319,
+          "receipts_std": 115
+        },
+        "3": {
+          "dow_name": "목",
+          "n": 23,
+          "sales_mean": 5059875,
+          "sales_std": 2797773,
+          "sales_min": 2632182,
+          "sales_max": 13046777,
+          "receipts_mean": 334,
+          "receipts_std": 147
+        },
+        "4": {
+          "dow_name": "금",
+          "n": 23,
+          "sales_mean": 5648657,
+          "sales_std": 2621011,
+          "sales_min": 3198636,
+          "sales_max": 13843322,
+          "receipts_mean": 376,
+          "receipts_std": 118
+        },
+        "5": {
+          "dow_name": "토",
+          "n": 23,
+          "sales_mean": 8126575,
+          "sales_std": 2291902,
+          "sales_min": 5626273,
+          "sales_max": 14446957,
+          "receipts_mean": 537,
+          "receipts_std": 110
+        },
+        "6": {
+          "dow_name": "일",
+          "n": 23,
+          "sales_mean": 8066584,
+          "sales_std": 2369091,
+          "sales_min": 5398900,
+          "sales_max": 14983835,
+          "receipts_mean": 526,
+          "receipts_std": 98
+        }
+      },
+      "overall": {
+        "n": 158,
+        "sales_mean": 5981301,
+        "sales_std": 2681067,
+        "receipts_mean": 396,
+        "receipts_std": 146
+      },
+      "data_range": [
+        "2025-12-03",
+        "2026-05-18"
+      ]
+    },
+    "하남": {
+      "by_dow": {
+        "0": {
+          "dow_name": "월",
+          "n": 160,
+          "sales_mean": 821170,
+          "sales_std": 154257,
+          "sales_min": 502600,
+          "sales_max": 1351540,
+          "receipts_mean": 63,
+          "receipts_std": 9
+        },
+        "1": {
+          "dow_name": "화",
+          "n": 159,
+          "sales_mean": 799952,
+          "sales_std": 168276,
+          "sales_min": 456040,
+          "sales_max": 1868310,
+          "receipts_mean": 63,
+          "receipts_std": 10
+        },
+        "2": {
+          "dow_name": "수",
+          "n": 159,
+          "sales_mean": 851198,
+          "sales_std": 159589,
+          "sales_min": 518460,
+          "sales_max": 1578600,
+          "receipts_mean": 67,
+          "receipts_std": 10
+        },
+        "3": {
+          "dow_name": "목",
+          "n": 159,
+          "sales_mean": 831165,
+          "sales_std": 166723,
+          "sales_min": 424400,
+          "sales_max": 1426450,
+          "receipts_mean": 65,
+          "receipts_std": 11
+        },
+        "4": {
+          "dow_name": "금",
+          "n": 159,
+          "sales_mean": 837777,
+          "sales_std": 167924,
+          "sales_min": 541900,
+          "sales_max": 1481600,
+          "receipts_mean": 65,
+          "receipts_std": 10
+        },
+        "5": {
+          "dow_name": "토",
+          "n": 159,
+          "sales_mean": 915095,
+          "sales_std": 175343,
+          "sales_min": 541800,
+          "sales_max": 1332900,
+          "receipts_mean": 66,
+          "receipts_std": 12
+        },
+        "6": {
+          "dow_name": "일",
+          "n": 159,
+          "sales_mean": 1041675,
+          "sales_std": 183206,
+          "sales_min": 673300,
+          "sales_max": 1521600,
+          "receipts_mean": 72,
+          "receipts_std": 12
+        }
+      },
+      "overall": {
+        "n": 1114,
+        "sales_mean": 871103,
+        "sales_std": 184582,
+        "receipts_mean": 66,
+        "receipts_std": 11
+      },
+      "data_range": [
+        "2023-05-01",
+        "2026-05-18"
+      ]
+    }
+  }
+}
