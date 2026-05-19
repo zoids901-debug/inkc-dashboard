@@ -36,7 +36,7 @@ jobs:
 
       - name: import 검증 (디버그)
         run: |
-          python -c "from scripts.ops_actions_sync import scrape_okpos_range, apply_okpos; print('import OK')"
+          cd scripts && python -c "from ops_actions_sync import scrape_okpos_range, apply_okpos; print('import OK')"
 
       - name: 직전 월 OK포스 backfill (단일 월)
         env:
