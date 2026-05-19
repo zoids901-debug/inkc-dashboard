@@ -1,0 +1,245 @@
+{
+  "checked_at": "2026-05-19",
+  "results": [
+    {
+      "year": "2021",
+      "store": "가산",
+      "raw_total": 888458926,
+      "ops_total": 888463226,
+      "diff": 4300,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "raw와 대시보드 합계 일치"
+    },
+    {
+      "year": "2021",
+      "store": "하남",
+      "raw_total": 180941684,
+      "ops_total": 180941684,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "raw와 대시보드 합계 일치"
+    },
+    {
+      "year": "2022",
+      "store": "가산",
+      "raw_total": 2243979824,
+      "ops_total": 2243979824,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "raw와 대시보드 합계 일치"
+    },
+    {
+      "year": "2022",
+      "store": "하남",
+      "raw_total": 298772101,
+      "ops_total": 298772101,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "raw와 대시보드 합계 일치"
+    },
+    {
+      "year": "2023",
+      "store": "가산",
+      "raw_total": 1993405145,
+      "ops_total": 1993405145,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "raw와 대시보드 합계 일치"
+    },
+    {
+      "year": "2023",
+      "store": "다산",
+      "raw_total": 192319460,
+      "ops_total": 192319460,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "raw와 대시보드 합계 일치"
+    },
+    {
+      "year": "2023",
+      "store": "하남",
+      "raw_total": 294965223,
+      "ops_total": 294965223,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "raw와 대시보드 합계 일치"
+    },
+    {
+      "year": "2024",
+      "store": "가산",
+      "raw_total": 1970298838,
+      "ops_total": 1970298838,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "raw와 대시보드 합계 일치"
+    },
+    {
+      "year": "2024",
+      "store": "다산",
+      "raw_total": 3343712471,
+      "ops_total": 3343712471,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "raw와 대시보드 합계 일치"
+    },
+    {
+      "year": "2024",
+      "store": "수원",
+      "raw_total": 1524529300,
+      "ops_total": 1524529300,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "info",
+      "message": "시트/TOSS fallback 매장 — 차이는 정상"
+    },
+    {
+      "year": "2024",
+      "store": "하남",
+      "raw_total": 326579426,
+      "ops_total": 326579426,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "raw와 대시보드 합계 일치"
+    },
+    {
+      "year": "2024",
+      "store": "광주",
+      "raw_total": 3260900245,
+      "ops_total": 3260900245,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "raw와 대시보드 합계 일치"
+    },
+    {
+      "year": "2025",
+      "store": "가산",
+      "raw_total": 1858342643,
+      "ops_total": 1858342643,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "raw와 대시보드 합계 일치"
+    },
+    {
+      "year": "2025",
+      "store": "다산",
+      "raw_total": 2931690602,
+      "ops_total": 2931690602,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "raw와 대시보드 합계 일치"
+    },
+    {
+      "year": "2025",
+      "store": "수원",
+      "raw_total": 1319203330,
+      "ops_total": 1319203330,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "info",
+      "message": "시트/TOSS fallback 매장 — 차이는 정상"
+    },
+    {
+      "year": "2025",
+      "store": "하남",
+      "raw_total": 326645371,
+      "ops_total": 326645371,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "raw와 대시보드 합계 일치"
+    },
+    {
+      "year": "2025",
+      "store": "광주",
+      "raw_total": 2388569936,
+      "ops_total": 2388569936,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "raw와 대시보드 합계 일치"
+    },
+    {
+      "year": "2025",
+      "store": "운정",
+      "raw_total": 0,
+      "ops_total": 267845819,
+      "diff": 267845819,
+      "pct": 100.0,
+      "level": "no_raw",
+      "message": "OK포스 raw 없음 (backfill 안 됨 또는 매장 오픈 전)"
+    },
+    {
+      "year": "2026",
+      "store": "가산",
+      "raw_total": 292226051,
+      "ops_total": 744891911,
+      "diff": 452665860,
+      "pct": 60.77,
+      "level": "bad",
+      "message": "큰 차이 — 동기화 누락 또는 보정 오류 의심"
+    },
+    {
+      "year": "2026",
+      "store": "다산",
+      "raw_total": 330116559,
+      "ops_total": 1105838842,
+      "diff": 775722283,
+      "pct": 70.15,
+      "level": "bad",
+      "message": "큰 차이 — 동기화 누락 또는 보정 오류 의심"
+    },
+    {
+      "year": "2026",
+      "store": "수원",
+      "raw_total": 162170280,
+      "ops_total": 545057260,
+      "diff": 382886980,
+      "pct": 70.25,
+      "level": "info",
+      "message": "시트/TOSS fallback 매장 — 차이는 정상"
+    },
+    {
+      "year": "2026",
+      "store": "하남",
+      "raw_total": 36992730,
+      "ops_total": 117057150,
+      "diff": 80064420,
+      "pct": 68.4,
+      "level": "bad",
+      "message": "큰 차이 — 동기화 누락 또는 보정 오류 의심"
+    },
+    {
+      "year": "2026",
+      "store": "광주",
+      "raw_total": 464528500,
+      "ops_total": 693199004,
+      "diff": 228670504,
+      "pct": 32.99,
+      "level": "bad",
+      "message": "큰 차이 — 동기화 누락 또는 보정 오류 의심"
+    },
+    {
+      "year": "2026",
+      "store": "운정",
+      "raw_total": 0,
+      "ops_total": 677199852,
+      "diff": 677199852,
+      "pct": 100.0,
+      "level": "no_raw",
+      "message": "OK포스 raw 없음 (backfill 안 됨 또는 매장 오픈 전)"
+    }
+  ]
+}
