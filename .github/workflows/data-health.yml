@@ -1,0 +1,69 @@
+name: Data Health Check
+
+on:
+  schedule:
+    # 매일 KST 05:00 = UTC 20:00 (전날 데이터 동기화 완료 후 충분히 안전)
+    - cron: '0 20 * * *'
+  workflow_dispatch:
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run anomaly detector
+        run: python scripts/anomaly_detector.py
+
+      - name: Commit health.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add ops_data/health.json
+          if git diff --cached --quiet; then
+            echo "health.json 변경 없음 — commit 생략"
+          else
+            git commit -m "health: $(date -u +%Y-%m-%d) 검사 결과"
+            git push
+          fi
+
+      - name: Read result & create issue on anomaly
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GH_PAT }}
+          script: |
+            const fs = require('fs');
+            const h = JSON.parse(fs.readFileSync('ops_data/health.json', 'utf8'));
+            if (h.overall === 'ok') {
+              console.log('전체 정상 — 이슈 생성 안 함');
+              return;
+            }
+            const icon = h.overall === 'bad' ? '🔴' : '🟡';
+            const lines = (h.stores || []).map(s => {
+              const ic = {ok:'✓', warn:'⚠', bad:'✗', missing:'✗'}[s.status] || '·';
+              const tag = s.delayed ? ` (${s.target_date} 데이터)` : '';
+              return `- ${ic} **${s.store}점**${tag}: ${(s.messages||[]).join(' / ')}`;
+            }).join('\n');
+            const body = `## ${icon} ${h.target_date} (${h.dow}요일) 데이터 점검\n\n` +
+                         `**전체 상태:** ${h.overall.toUpperCase()}\n` +
+                         `**요약:** 정상 ${h.summary.ok} / 의심 ${h.summary.warn} / 이상 ${h.summary.bad} / 누락 ${h.summary.missing}\n\n` +
+                         `### 매장별\n${lines}\n\n` +
+                         `---\n검사 시각: ${h.checked_at}\n베이스라인: 매장×요일별 최근 3년 평균/표준편차`;
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `${icon} 데이터 이상 감지 (${h.target_date})`,
+              body,
+              labels: ['data-health', h.overall],
+            });
