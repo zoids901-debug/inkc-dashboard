@@ -1,0 +1,56 @@
+name: OK포스 Backfill (수동)
+
+on:
+  workflow_dispatch:
+    inputs:
+      from_month:
+        description: '시작 월 (YYYY-MM)'
+        required: true
+        default: '2024-01'
+      to_month:
+        description: '끝 월 (YYYY-MM)'
+        required: true
+        default: '2024-12'
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: |
+          pip install playwright requests
+          python -m playwright install --with-deps chromium
+
+      - name: Run backfill
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+          GH_REPO:  zoids901-debug/inkc-dashboard
+          OKPOS_ID: ${{ secrets.OKPOS_ID }}
+          OKPOS_PW: ${{ secrets.OKPOS_PW }}
+          TOSS_ID:  ${{ secrets.TOSS_ID }}
+          TOSS_PW:  ${{ secrets.TOSS_PW }}
+        run: |
+          python scripts/okpos_backfill.py "${{ inputs.from_month }}" "${{ inputs.to_month }}"
+
+      - name: Commit raw_okpos
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add ops_data/raw_okpos/
+          if git diff --cached --quiet; then
+            echo "변경 없음 — commit 생략"
+          else
+            git commit -m "backfill: OK포스 raw ${{ inputs.from_month }} ~ ${{ inputs.to_month }}"
+            git push
+          fi
