@@ -41,6 +41,16 @@ jobs:
             git push
           fi
 
+      - name: Send mail (Gmail SMTP)
+        if: always()
+        env:
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          MAIL_TO: zoids@ink-korea.co.kr
+          MAIL_ONLY_ON_ANOMALY: "0"
+        run: python scripts/health_mail.py
+        continue-on-error: true
+
       - name: Read result & create issue on anomaly
         if: always()
         uses: actions/github-script@v7
