@@ -799,9 +799,35 @@ function renderRank(ad, yad, stores, monthlyTargets) {
     </tr>\`;
   }).join('');
 
+  // ── 페어 비교 행 (정확히 2매장일 때) ──
+  let pairRow = '';
+  if (rows.length === 2) {
+    const [a, b] = rows;
+    const dCls = v => v>0?'delta up':(v<0?'delta dn':'');
+    const sgn  = v => v>0?'+':(v<0?'-':'');
+    const dW   = v => v===0?'-':sgn(v)+w(Math.abs(v));
+    const dN0  = v => v===0?'-':sgn(v)+n0(Math.abs(v));
+    const dWon = v => v===0?'-':sgn(v)+Math.abs(v).toLocaleString()+'원';
+    const dSales    = a.sales - b.sales;
+    const dRec      = a.receipts - b.receipts;
+    const dPerRec   = (a.perRec||0) - (b.perRec||0);
+    const dProd     = (a.prod||0) - (b.prod||0);
+    const dAch      = (a.achR!=null && b.achR!=null) ? (a.achR - b.achR) : null;
+    pairRow = \`<tr style="background:#FEF3C7;border-top:2px solid #F59E0B;font-weight:600">
+      <td colspan="2" style="color:#92400E">차이 (\${a.s} − \${b.s})</td>
+      <td style="color:#94A3B8">-</td>
+      <td><span class="\${dCls(dSales)}">\${dW(dSales)}</span></td>
+      <td>\${dAch!=null?'<span class="'+dCls(dAch)+'">'+sgn(dAch)+Math.abs(dAch)+'%p</span>':'-'}</td>
+      <td><span class="\${dCls(dRec)}">\${dN0(dRec)}</span></td>
+      <td><span class="\${dCls(dPerRec)}">\${dWon(dPerRec)}</span></td>
+      <td><span class="\${dCls(dProd)}">\${dProd===0?'-':sgn(dProd)+_fmt(Math.abs(dProd)/1e4,'만원')}</span></td>
+    </tr>\`;
+  }
+
   el.innerHTML = \`
     <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:14px;flex-wrap:wrap">
       <div class="card-title" style="margin:0">매장별 실적
+        \${rows.length===2 ? '<span class="range-note" style="color:#92400E">· 페어 비교 모드</span>' : ''}
         \${!fullMonth ? '<span class="range-note">· 부분 기간 ('+modeLabel+')</span>' : ''}
       </div>
       <div class="tmode-wrap" title="목표 표시 기준: 월 전체 = 선택 범위가 걸친 달의 전체 목표 / 선택 기간 = 선택한 날짜 범위의 목표만 합산">
@@ -814,7 +840,7 @@ function renderRank(ad, yad, stores, monthlyTargets) {
         <th>#</th><th>매장</th><th>목표</th><th>실매출</th><th>달성%</th>
         <th>영수</th><th>객단가</th><th>인당생산량</th>
       </tr></thead>
-      <tbody>\${tbody}</tbody>
+      <tbody>\${tbody}\${pairRow}</tbody>
     </table>\`;
 }
 
