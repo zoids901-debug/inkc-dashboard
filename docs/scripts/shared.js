@@ -568,6 +568,8 @@
     });
 
     // ── flat pill (운영/상품/테이블린): 매장 1개당 1개 ──
+    // 단축: 클릭=토글, 더블클릭=단독(solo), Shift+클릭=페어 비교
+    let _pillClickTimer = null;
     function buildFlatPills() {
       const set = curStoreSet();
       STORES.forEach(s => {
@@ -579,10 +581,32 @@
         el.style.color = on ? COLORS[s] : '#94A3B8';
         el.style.background = on ? COLORS[s] + '22' : '';
         el.dataset.store = s;
-        if (STORE_OPEN[s]) el.title = `오픈 ${STORE_OPEN[s]}`;
-        el.addEventListener('click', () => {
+        const hints = [];
+        if (STORE_OPEN[s]) hints.push(`오픈 ${STORE_OPEN[s]}`);
+        hints.push('클릭=토글 · 더블클릭=단독 · Shift+클릭=페어');
+        el.title = hints.join(' · ');
+        el.addEventListener('click', (e) => {
+          const isShift = e.shiftKey;
+          if (_pillClickTimer) return; // 더블클릭 처리 중이면 무시
+          _pillClickTimer = setTimeout(() => {
+            _pillClickTimer = null;
+            const cs = curStoreSet();
+            if (isShift) {
+              // 페어 모드: 클릭한 매장 + 현재 활성된 매장 중 첫번째(자기 제외) 둘만 유지
+              const partner = [...cs].find(x => x !== s);
+              cs.clear();
+              if (partner) cs.add(partner);
+              cs.add(s);
+            } else {
+              if (cs.has(s)) cs.delete(s); else cs.add(s);
+            }
+            buildPills(); updateAllBtn(); emitStores(cs);
+          }, 220);
+        });
+        el.addEventListener('dblclick', () => {
+          if (_pillClickTimer) { clearTimeout(_pillClickTimer); _pillClickTimer = null; }
           const cs = curStoreSet();
-          if (cs.has(s)) cs.delete(s); else cs.add(s);
+          cs.clear(); cs.add(s);
           buildPills(); updateAllBtn(); emitStores(cs);
         });
         pillsEl.appendChild(el);
