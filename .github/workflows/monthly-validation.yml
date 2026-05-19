@@ -34,13 +34,26 @@ jobs:
           echo "ym=$PREV" >> $GITHUB_OUTPUT
           echo "직전 월: $PREV"
 
+      - name: import 검증 (디버그)
+        run: |
+          python -c "from scripts.ops_actions_sync import scrape_okpos_range, apply_okpos; print('import OK')"
+
       - name: 직전 월 OK포스 backfill (단일 월)
         env:
           OKPOS_ID: ${{ secrets.OKPOS_ID }}
           OKPOS_PW: ${{ secrets.OKPOS_PW }}
           TOSS_ID:  ${{ secrets.TOSS_ID }}
           TOSS_PW:  ${{ secrets.TOSS_PW }}
-        run: python scripts/okpos_backfill.py "${{ steps.prev.outputs.ym }}"
+        run: |
+          set -e
+          echo "=== 인자: ${{ steps.prev.outputs.ym }} ==="
+          python -u scripts/okpos_backfill.py "${{ steps.prev.outputs.ym }}" 2>&1 | tee /tmp/backfill.log
+          rc=${PIPESTATUS[0]}
+          if [ $rc -ne 0 ]; then
+            echo "=== backfill 실패 (exit $rc) ==="
+            tail -100 /tmp/backfill.log
+            exit $rc
+          fi
 
       - name: 연간 누적 합산 비교
         run: python scripts/yearly_cross_check.py
