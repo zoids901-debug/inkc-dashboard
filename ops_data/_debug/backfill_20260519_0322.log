@@ -1,8 +1,0 @@
-Traceback (most recent call last):
-  File "/home/runner/work/inkc-dashboard/inkc-dashboard/scripts/okpos_backfill.py", line 18, in <module>
-    from ops_actions_sync import scrape_okpos_range, apply_okpos
-  File "/home/runner/work/inkc-dashboard/inkc-dashboard/scripts/ops_actions_sync.py", line 19, in <module>
-    GH_TOKEN = os.environ['GH_TOKEN']
-               ~~~~~~~~~~^^^^^^^^^^^^
-  File "<frozen os>", line 714, in __getitem__
-KeyError: 'GH_TOKEN'
