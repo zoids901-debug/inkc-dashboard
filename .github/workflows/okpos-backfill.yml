@@ -22,6 +22,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GH_PAT }}
+          persist-credentials: true
 
       - uses: actions/setup-python@v5
         with:
@@ -43,14 +44,31 @@ jobs:
         run: |
           python scripts/okpos_backfill.py "${{ inputs.from_year }}" "${{ inputs.to_year }}"
 
-      - name: Commit raw_okpos
+      - name: Show generated files
         run: |
+          echo "=== ops_data/raw_okpos/ ==="
+          ls -la ops_data/raw_okpos/ || echo "(empty or missing)"
+          echo "=== git status ==="
+          git status --short
+
+      - name: Upload artifact (backup)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: raw_okpos_${{ inputs.from_year }}_${{ inputs.to_year }}
+          path: ops_data/raw_okpos/
+          if-no-files-found: warn
+
+      - name: Commit & push
+        run: |
+          set -e
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add ops_data/raw_okpos/
           if git diff --cached --quiet; then
             echo "변경 없음 — commit 생략"
-          else
-            git commit -m "backfill: OK포스 raw ${{ inputs.from_year }} ~ ${{ inputs.to_year }}"
-            git push
+            exit 0
           fi
+          git commit -m "backfill: OK포스 raw ${{ inputs.from_year }}~${{ inputs.to_year }}"
+          echo "=== push 시도 ==="
+          git push origin HEAD:main 2>&1 || (echo "push 1차 실패 — pull 후 재시도"; git pull --rebase origin main; git push origin HEAD:main)
