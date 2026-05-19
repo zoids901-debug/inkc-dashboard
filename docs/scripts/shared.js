@@ -185,6 +185,86 @@
     }
   }
 
+  // ============================================================
+  // postMessage 기반 동기화 (additive — 기존 syncFrame과 공존)
+  //
+  // 프로토콜:
+  //  - 자식 → 부모: {type:'inkc:ready', tab:'...'}        (페이지 준비됨)
+  //  - 부모 → 자식: {type:'inkc:sync', payload:{...}}     (동기화 명령)
+  //  - 자식 → 부모: {type:'inkc:synced', tab:'...'}       (적용 완료)
+  //
+  // 자식이 응답 있는 탭은 postMessage 경로, 없는 탭은 기존 글로벌 set 경로(fallback).
+  // ============================================================
+  const _pmReady = new Set();   // postMessage 지원 확인된 탭
+  const _pmAckTimers = {};      // 각 탭별 응답 대기 타이머
+
+  function _pmTabFromOrigin(originUrl) {
+    // 어느 탭의 iframe에서 온 메시지인지 src로 식별
+    for (const name of TABS) {
+      const panel = document.getElementById(`tab-${name}`);
+      if (!panel) continue;
+      const frame = panel.querySelector('iframe.tab-frame');
+      if (frame && frame.contentWindow && originUrl === frame.contentWindow) return name;
+    }
+    return null;
+  }
+
+  window.addEventListener('message', (e) => {
+    const msg = e.data;
+    if (!msg || typeof msg !== 'object') return;
+    if (msg.type === 'inkc:ready' && msg.tab) {
+      _pmReady.add(msg.tab);
+      // ready 직후 1회 sync 시도 (그래야 자식이 막 로드됐을 때도 상태 받음)
+      const panel = document.getElementById(`tab-${msg.tab}`);
+      const frame = panel && panel.querySelector('iframe.tab-frame');
+      if (frame) _trySyncViaPostMessage(msg.tab, frame);
+    }
+    if (msg.type === 'inkc:synced' && msg.tab) {
+      if (_pmAckTimers[msg.tab]) {
+        clearTimeout(_pmAckTimers[msg.tab]);
+        delete _pmAckTimers[msg.tab];
+      }
+    }
+  });
+
+  function _buildSyncPayload(name) {
+    const period = App.state.period;
+    if (!period || !period.start) return null;
+    const isTablin = (name === 'tablin');
+    const isPL = (name === 'pl');
+    let stores;
+    if (isTablin) stores = [...App.state.tablinStores];
+    else if (isPL) stores = [...App.state.plStores];
+    else stores = [...App.state.activeStores];
+    return {
+      tab: name,
+      period: { start: period.start, end: period.end, preset: period.preset || '' },
+      stores,
+    };
+  }
+
+  function _trySyncViaPostMessage(name, frame) {
+    if (!_pmReady.has(name)) return false;  // 자식이 아직 ready 안 보냄
+    if (!frame || !frame.contentWindow) return false;
+    const payload = _buildSyncPayload(name);
+    if (!payload) return false;
+    try {
+      frame.contentWindow.postMessage({ type: 'inkc:sync', payload }, '*');
+    } catch (e) {
+      console.warn(`[App] postMessage(${name}) failed:`, e);
+      return false;
+    }
+    // 1초 내 inkc:synced 응답 없으면 fallback 호출
+    if (_pmAckTimers[name]) clearTimeout(_pmAckTimers[name]);
+    _pmAckTimers[name] = setTimeout(() => {
+      delete _pmAckTimers[name];
+      console.warn(`[App] postMessage(${name}) 응답 없음 — fallback 사용`);
+      _pmReady.delete(name);   // 다음부턴 처음부터 fallback 시도
+      syncFrame(name, frame);
+    }, 1000);
+    return true;
+  }
+
   function lazyLoadFrame(name) {
     const panel = document.getElementById(`tab-${name}`);
     if (!panel) return;
@@ -226,6 +306,9 @@
 
   // ── iframe 동기화 (탭별 다른 필터 메커니즘 처리) ──────
   function syncFrame(name, frame) {
+    // postMessage 경로 사용 가능하면 그걸로 (응답 없으면 fallback)
+    if (_pmReady.has(name) && _trySyncViaPostMessage(name, frame)) return;
+
     const period = App.state.period;
     if (!period || !period.start) return;
     const doc = frame.contentDocument;
