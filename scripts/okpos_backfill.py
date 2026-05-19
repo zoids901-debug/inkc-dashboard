@@ -119,48 +119,67 @@ async def backfill_year(year):
     return False
 
 
-def parse_years(args):
-    """인자에서 연도 리스트 추출."""
+async def backfill_single_month(yyyy_mm):
+    """단일 월 fetch — 직전 월 누락 보완용."""
+    print(f'\n=== {yyyy_mm} 단일 월 backfill ===')
+    y, m = map(int, yyyy_mm.split('-'))
+    last_day = calendar.monthrange(y, m)[1]
+    today = date.today()
+    if y == today.year and m == today.month:
+        last_day = today.day
+    start = f'{y:04d}-{m:02d}-01'
+    end = f'{y:04d}-{m:02d}-{last_day:02d}'
+    result = await fetch_range_with_fallback(start, end, label=yyyy_mm)
+    if result:
+        months = save_raw_by_month(result)
+        print(f'  ✓ 성공 — {len(result)}일치, {len(months)}월 저장')
+        return True
+    print(f'  ✗ 실패')
+    return False
+
+
+def parse_args(args):
+    """인자 파싱 — 단일 월(YYYY-MM) 또는 연도 단위."""
+    if len(args) == 1 and '-' in args[0] and len(args[0]) == 7:
+        # YYYY-MM 단일 월
+        return [('month', args[0])]
+    # 연도 단위
     years = []
     if len(args) == 1:
-        # 단일 인자: 연도 또는 YYYY-MM (이전 호환)
-        a = args[0]
-        if '-' in a:
-            # YYYY-MM 단일 — 그 연도만
-            years = [int(a.split('-')[0])]
-        else:
-            years = [int(a)]
+        years = [int(args[0])]
     elif len(args) == 2:
         a, b = args
         if '-' in a or '-' in b:
-            # YYYY-MM YYYY-MM — 범위 내 연도들
             y1 = int(a.split('-')[0])
             y2 = int(b.split('-')[0])
         else:
             y1, y2 = int(a), int(b)
         years = list(range(min(y1, y2), max(y1, y2) + 1))
-    return years
+    return [('year', y) for y in years]
 
 
 async def main():
     if len(sys.argv) < 2:
-        print('Usage: python okpos_backfill.py YYYY [YYYY]')
+        print('Usage:\n  python okpos_backfill.py YYYY          # 연도 전체\n  python okpos_backfill.py YYYY YYYY     # 연도 범위\n  python okpos_backfill.py YYYY-MM       # 단일 월 (매월 1일 보완용)')
         sys.exit(1)
-    years = parse_years(sys.argv[1:])
-    if not years:
-        print('연도 파싱 실패')
+    targets = parse_args(sys.argv[1:])
+    if not targets:
+        print('인자 파싱 실패')
         sys.exit(1)
-    print(f'=== OK포스 backfill (연 단위): {years} ===')
+    print(f'=== OK포스 backfill: {targets} ===')
 
     succ = []
     fail = []
-    for year in years:
-        ok = await backfill_year(year)
-        if ok: succ.append(year)
-        else:  fail.append(year)
-        if year != years[-1]:
-            print('  (다음 연도 전 10초 대기)')
-            time.sleep(10)
+    for kind, val in targets:
+        if kind == 'month':
+            ok = await backfill_single_month(val)
+        else:
+            ok = await backfill_year(val)
+        if ok: succ.append(val)
+        else:  fail.append(val)
+        if (kind, val) != targets[-1]:
+            print('  (다음 대상 전 5초 대기)')
+            time.sleep(5)
     print(f'\n=== 최종: 성공 {succ} / 실패 {fail} ===')
 
 
