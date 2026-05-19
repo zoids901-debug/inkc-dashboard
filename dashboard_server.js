@@ -1258,6 +1258,46 @@ function _drawDailyTable() {
   \`;
 }
 
+
+// ── postMessage 동기화 (부모 셸과 통신) ──
+function _opsApplySync(p) {
+  try {
+    if (!p) return;
+    if (p.period && p.period.start && typeof fpStart !== 'undefined') {
+      fpStart = p.period.start; fpEnd = p.period.end;
+      if (typeof picker !== 'undefined' && picker.setDateRange) {
+        picker.setDateRange(p.period.start, p.period.end);
+      }
+      if (typeof curPreset !== 'undefined') curPreset = p.period.preset || '';
+    }
+    if (Array.isArray(p.stores) && typeof activeStores !== 'undefined') {
+      activeStores.clear();
+      p.stores.forEach(s => activeStores.add(s));
+      if (typeof updateAllBtn === 'function') updateAllBtn();
+      document.querySelectorAll('.pill[data-store]').forEach(el => {
+        if (activeStores.has(el.dataset.store)) {
+          el.classList.add('on');
+          el.style.background = (typeof COLORS !== 'undefined' && COLORS[el.dataset.store]) ? COLORS[el.dataset.store] + '22' : '';
+        } else {
+          el.classList.remove('on');
+          el.style.background = '';
+        }
+      });
+    }
+    if (typeof render === 'function') render();
+  } catch (e) { console.warn('[ops applySync]', e); }
+}
+window.addEventListener('message', (e) => {
+  const m = e.data;
+  if (!m || m.type !== 'inkc:sync') return;
+  _opsApplySync(m.payload);
+  try { window.parent.postMessage({ type: 'inkc:synced', tab: 'ops' }, '*'); } catch (_) {}
+});
+// 부모에게 준비 완료 알림
+if (window.parent !== window) {
+  try { window.parent.postMessage({ type: 'inkc:ready', tab: 'ops' }, '*'); } catch (_) {}
+}
+
 // ── 초기 실행 ────────────────────────────────────────────────────────────────
 render();
 </script>
