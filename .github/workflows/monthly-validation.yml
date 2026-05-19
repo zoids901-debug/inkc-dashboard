@@ -36,6 +36,8 @@ jobs:
 
       - name: 직전 월 OK포스 backfill (단일 월)
         env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+          GH_REPO:  zoids901-debug/inkc-dashboard
           OKPOS_ID: ${{ secrets.OKPOS_ID }}
           OKPOS_PW: ${{ secrets.OKPOS_PW }}
           TOSS_ID:  ${{ secrets.TOSS_ID }}
