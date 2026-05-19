@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-05-19T10:48:24",
+  "checked_at": "2026-05-19T02:17:54",
   "target_date": "2026-05-18",
   "dow": "월",
   "overall": "ok",
@@ -18,8 +18,6 @@
       ],
       "target_date": "2026-05-18",
       "delayed": false,
-      "_z_sales": -0.22,
-      "_z_receipts": -0.54,
       "sales": 3963566,
       "receipts": 234
     },
@@ -31,8 +29,6 @@
       ],
       "target_date": "2026-05-18",
       "delayed": false,
-      "_z_sales": -0.29,
-      "_z_receipts": -0.29,
       "sales": 1812280,
       "receipts": 96
     },
@@ -44,8 +40,6 @@
       ],
       "target_date": "2026-05-18",
       "delayed": false,
-      "_z_sales": -0.68,
-      "_z_receipts": -0.83,
       "sales": 4262164,
       "receipts": 255
     },
@@ -57,8 +51,6 @@
       ],
       "target_date": "2026-05-17",
       "delayed": true,
-      "_z_sales": -1.13,
-      "_z_receipts": -0.01,
       "sales": 4646080,
       "receipts": 336
     },
@@ -70,8 +62,6 @@
       ],
       "target_date": "2026-05-18",
       "delayed": false,
-      "_z_sales": -1.01,
-      "_z_receipts": -1.11,
       "sales": 3038800,
       "receipts": 213
     },
@@ -83,12 +73,84 @@
       ],
       "target_date": "2026-05-18",
       "delayed": false,
-      "_z_sales": -0.13,
-      "_z_receipts": 0.44,
       "sales": 800640,
       "receipts": 67
     }
   ],
+  "cross_check": {
+    "checked_at": "2026-05-19",
+    "yyyy_mm": "2026-05",
+    "overall": "ok",
+    "message": null,
+    "stores": [
+      {
+        "store": "가산",
+        "level": "ok",
+        "raw_total": 93921450,
+        "ops_total": 93921450,
+        "diff": 0,
+        "pct": 0.0,
+        "message": "OK포스 raw와 운영 대시보드 일치",
+        "daily_diffs": [],
+        "daily_diffs_count": 0
+      },
+      {
+        "store": "광주",
+        "level": "ok",
+        "raw_total": 209754790,
+        "ops_total": 209754790,
+        "diff": 0,
+        "pct": 0.0,
+        "message": "OK포스 raw와 운영 대시보드 일치",
+        "daily_diffs": [],
+        "daily_diffs_count": 0
+      },
+      {
+        "store": "다산",
+        "level": "ok",
+        "raw_total": 138043495,
+        "ops_total": 138043495,
+        "diff": 0,
+        "pct": 0.0,
+        "message": "OK포스 raw와 운영 대시보드 일치",
+        "daily_diffs": [],
+        "daily_diffs_count": 0
+      },
+      {
+        "store": "수원",
+        "level": "info",
+        "raw_total": 69163500,
+        "ops_total": 69163500,
+        "diff": 0,
+        "pct": 0.0,
+        "message": "시트/TOSS fallback 매장 — raw와 차이는 정상",
+        "daily_diffs": [],
+        "daily_diffs_count": 0
+      },
+      {
+        "store": "운정",
+        "level": "info",
+        "raw_total": 0,
+        "ops_total": 91524950,
+        "diff": 91524950,
+        "pct": 100.0,
+        "message": "시트/TOSS fallback 매장 — raw와 차이는 정상",
+        "daily_diffs": [],
+        "daily_diffs_count": 0
+      },
+      {
+        "store": "하남",
+        "level": "ok",
+        "raw_total": 14249970,
+        "ops_total": 14249970,
+        "diff": 0,
+        "pct": 0.0,
+        "message": "OK포스 raw와 운영 대시보드 일치",
+        "daily_diffs": [],
+        "daily_diffs_count": 0
+      }
+    ]
+  },
   "notes": {
     "수원": "1일 딜레이로 인해 이틀 전 데이터 검사"
   }
