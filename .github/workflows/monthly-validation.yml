@@ -1,0 +1,67 @@
+name: 월별 종합 보고서
+
+on:
+  schedule:
+    # 매월 1일 UTC 19:00 = 매월 2일 KST 04:00
+    - cron: '0 19 1 * *'
+  workflow_dispatch:
+
+jobs:
+  monthly:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+          persist-credentials: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install deps
+        run: |
+          pip install playwright requests pynacl
+          python -m playwright install --with-deps chromium
+
+      - name: 직전 월 yyyy-mm 계산
+        id: prev
+        run: |
+          PREV=$(date -u -d "$(date -u +%Y-%m-01) -1 day" +%Y-%m)
+          echo "ym=$PREV" >> $GITHUB_OUTPUT
+          echo "직전 월: $PREV"
+
+      - name: 직전 월 OK포스 backfill (단일 월)
+        env:
+          OKPOS_ID: ${{ secrets.OKPOS_ID }}
+          OKPOS_PW: ${{ secrets.OKPOS_PW }}
+          TOSS_ID:  ${{ secrets.TOSS_ID }}
+          TOSS_PW:  ${{ secrets.TOSS_PW }}
+        run: python scripts/okpos_backfill.py "${{ steps.prev.outputs.ym }}"
+
+      - name: 연간 누적 합산 비교
+        run: python scripts/yearly_cross_check.py
+
+      - name: 월간 종합 보고서 메일
+        env:
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          MAIL_TO: zoids@ink-korea.co.kr
+        run: python scripts/monthly_report_mail.py
+        continue-on-error: true
+
+      - name: Commit
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add ops_data/raw_okpos/ ops_data/yearly_cross_check.json
+          if git diff --cached --quiet; then
+            echo "변경 없음 — commit 생략"
+            exit 0
+          fi
+          git commit -m "monthly: ${{ steps.prev.outputs.ym }} 종합 검증"
+          git push origin HEAD:main 2>&1 || (git pull --rebase origin main; git push origin HEAD:main)
