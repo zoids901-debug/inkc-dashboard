@@ -51,6 +51,14 @@ jobs:
             exit $rc
           fi
 
+      - name: Upload backfill log (artifact, 항상)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backfill-log
+          path: /tmp/backfill.log
+          if-no-files-found: warn
+
       - name: 연간 누적 합산 비교
         run: python scripts/yearly_cross_check.py
 
