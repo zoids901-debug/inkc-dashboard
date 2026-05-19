@@ -73,13 +73,20 @@ def parse_num(v):
 
 # ── OKPOS day-total 스크래핑 ──────────────────────
 async def scrape_okpos(yyyy_mm):
-    log('OKPOS scraping:', yyyy_mm)
+    """월 단위 fetch (기존 호환). 내부적으로 scrape_okpos_range 호출."""
     y, m = yyyy_mm.split('-')
     days_in_month = (date(int(y), int(m) % 12 + 1, 1) - timedelta(days=1)).day if int(m) < 12 else 31
     today = date.today()
     last_day = today.day if today.year == int(y) and today.month == int(m) else days_in_month
     start = f'{y}-{m}-01'
     end   = f'{y}-{m}-{last_day:02d}'
+    return await scrape_okpos_range(start, end, label=yyyy_mm)
+
+
+async def scrape_okpos_range(start, end, label=''):
+    """일자 범위로 OK포스 fetch. start='YYYY-MM-DD', end='YYYY-MM-DD'.
+    1년치 한 번에 받을 때도 사용 (backfill용)."""
+    log(f'OKPOS scraping {label or start+"~"+end}: {start} ~ {end}')
 
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True, args=['--disable-popup-blocking'])
