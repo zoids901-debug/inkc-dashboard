@@ -193,7 +193,10 @@
     const frame = (visibleSub || panel).querySelector('iframe.tab-frame');
     if (!frame) return;
     if (!frame.src && frame.dataset.src) {
-      frame.src = frame.dataset.src;
+      // 캐시 우회: 페이지 로드 시점 timestamp를 쿼리로 붙여서 매번 새 fetch
+      const baseSrc = frame.dataset.src;
+      const sep = baseSrc.includes('?') ? '&' : '?';
+      frame.src = baseSrc + sep + 'v=' + Date.now();
       frame.addEventListener('load', () => {
         injectFrameStyles(name, frame);
         setTimeout(() => syncFrame(name, frame), 800);
