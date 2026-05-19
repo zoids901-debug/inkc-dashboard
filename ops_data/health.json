@@ -1,79 +1,95 @@
 {
-  "checked_at": "2026-05-19T10:37:52",
+  "checked_at": "2026-05-19T10:48:24",
   "target_date": "2026-05-18",
   "dow": "월",
-  "overall": "bad",
+  "overall": "ok",
   "summary": {
-    "ok": 5,
+    "ok": 6,
     "warn": 0,
     "bad": 0,
-    "missing": 1
+    "missing": 0
   },
   "stores": [
     {
       "store": "가산",
       "status": "ok",
-      "messages": [],
-      "z": {
-        "sales": -0.22,
-        "receipts": -0.54
-      },
+      "messages": [
+        "매출·영수 모두 평소 월요일 패턴 (정상)"
+      ],
+      "target_date": "2026-05-18",
+      "delayed": false,
+      "_z_sales": -0.22,
+      "_z_receipts": -0.54,
       "sales": 3963566,
       "receipts": 234
     },
     {
       "store": "광주",
       "status": "ok",
-      "messages": [],
-      "z": {
-        "sales": -0.29,
-        "receipts": -0.29
-      },
+      "messages": [
+        "매출·영수 모두 평소 월요일 패턴 (정상)"
+      ],
+      "target_date": "2026-05-18",
+      "delayed": false,
+      "_z_sales": -0.29,
+      "_z_receipts": -0.29,
       "sales": 1812280,
       "receipts": 96
     },
     {
       "store": "다산",
       "status": "ok",
-      "messages": [],
-      "z": {
-        "sales": -0.68,
-        "receipts": -0.83
-      },
+      "messages": [
+        "매출·영수 모두 평소 월요일 패턴 (정상)"
+      ],
+      "target_date": "2026-05-18",
+      "delayed": false,
+      "_z_sales": -0.68,
+      "_z_receipts": -0.83,
       "sales": 4262164,
       "receipts": 255
     },
     {
       "store": "수원",
-      "status": "missing",
+      "status": "ok",
       "messages": [
-        "매출 데이터 없음"
+        "매출·영수 모두 평소 일요일 패턴 (정상)"
       ],
-      "z": {},
-      "sales": null,
-      "receipts": 195
+      "target_date": "2026-05-17",
+      "delayed": true,
+      "_z_sales": -1.13,
+      "_z_receipts": -0.01,
+      "sales": 4646080,
+      "receipts": 336
     },
     {
       "store": "운정",
       "status": "ok",
-      "messages": [],
-      "z": {
-        "sales": -1.01,
-        "receipts": -1.11
-      },
+      "messages": [
+        "매출·영수 모두 평소 월요일 패턴 (정상)"
+      ],
+      "target_date": "2026-05-18",
+      "delayed": false,
+      "_z_sales": -1.01,
+      "_z_receipts": -1.11,
       "sales": 3038800,
       "receipts": 213
     },
     {
       "store": "하남",
       "status": "ok",
-      "messages": [],
-      "z": {
-        "sales": -0.13,
-        "receipts": 0.44
-      },
+      "messages": [
+        "매출·영수 모두 평소 월요일 패턴 (정상)"
+      ],
+      "target_date": "2026-05-18",
+      "delayed": false,
+      "_z_sales": -0.13,
+      "_z_receipts": 0.44,
       "sales": 800640,
       "receipts": 67
     }
-  ]
+  ],
+  "notes": {
+    "수원": "1일 딜레이로 인해 이틀 전 데이터 검사"
+  }
 }
