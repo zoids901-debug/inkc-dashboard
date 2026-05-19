@@ -156,6 +156,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .dt-total{font-weight:700;color:#1E293B}
 .dt-wknd .dt-date,.dt-wknd .dt-dow{color:#EF4444}
 .dt-wknd td{background:#FFF5F5}
+.dt-ctrl{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0 6px;padding:6px 10px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px;font-size:11px}
+.dt-ctrl-label{font-weight:700;color:#475569;margin-right:2px}
+.dt-mode-btn{padding:3px 10px;border:1px solid #CBD5E1;background:#fff;border-radius:4px;cursor:pointer;font-size:11px;color:#475569}
+.dt-mode-btn.active{background:#0EA5E9;color:#fff;border-color:#0EA5E9}
+.dt-heat-btn{padding:3px 10px;border:1px solid #CBD5E1;background:#fff;border-radius:4px;cursor:pointer;font-size:11px;color:#475569}
+.dt-heat-btn.on{background:#0EA5E9;color:#fff;border-color:#0EA5E9}
+.dt-store-chips{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+.dt-store-chip{padding:3px 9px;border:1px solid #CBD5E1;background:#fff;border-radius:12px;cursor:pointer;font-size:11px;font-weight:600}
+.dt-store-chip.off{background:#F1F5F9;color:#94A3B8;text-decoration:line-through;border-color:#E2E8F0}
+.dt-table .dt-th{cursor:pointer;user-select:none}
+.dt-table .dt-th:hover{background:#E2E8F0!important}
 
 /* ── 순위 테이블 ── */
 .rank-table{width:100%;border-collapse:collapse}
@@ -1101,23 +1112,65 @@ function renderDow(ad, stores) {
 }
 
 // ── 7. 일자별 매장 상세 테이블 ──────────────────────────────────────────────
+let _dtState = { mode:'both', heatmap:true, hidden:new Set() };
+let _dtCache = null;
+
+function _setDtMode(m) { _dtState.mode = m; _drawDailyTable(); }
+function _toggleDtHeat() { _dtState.heatmap = !_dtState.heatmap; _drawDailyTable(); }
+function _toggleDtStore(s) {
+  if (_dtState.hidden.has(s)) _dtState.hidden.delete(s);
+  else _dtState.hidden.add(s);
+  _drawDailyTable();
+}
+
 function renderDailyTable(ad, yad, stores) {
+  _dtCache = { ad, yad, stores };
+  _drawDailyTable();
+}
+
+function _drawDailyTable() {
+  if (!_dtCache) return;
+  const { ad, yad, stores } = _dtCache;
   const el = document.getElementById('sec-daily');
   const allDates = dates(ad);
   if (!allDates.length) { el.innerHTML = '<div class="card-title">일자별 매장 데이터</div><div style="color:#94A3B8;padding:12px">데이터 없음</div>'; return; }
 
-  // 합계행 계산
-  const totSales    = stores.reduce((a,s)=>a+storeSum(ad,s,'sales'),0);
-  const totReceipts = stores.reduce((a,s)=>a+storeSum(ad,s,'receipts'),0);
+  const showSales = _dtState.mode !== 'rec';
+  const showRec   = _dtState.mode !== 'sales';
+  const colsPerStore = (showSales?1:0) + (showRec?1:0);
+  const visibleStores = stores.filter(s => !_dtState.hidden.has(s));
+
+  // 매장별 매출 max (히트맵 정규화용)
+  const maxSales = {};
+  stores.forEach(s => {
+    maxSales[s] = Math.max(0, ...(ad[s]||[]).map(d=>d.sales||0));
+  });
+
+  // 합계행
+  const totSales    = visibleStores.reduce((a,s)=>a+storeSum(ad,s,'sales'),0);
+  const totReceipts = visibleStores.reduce((a,s)=>a+storeSum(ad,s,'receipts'),0);
+
+  // 컨트롤 줄
+  const modeBtn = (m, lbl) => \`<button class="dt-mode-btn \${_dtState.mode===m?'active':''}" onclick="_setDtMode('\${m}')">\${lbl}</button>\`;
+  const chip = s => \`<span class="dt-store-chip \${_dtState.hidden.has(s)?'off':''}" style="color:\${_dtState.hidden.has(s)?'':COLORS[s]};border-color:\${_dtState.hidden.has(s)?'':COLORS[s]+'66'}" onclick="_toggleDtStore('\${s}')">\${s}</span>\`;
+  const ctrl = \`
+    <div class="dt-ctrl">
+      <span class="dt-ctrl-label">표시</span>
+      \${modeBtn('both','매출+영수')}\${modeBtn('sales','매출만')}\${modeBtn('rec','영수만')}
+      <span class="dt-ctrl-label" style="margin-left:8px">히트맵</span>
+      <button class="dt-heat-btn \${_dtState.heatmap?'on':''}" onclick="_toggleDtHeat()">\${_dtState.heatmap?'ON':'OFF'}</button>
+      <div class="dt-store-chips">\${stores.map(chip).join('')}</div>
+    </div>\`;
 
   // 헤더
   let th = '<th class="dt-th">날짜</th><th class="dt-th">요일</th>';
-  stores.forEach(s => { th += \`<th class="dt-th" colspan="2" style="color:\${COLORS[s]}">\${s}</th>\`; });
-  th += '<th class="dt-th" colspan="2">합계</th>';
+  visibleStores.forEach(s => { th += \`<th class="dt-th" colspan="\${colsPerStore}" style="color:\${COLORS[s]}" onclick="_toggleDtStore('\${s}')" title="클릭해서 숨김">\${s}</th>\`; });
+  th += \`<th class="dt-th" colspan="\${colsPerStore}">합계</th>\`;
 
   let subTh = '<th></th><th></th>';
-  stores.forEach(() => { subTh += '<th class="dt-sub">매출</th><th class="dt-sub">영수</th>'; });
-  subTh += '<th class="dt-sub">매출</th><th class="dt-sub">영수</th>';
+  const subCols = (showSales?'<th class="dt-sub">매출</th>':'') + (showRec?'<th class="dt-sub">영수</th>':'');
+  visibleStores.forEach(() => { subTh += subCols; });
+  subTh += subCols;
 
   // 데이터 행
   let rows = '';
@@ -1126,33 +1179,39 @@ function renderDailyTable(ad, yad, stores) {
     const isWknd = new Date(dt).getDay()===0||new Date(dt).getDay()===6;
     let daySales = 0, dayRec = 0;
     let cells = '';
-    stores.forEach(s => {
+    visibleStores.forEach(s => {
       const r = (ad[s]||[]).find(d=>d.date===dt);
       const sv = r&&r.sales!=null ? r.sales : null;
       const rv = r&&r.receipts!=null ? r.receipts : null;
       if (sv!=null) daySales+=sv;
       if (rv!=null) dayRec+=rv;
-      cells += \`<td class="dt-td">\${sv!=null?w(sv):'-'}</td><td class="dt-td">\${rv!=null?n0(rv):'-'}</td>\`;
+      const heat = _dtState.heatmap && sv!=null && maxSales[s]>0
+        ? \`background:rgba(14,165,233,\${(sv/maxSales[s]*0.28).toFixed(3)})\`
+        : '';
+      if (showSales) cells += \`<td class="dt-td" style="\${heat}">\${sv!=null?w(sv):'-'}</td>\`;
+      if (showRec)   cells += \`<td class="dt-td">\${rv!=null?n0(rv):'-'}</td>\`;
     });
     rows += \`<tr class="\${isWknd?'dt-wknd':''}">
       <td class="dt-date">\${dt.slice(5)}</td>
       <td class="dt-dow">\${dow}</td>
       \${cells}
-      <td class="dt-td dt-sum">\${daySales>0?w(daySales):'-'}</td>
-      <td class="dt-td dt-sum">\${dayRec>0?n0(dayRec):'-'}</td>
+      \${showSales?\`<td class="dt-td dt-sum">\${daySales>0?w(daySales):'-'}</td>\`:''}
+      \${showRec?\`<td class="dt-td dt-sum">\${dayRec>0?n0(dayRec):'-'}</td>\`:''}
     </tr>\`;
   });
 
   // 합계행
   let sumCells = '';
-  stores.forEach(s => {
+  visibleStores.forEach(s => {
     const sv = storeSum(ad,s,'sales');
     const rv = storeSum(ad,s,'receipts');
-    sumCells += \`<td class="dt-td dt-total">\${sv>0?w(sv):'-'}</td><td class="dt-td dt-total">\${rv>0?n0(rv):'-'}</td>\`;
+    if (showSales) sumCells += \`<td class="dt-td dt-total">\${sv>0?w(sv):'-'}</td>\`;
+    if (showRec)   sumCells += \`<td class="dt-td dt-total">\${rv>0?n0(rv):'-'}</td>\`;
   });
 
   el.innerHTML = \`
     <div class="card-title">일자별 매장 데이터</div>
+    \${ctrl}
     <div class="dt-scroll">
       <table class="dt-table">
         <thead>
@@ -1164,8 +1223,8 @@ function renderDailyTable(ad, yad, stores) {
           <tr>
             <td class="dt-date dt-total" colspan="2">합계</td>
             \${sumCells}
-            <td class="dt-td dt-total">\${totSales>0?w(totSales):'-'}</td>
-            <td class="dt-td dt-total">\${totReceipts>0?n0(totReceipts):'-'}</td>
+            \${showSales?\`<td class="dt-td dt-total">\${totSales>0?w(totSales):'-'}</td>\`:''}
+            \${showRec?\`<td class="dt-td dt-total">\${totReceipts>0?n0(totReceipts):'-'}</td>\`:''}
           </tr>
         </tfoot>
       </table>
