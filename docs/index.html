@@ -112,6 +112,7 @@
 .hp-store-icon.missing{color:#EF4444}
 .hp-store-name{font-weight:600;color:#1E293B}
 .hp-store-z{color:#94A3B8;font-size:11px;margin-left:auto;font-variant-numeric:tabular-nums}
+.hp-store-date{color:#64748B;font-size:10px;margin-left:auto;background:#F1F5F9;padding:1px 6px;border-radius:8px;font-weight:500}
 .hp-store-msg{color:#475569;font-size:11px;line-height:1.5;padding-left:20px}
 .hp-footer{padding:8px 14px;background:#F8FAFC;border-top:1px solid #E2E8F0;font-size:10px;color:#94A3B8;border-radius:0 0 8px 8px}
 </style>
@@ -161,13 +162,13 @@
     const stores = _health.stores || [];
     const rows = stores.map(s => {
       const icon = {ok:'✓', warn:'⚠', bad:'✗', missing:'✗'}[s.status] || '·';
-      const zStr = (s.z && s.z.sales !== undefined) ? `Z=${s.z.sales>=0?'+':''}${s.z.sales}` : '';
+      const dateTag = s.delayed ? `<span class="hp-store-date">${s.target_date} 데이터</span>` : '';
       const msg = s.messages && s.messages.length ? s.messages.join(' / ') : '평소 패턴 범위 (정상)';
       return `<div class="hp-store">
         <div class="hp-store-hdr">
           <span class="hp-store-icon ${s.status}">${icon}</span>
           <span class="hp-store-name">${s.store}점</span>
-          <span class="hp-store-z">${zStr}</span>
+          ${dateTag}
         </div>
         <div class="hp-store-msg">${msg}</div>
       </div>`;
@@ -178,7 +179,7 @@
         <span class="hp-close" onclick="event.stopPropagation();document.getElementById('healthPanel').hidden=true">×</span>
       </div>
       <div class="health-panel-body">${rows}</div>
-      <div class="hp-footer">학습 기간: 최근 3년 · 검사 시각: ${_health.checked_at}<br>Z-score는 평소 같은 요일 대비 표준편차 단위. |Z|≥2 의심, ≥3 강한 이상.</div>
+      <div class="hp-footer">학습 기간: 최근 3년 매장×요일별 평균 · 검사 시각: ${_health.checked_at}<br>수원점은 1일 딜레이로 이틀 전 데이터로 검사합니다.</div>
     `;
     panel.hidden = false;
   };
