@@ -51,13 +51,18 @@ jobs:
             exit $rc
           fi
 
-      - name: Upload backfill log (artifact, 항상)
+      - name: Save log to repo (디버그)
         if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: backfill-log
-          path: /tmp/backfill.log
-          if-no-files-found: warn
+        run: |
+          mkdir -p ops_data/_debug
+          cp /tmp/backfill.log "ops_data/_debug/backfill_$(date -u +%Y%m%d_%H%M).log" 2>/dev/null || echo no log
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add ops_data/_debug/
+          if ! git diff --cached --quiet; then
+            git commit -m "debug: backfill log"
+            git push origin HEAD:main 2>&1 || (git pull --rebase origin main; git push origin HEAD:main)
+          fi
 
       - name: 연간 누적 합산 비교
         run: python scripts/yearly_cross_check.py
