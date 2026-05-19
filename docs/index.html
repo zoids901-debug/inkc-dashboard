@@ -22,7 +22,14 @@
     <span class="hdr-group">테이블린</span>
     <button class="hdr-tab" data-tab="tablin">운영</button>
   </div>
+  <div class="hdr-health" id="hdrHealth" hidden onclick="toggleHealthPanel()" title="데이터 건강검진 — 클릭해서 상세 보기">
+    <span class="hh-icon" id="hhIcon">·</span>
+    <span class="hh-label" id="hhLabel">확인 중…</span>
+  </div>
 </div>
+
+<!-- 데이터 상태 상세 패널 -->
+<div class="health-panel" id="healthPanel" hidden></div>
 
 <!-- 컨트롤 바 -->
 <div class="ctrl-bar">
@@ -82,5 +89,111 @@
 </div>
 
 <script src="scripts/shared.js"></script>
+
+<style>
+.hdr-health{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:14px;background:rgba(255,255,255,0.08);color:#fff;font-size:12px;cursor:pointer;border:1px solid rgba(255,255,255,0.15);margin-left:auto;transition:background 0.2s}
+.hdr-health:hover{background:rgba(255,255,255,0.16)}
+.hdr-health.ok{border-color:#10B981}
+.hdr-health.warn{border-color:#F59E0B;background:rgba(245,158,11,0.15)}
+.hdr-health.bad{border-color:#EF4444;background:rgba(239,68,68,0.15)}
+.hh-icon{font-size:14px;line-height:1}
+.health-panel{position:fixed;top:54px;right:16px;width:380px;max-width:calc(100vw - 32px);max-height:60vh;overflow-y:auto;background:#fff;border:1px solid #E2E8F0;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.15);z-index:1000;font-size:12px}
+.health-panel-hdr{padding:10px 14px;border-bottom:1px solid #E2E8F0;background:#F8FAFC;border-radius:8px 8px 0 0;display:flex;justify-content:space-between;align-items:center}
+.health-panel-hdr .hp-title{font-weight:700;color:#1E293B}
+.health-panel-hdr .hp-close{cursor:pointer;color:#94A3B8;font-size:14px;padding:0 4px}
+.health-panel-body{padding:10px 14px}
+.hp-store{padding:8px 0;border-bottom:1px solid #F1F5F9}
+.hp-store:last-child{border-bottom:none}
+.hp-store-hdr{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.hp-store-icon{font-weight:700;font-size:13px}
+.hp-store-icon.ok{color:#10B981}
+.hp-store-icon.warn{color:#F59E0B}
+.hp-store-icon.bad{color:#EF4444}
+.hp-store-icon.missing{color:#EF4444}
+.hp-store-name{font-weight:600;color:#1E293B}
+.hp-store-z{color:#94A3B8;font-size:11px;margin-left:auto;font-variant-numeric:tabular-nums}
+.hp-store-msg{color:#475569;font-size:11px;line-height:1.5;padding-left:20px}
+.hp-footer{padding:8px 14px;background:#F8FAFC;border-top:1px solid #E2E8F0;font-size:10px;color:#94A3B8;border-radius:0 0 8px 8px}
+</style>
+<script>
+(function() {
+  const HEALTH_URL = 'ops_data/health.json';
+  let _health = null;
+  async function loadHealth() {
+    try {
+      const r = await fetch(HEALTH_URL + '?v=' + Date.now());
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      _health = await r.json();
+      renderHealthChip();
+    } catch (e) {
+      console.warn('[health] load failed:', e);
+      const chip = document.getElementById('hdrHealth');
+      if (chip) chip.hidden = true;
+    }
+  }
+  function renderHealthChip() {
+    if (!_health) return;
+    const chip = document.getElementById('hdrHealth');
+    const icon = document.getElementById('hhIcon');
+    const lbl = document.getElementById('hhLabel');
+    if (!chip) return;
+    chip.hidden = false;
+    chip.className = 'hdr-health ' + (_health.overall || 'ok');
+    const sm = _health.summary || {};
+    const total = (sm.ok||0) + (sm.warn||0) + (sm.bad||0) + (sm.missing||0);
+    const badCnt = (sm.bad||0) + (sm.missing||0);
+    const warnCnt = sm.warn||0;
+    if (_health.overall === 'bad') {
+      icon.textContent = '✗';
+      lbl.textContent = `데이터 이상 (${badCnt}/${total})`;
+    } else if (_health.overall === 'warn') {
+      icon.textContent = '⚠';
+      lbl.textContent = `데이터 의심 (${warnCnt}/${total})`;
+    } else {
+      icon.textContent = '✓';
+      lbl.textContent = `데이터 정상 (${total}/${total})`;
+    }
+  }
+  window.toggleHealthPanel = function() {
+    const panel = document.getElementById('healthPanel');
+    if (!panel || !_health) return;
+    if (!panel.hidden) { panel.hidden = true; return; }
+    const stores = _health.stores || [];
+    const rows = stores.map(s => {
+      const icon = {ok:'✓', warn:'⚠', bad:'✗', missing:'✗'}[s.status] || '·';
+      const zStr = (s.z && s.z.sales !== undefined) ? `Z=${s.z.sales>=0?'+':''}${s.z.sales}` : '';
+      const msg = s.messages && s.messages.length ? s.messages.join(' / ') : '평소 패턴 범위 (정상)';
+      return `<div class="hp-store">
+        <div class="hp-store-hdr">
+          <span class="hp-store-icon ${s.status}">${icon}</span>
+          <span class="hp-store-name">${s.store}점</span>
+          <span class="hp-store-z">${zStr}</span>
+        </div>
+        <div class="hp-store-msg">${msg}</div>
+      </div>`;
+    }).join('');
+    panel.innerHTML = `
+      <div class="health-panel-hdr">
+        <span class="hp-title">데이터 건강검진 · ${_health.target_date} (${_health.dow}요일)</span>
+        <span class="hp-close" onclick="event.stopPropagation();document.getElementById('healthPanel').hidden=true">×</span>
+      </div>
+      <div class="health-panel-body">${rows}</div>
+      <div class="hp-footer">학습 기간: 최근 3년 · 검사 시각: ${_health.checked_at}<br>Z-score는 평소 같은 요일 대비 표준편차 단위. |Z|≥2 의심, ≥3 강한 이상.</div>
+    `;
+    panel.hidden = false;
+  };
+  // 외부 클릭으로 닫기
+  document.addEventListener('click', (e) => {
+    const panel = document.getElementById('healthPanel');
+    const chip = document.getElementById('hdrHealth');
+    if (!panel || panel.hidden) return;
+    if (panel.contains(e.target) || (chip && chip.contains(e.target))) return;
+    panel.hidden = true;
+  });
+  // 페이지 로드 후 한 번
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', loadHealth);
+  else loadHealth();
+})();
+</script>
 </body>
 </html>
