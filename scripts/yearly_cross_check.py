@@ -16,7 +16,8 @@ RAW_DIR = OPS_DIR / "raw_okpos"
 OUT_PATH = OPS_DIR / "yearly_cross_check.json"
 
 STORES = ['가산', '다산', '수원', '하남', '광주', '운정']
-EXPECTED_DIFF_STORES = {"수원", "운정"}
+# raw와 직접 비교 가능 — 수원은 raw_okpos와 100% 일치, 운정은 토스 raw 저장됨
+EXPECTED_DIFF_STORES = set()
 
 PCT_WARN = 1.0
 PCT_BAD  = 5.0
