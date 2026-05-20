@@ -46,7 +46,45 @@ def prev_month():
     return f'{last_of_prev.year:04d}-{last_of_prev.month:02d}', last_of_prev
 
 
-def build_html(prev_ym, prev_last_date, ycc, raw_data, ops_data):
+def build_product_section(pcc):
+    """상품 대시보드 검증 섹션 — product_cross_check.json 기반."""
+    if not pcc or not pcc.get('results'):
+        return ""
+    by_store_year = defaultdict(dict)
+    for r in pcc['results']:
+        by_store_year[r['store']][r['year']] = r
+    years = sorted(set(r['year'] for r in pcc['results']))
+    prod_stores = ['가산', '다산', '수원', '하남', '광주', '운정']
+    header = '<th style="padding:8px 10px;background:#F8FAFC;border-bottom:2px solid #E2E8F0;text-align:left">매장</th>'
+    for y in years:
+        header += f'<th style="padding:8px 10px;background:#F8FAFC;border-bottom:2px solid #E2E8F0;text-align:right">{y}</th>'
+    rows = ""
+    for store in prod_stores:
+        if store not in by_store_year:
+            continue
+        row = f'<tr><td style="padding:8px 10px;border-bottom:1px solid #E2E8F0;font-weight:600">{store}점</td>'
+        for y in years:
+            r = by_store_year[store].get(y)
+            if not r:
+                row += '<td style="padding:8px 10px;border-bottom:1px solid #E2E8F0;text-align:right;color:#CBD5E1">—</td>'
+                continue
+            color = {"ok": "#10B981", "warn": "#F59E0B", "bad": "#EF4444"}.get(r['level'], "#64748B")
+            icon = {"ok": "✓", "warn": "⚠", "bad": "✗"}.get(r['level'], "·")
+            row += (f'<td style="padding:8px 10px;border-bottom:1px solid #E2E8F0;text-align:right;'
+                    f'font-variant-numeric:tabular-nums" title="{r.get("message","")}">'
+                    f'<span style="color:{color}">{icon}</span> {w(r.get("prod_total",0))}</td>')
+        row += '</tr>'
+        rows += row
+    return f"""
+      <h3 style="color:#334155;margin:24px 0 8px;font-size:15px">상품 대시보드 검증 (OK포스 상품별 매출현황 = 정가 기준)</h3>
+      <table style="width:100%;border-collapse:collapse;background:#fff;border:1px solid #E2E8F0;border-radius:6px;overflow:hidden">
+        <thead><tr>{header}</tr></thead>
+        <tbody>{rows}</tbody>
+      </table>
+      <div style="font-size:11px;color:#94A3B8;margin-top:6px">상품 대시보드는 할인·부가세 미적용 정가 → OK포스 원본과 0원 일치가 정상</div>"""
+
+
+def build_html(prev_ym, prev_last_date, ycc, raw_data, ops_data, pcc=None):
     # 직전 월 매장별 매출 + 일치 여부
     rows_prev = ""
     for store in STORES:
@@ -55,17 +93,15 @@ def build_html(prev_ym, prev_last_date, ycc, raw_data, ops_data):
         raw_sum = sum((r.get('sales') or 0) for r in raw_records)
         ops_sum = sum((r.get('sales') or 0) for r in ops_records)
         diff = ops_sum - raw_sum
-        match_icon = "✓" if abs(diff) < 100_000 else ("ⓘ" if store in ('수원', '운정') else "✗")
-        color = "#10B981" if match_icon == "✓" else ("#0EA5E9" if match_icon == "ⓘ" else "#EF4444")
-        if raw_sum == 0 and store in ('운정',):
-            note = "TOSS 매장 (OK포스 없음)"
+        if raw_sum == 0:
+            note = "raw 없음 (backfill 전)"
             match_icon = "·"; color = "#94A3B8"
         elif abs(diff) < 100_000:
             note = "raw와 대시보드 일치"
-        elif store in ('수원', '운정'):
-            note = "fallback 매장 — 차이 정상"
+            match_icon = "✓"; color = "#10B981"
         else:
             note = f"차이 {w(abs(diff))}"
+            match_icon = "✗"; color = "#EF4444"
         rows_prev += f"""
         <tr>
           <td style="padding:8px 10px;border-bottom:1px solid #E2E8F0;color:{color};font-weight:700;width:30px">{match_icon}</td>
@@ -126,6 +162,8 @@ def build_html(prev_ym, prev_last_date, ycc, raw_data, ops_data):
 
       {yearly_section}
 
+      {build_product_section(pcc)}
+
       <div style="margin-top:24px;padding-top:16px;border-top:1px solid #E2E8F0;color:#94A3B8;font-size:11px;line-height:1.6">
         검사 시각: {datetime.now().isoformat(timespec='seconds')}<br>
         매월 2일 KST 04:00 자동 실행 · 직전 월 OK포스 재fetch + 매장×연도 누적 검증<br>
@@ -148,8 +186,10 @@ def main():
     raw_data = json.loads(raw_path.read_text(encoding="utf-8")) if raw_path.exists() else {}
     ops_data = json.loads(ops_path.read_text(encoding="utf-8")) if ops_path.exists() else {}
     ycc = json.loads(YCC_PATH.read_text(encoding="utf-8")) if YCC_PATH.exists() else {}
+    pcc_path = OPS_DIR / "product_cross_check.json"
+    pcc = json.loads(pcc_path.read_text(encoding="utf-8")) if pcc_path.exists() else {}
 
-    html = build_html(prev_ym, prev_last, ycc, raw_data, ops_data)
+    html = build_html(prev_ym, prev_last, ycc, raw_data, ops_data, pcc)
     subject = f"[인크 월간보고] 📊 {prev_ym} 매장별 합계 + 매장×연도 누적 검증"
 
     msg = MIMEMultipart("alternative")
