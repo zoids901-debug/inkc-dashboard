@@ -131,7 +131,9 @@ def build_html(prev_ym, prev_last_date, ycc, raw_data, ops_data, pcc=None):
                 lv = r.get('level', 'ok')
                 color = {"ok":"#10B981","warn":"#F59E0B","bad":"#EF4444","info":"#0EA5E9","no_raw":"#94A3B8"}.get(lv, "#64748B")
                 icon = {"ok":"✓","warn":"⚠","bad":"✗","info":"ⓘ","no_raw":"?"}.get(lv, "·")
-                row += f'<td style="padding:8px 10px;border-bottom:1px solid #E2E8F0;text-align:right;font-variant-numeric:tabular-nums" title="{r.get(\"message\",\"\")}"><span style="color:{color}">{icon}</span> {w(r.get(\"ops_total\",0))}</td>'
+                _msg = r.get("message", "")
+                _ops = w(r.get("ops_total", 0))
+                row += f'<td style="padding:8px 10px;border-bottom:1px solid #E2E8F0;text-align:right;font-variant-numeric:tabular-nums" title="{_msg}"><span style="color:{color}">{icon}</span> {_ops}</td>'
             row += '</tr>'
             yearly_rows += row
         yearly_section = f"""
