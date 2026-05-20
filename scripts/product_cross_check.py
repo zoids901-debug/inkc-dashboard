@@ -64,6 +64,9 @@ def main():
                      for loc, items in raw_j.get('stores', {}).items()}
         stores = sorted(set(raw_store) | {s for (y, s) in prod_sy if y == year})
         for store in stores:
+            # 운정은 토스(TOSS) 매장 — OK포스 상품별 매출현황에 없음, 검증 대상 아님
+            if store == '운정':
+                continue
             rn = raw_store.get(store, 0)
             pn = prod_sy.get((year, store), 0)
             if rn == 0 and pn == 0:
