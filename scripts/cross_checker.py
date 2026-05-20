@@ -21,8 +21,9 @@ PCT_WARN = 1.0   # ≥ 1% → 의심
 PCT_BAD  = 5.0   # ≥ 5% → 강한 이상
 ABS_MIN  = 50_000  # 절대 차이 5만원 미만은 noise 무시
 
-# 의도된 fallback 매장 — 시트 매출 우선이라 raw와 다른 게 정상
-EXPECTED_DIFF_STORES = {"수원", "운정"}
+# raw와 직접 비교 가능한 매장 — 전 매장 정상 검증
+# (수원: raw_okpos와 100% 일치 확인됨 / 운정: 토스 raw도 raw_okpos에 저장되어 비교 가능)
+EXPECTED_DIFF_STORES = set()
 
 
 def load_month(path):
