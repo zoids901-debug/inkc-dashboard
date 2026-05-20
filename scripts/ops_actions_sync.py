@@ -246,8 +246,11 @@ def scrape_toss(yyyy_mm):
         raise RuntimeError(f'TOSS API 오류: {result.get("error")}')
     records = []
     for r in result.get('success', {}).get('report', []):
-        sales = r.get('content', {}).get('sales', {}).get('netSalesAmount', 0) or 0
+        net = r.get('content', {}).get('sales', {}).get('netSalesAmount', 0) or 0
         receipts = r.get('content', {}).get('sales', {}).get('paymentCount', 0) or 0
+        # 운영 대시보드 기준 통일: 토스 netSalesAmount는 부가세 포함 → ÷1.1로 부가세 제외
+        # (OK포스 5개 매장 raw가 부가세 제외 순매출이므로 운정도 동일 기준)
+        sales = round(net / 1.1)
         if sales > 0:
             records.append({'date': r['date'], 'sales': sales, 'receipts': receipts})
     log(f'  TOSS records: {len(records)}')
