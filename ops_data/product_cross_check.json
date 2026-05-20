@@ -1,0 +1,235 @@
+{
+  "checked_at": "2026-05-20",
+  "results": [
+    {
+      "year": "2021",
+      "store": "가산",
+      "raw_total": 899039100,
+      "prod_total": 899039100,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "OK포스 원본과 일치"
+    },
+    {
+      "year": "2021",
+      "store": "하남",
+      "raw_total": 184736400,
+      "prod_total": 184736400,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "OK포스 원본과 일치"
+    },
+    {
+      "year": "2022",
+      "store": "가산",
+      "raw_total": 2305844700,
+      "prod_total": 2305844700,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "OK포스 원본과 일치"
+    },
+    {
+      "year": "2022",
+      "store": "하남",
+      "raw_total": 316982700,
+      "prod_total": 316937200,
+      "diff": -45500,
+      "pct": 0.01,
+      "level": "ok",
+      "message": "OK포스 원본과 일치"
+    },
+    {
+      "year": "2023",
+      "store": "가산",
+      "raw_total": 2084985100,
+      "prod_total": 2084985100,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "OK포스 원본과 일치"
+    },
+    {
+      "year": "2023",
+      "store": "다산",
+      "raw_total": 207560500,
+      "prod_total": 207560500,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "OK포스 원본과 일치"
+    },
+    {
+      "year": "2023",
+      "store": "하남",
+      "raw_total": 308917200,
+      "prod_total": 308917200,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "OK포스 원본과 일치"
+    },
+    {
+      "year": "2024",
+      "store": "가산",
+      "raw_total": 2056758800,
+      "prod_total": 2056758800,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "OK포스 원본과 일치"
+    },
+    {
+      "year": "2024",
+      "store": "광주",
+      "raw_total": 3437638700,
+      "prod_total": 3437638700,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "OK포스 원본과 일치"
+    },
+    {
+      "year": "2024",
+      "store": "다산",
+      "raw_total": 3487675560,
+      "prod_total": 3487675560,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "OK포스 원본과 일치"
+    },
+    {
+      "year": "2024",
+      "store": "수원",
+      "raw_total": 1524573200,
+      "prod_total": 1524573200,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "OK포스 원본과 일치"
+    },
+    {
+      "year": "2024",
+      "store": "하남",
+      "raw_total": 349758600,
+      "prod_total": 349758600,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "OK포스 원본과 일치"
+    },
+    {
+      "year": "2025",
+      "store": "가산",
+      "raw_total": 1914820300,
+      "prod_total": 1914820300,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "OK포스 원본과 일치"
+    },
+    {
+      "year": "2025",
+      "store": "광주",
+      "raw_total": 2449208800,
+      "prod_total": 2449208800,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "OK포스 원본과 일치"
+    },
+    {
+      "year": "2025",
+      "store": "다산",
+      "raw_total": 3028719000,
+      "prod_total": 3028719000,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "OK포스 원본과 일치"
+    },
+    {
+      "year": "2025",
+      "store": "수원",
+      "raw_total": 1319206570,
+      "prod_total": 1319206570,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "OK포스 원본과 일치"
+    },
+    {
+      "year": "2025",
+      "store": "하남",
+      "raw_total": 350260000,
+      "prod_total": 350260000,
+      "diff": 0,
+      "pct": 0.0,
+      "level": "ok",
+      "message": "OK포스 원본과 일치"
+    },
+    {
+      "year": "2026",
+      "store": "가산",
+      "raw_total": 770296400,
+      "prod_total": 770411800,
+      "diff": 115400,
+      "pct": 0.01,
+      "level": "ok",
+      "message": "미세한 차이 (진행 중인 해 시차 등)"
+    },
+    {
+      "year": "2026",
+      "store": "광주",
+      "raw_total": 721265000,
+      "prod_total": 720734700,
+      "diff": -530300,
+      "pct": 0.07,
+      "level": "ok",
+      "message": "미세한 차이 (진행 중인 해 시차 등)"
+    },
+    {
+      "year": "2026",
+      "store": "다산",
+      "raw_total": 1141581800,
+      "prod_total": 1139608400,
+      "diff": -1973400,
+      "pct": 0.17,
+      "level": "ok",
+      "message": "미세한 차이 (진행 중인 해 시차 등)"
+    },
+    {
+      "year": "2026",
+      "store": "수원",
+      "raw_total": 539881250,
+      "prod_total": 535722450,
+      "diff": -4158800,
+      "pct": 0.77,
+      "level": "ok",
+      "message": "미세한 차이 (진행 중인 해 시차 등)"
+    },
+    {
+      "year": "2026",
+      "store": "운정",
+      "raw_total": 0,
+      "prod_total": 767283718,
+      "diff": 767283718,
+      "pct": 100.0,
+      "level": "bad",
+      "message": "큰 차이 — 상품 누락/오분류 의심"
+    },
+    {
+      "year": "2026",
+      "store": "하남",
+      "raw_total": 121838100,
+      "prod_total": 121533600,
+      "diff": -304500,
+      "pct": 0.25,
+      "level": "ok",
+      "message": "미세한 차이 (진행 중인 해 시차 등)"
+    }
+  ]
+}
