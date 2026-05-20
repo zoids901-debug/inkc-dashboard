@@ -213,16 +213,6 @@
     },
     {
       "year": "2026",
-      "store": "운정",
-      "raw_total": 0,
-      "prod_total": 767283718,
-      "diff": 767283718,
-      "pct": 100.0,
-      "level": "bad",
-      "message": "큰 차이 — 상품 누락/오분류 의심"
-    },
-    {
-      "year": "2026",
       "store": "하남",
       "raw_total": 121838100,
       "prod_total": 121533600,
