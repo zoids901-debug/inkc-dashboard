@@ -404,13 +404,14 @@ async def main():
         existing = {s: [{'date': f'{_y:04d}-{_m:02d}-{d:02d}'} for d in range(1, _last + 1)]
                     for s in EXPECTED_STORES}
 
+    # raw 저장 버킷 — OK포스 5매장 + 운정(TOSS) 모두 교차검증용으로 저장
+    raw_by_store = {s: [] for s in EXPECTED_STORES}
+
     # 1) OKPOS
     okpos_by_date = {}
     try:
         records = await scrape_okpos(yyyy_mm)
         okpos_by_date = apply_okpos(records, existing)
-        # OK포스 raw 별도 저장 (교차 검증용 — 보정 전 원본)
-        raw_by_store = {s: [] for s in EXPECTED_STORES}
         for dt in sorted(okpos_by_date.keys()):
             for store in EXPECTED_STORES:
                 rec = okpos_by_date.get(dt, {}).get(store)
@@ -420,12 +421,6 @@ async def main():
                         'sales': rec.get('sales', 0),
                         'receipts': rec.get('receipts', 0),
                     })
-        raw_dir = 'ops_data/raw_okpos'
-        os.makedirs(raw_dir, exist_ok=True)
-        raw_path = f'{raw_dir}/{yyyy_mm}.json'
-        with open(raw_path, 'w', encoding='utf-8') as f:
-            json.dump(raw_by_store, f, ensure_ascii=False, indent=2)
-        log(f'  OK포스 raw 저장: {raw_path} ({sum(len(v) for v in raw_by_store.values())}건)')
     except Exception as e:
         log(f'OKPOS 실패: {e}')
 
@@ -433,8 +428,24 @@ async def main():
     try:
         toss_records = scrape_toss(yyyy_mm)
         apply_toss(toss_records, existing)
+        # 운정 토스 raw도 교차검증용으로 저장 (scrape_toss는 부가세 제외 ÷1.1 적용된 값)
+        raw_by_store['운정'] = [
+            {'date': r['date'], 'sales': r['sales'], 'receipts': r['receipts']}
+            for r in toss_records
+        ]
     except Exception as e:
         log(f'TOSS 실패: {e}')
+
+    # OK포스 + 운정 raw 저장 (교차 검증용 — 보정 전 원본)
+    try:
+        raw_dir = 'ops_data/raw_okpos'
+        os.makedirs(raw_dir, exist_ok=True)
+        raw_path = f'{raw_dir}/{yyyy_mm}.json'
+        with open(raw_path, 'w', encoding='utf-8') as f:
+            json.dump(raw_by_store, f, ensure_ascii=False, indent=2)
+        log(f'  raw 저장: {raw_path} ({sum(len(v) for v in raw_by_store.values())}건)')
+    except Exception as e:
+        log(f'raw 저장 실패: {e}')
 
     # 3) 6개 시트
     for store in SHEET_IDS:
