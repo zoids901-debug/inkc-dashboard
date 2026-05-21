@@ -51,6 +51,34 @@ def build_tablin_section(t):
       </table>
       <div style="font-size:11px;color:#94A3B8;margin-top:6px">테이블린 — POS 누락 + 매장×요일 베이스라인 이상치 (매일 23시 동기화 기준)</div>"""
 
+def build_product_section(p):
+    """인크 메일에 합칠 상품 대시보드 일 점검 섹션."""
+    if not p or not p.get("stores"):
+        return ''
+    color_map = {"ok": "#10B981", "warn": "#F59E0B", "bad": "#EF4444", "missing": "#EF4444"}
+    rows = ''
+    for r in p["stores"]:
+        st = r.get("status", "ok")
+        c = color_map.get(st, "#64748B")
+        ic = {"ok": "✓", "warn": "⚠", "bad": "✗", "missing": "✗"}.get(st, "·")
+        dt_tag = (f" <span style='color:#94A3B8;font-size:11px'>({r.get('target_date','')} 데이터)</span>"
+                  if r.get("delayed") else "")
+        msg = ' / '.join(r.get("messages", []))
+        rows += f"""
+        <tr>
+          <td style="padding:8px 10px;border-bottom:1px solid #E2E8F0;color:{c};font-weight:700;width:30px">{ic}</td>
+          <td style="padding:8px 10px;border-bottom:1px solid #E2E8F0;font-weight:600;width:90px">{r.get('store','')}점{dt_tag}</td>
+          <td style="padding:8px 10px;border-bottom:1px solid #E2E8F0;color:#475569;font-size:13px">{msg}</td>
+        </tr>"""
+    s = p.get("summary", {})
+    return f"""
+      <h3 style="color:#334155;margin:24px 0 8px;font-size:15px">🧾 상품 대시보드 점검 (정상 {s.get('ok',0)} / 의심 {s.get('warn',0)} / 이상 {s.get('bad',0)} / 누락 {s.get('missing',0)})</h3>
+      <table style="width:100%;border-collapse:collapse;background:#fff;border:1px solid #E2E8F0;border-radius:6px;overflow:hidden">
+        {rows}
+      </table>
+      <div style="font-size:11px;color:#94A3B8;margin-top:6px">상품 대시보드 — 어제 일자별 데이터 6개 매장 수집 여부 + 운정은 토스 원본과 직접 대조</div>"""
+
+
 REPO_ROOT = Path(os.environ.get("GITHUB_WORKSPACE", Path(__file__).resolve().parents[1]))
 HEALTH_PATH = REPO_ROOT / "ops_data" / "health.json"
 
@@ -140,6 +168,8 @@ def build_html(h, tablin=None):
       </table>
 
       {cc_section}
+
+      {build_product_section(h.get("product_health"))}
 
       {build_tablin_section(tablin)}
 

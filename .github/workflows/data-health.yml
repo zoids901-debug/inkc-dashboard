@@ -26,6 +26,13 @@ jobs:
         run: python scripts/cross_checker.py
         continue-on-error: true  # raw_okpos 없는 초기엔 fail 가능 — 비치명
 
+      - name: Run product dashboard health (상품 대시보드 일 점검)
+        env:
+          TOSS_ID: ${{ secrets.TOSS_ID }}
+          TOSS_PW: ${{ secrets.TOSS_PW }}
+        run: python scripts/product_health.py
+        continue-on-error: true  # 토스 조회 실패해도 비치명
+
       - name: Run anomaly detector (시계열 + 교차 검증 통합)
         run: python scripts/anomaly_detector.py
 
@@ -33,7 +40,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add ops_data/health.json ops_data/cross_check.json
+          git add ops_data/health.json ops_data/cross_check.json ops_data/product_health.json
           if git diff --cached --quiet; then
             echo "health.json 변경 없음 — commit 생략"
           else

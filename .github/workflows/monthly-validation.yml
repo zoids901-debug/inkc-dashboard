@@ -56,7 +56,10 @@ jobs:
       - name: 연간 누적 합산 비교
         run: python scripts/yearly_cross_check.py
 
-      - name: 상품 대시보드 검증 (OK포스 원본 대조)
+      - name: 상품 대시보드 검증 (OK포스 원본 + 운정 토스 대조)
+        env:
+          TOSS_ID: ${{ secrets.TOSS_ID }}
+          TOSS_PW: ${{ secrets.TOSS_PW }}
         run: python scripts/product_cross_check.py
         continue-on-error: true
 

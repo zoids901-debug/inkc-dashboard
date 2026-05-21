@@ -16,6 +16,7 @@ OPS_DIR = REPO_ROOT / "ops_data"
 BASELINE_PATH = OPS_DIR / "baseline.json"
 HEALTH_PATH = OPS_DIR / "health.json"
 CROSS_CHECK_PATH = OPS_DIR / "cross_check.json"
+PRODUCT_HEALTH_PATH = OPS_DIR / "product_health.json"
 
 DOW_NAMES = ["월", "화", "수", "목", "금", "토", "일"]
 Z_WARN = 2.0
@@ -46,6 +47,11 @@ def load_for_date(d):
 def load_cross_check():
     if not CROSS_CHECK_PATH.exists(): return None
     return json.loads(CROSS_CHECK_PATH.read_text(encoding="utf-8"))
+
+
+def load_product_health():
+    if not PRODUCT_HEALTH_PATH.exists(): return None
+    return json.loads(PRODUCT_HEALTH_PATH.read_text(encoding="utf-8"))
 
 
 def z_score(actual, mean, std):
@@ -182,12 +188,27 @@ def main():
     else:
         cross_block = {"overall": "no_data", "message": "교차 검증 결과 없음"}
 
-    # 전체 상태 — 시계열과 교차 검증 중 더 나쁜 쪽
+    # ── 상품 대시보드 일 점검 통합 ──
+    product = load_product_health()
+    if product:
+        product_block = {
+            "checked_at": product.get("checked_at"),
+            "target_date": product.get("target_date"),
+            "overall": product.get("overall", "ok"),
+            "summary": product.get("summary", {}),
+            "stores": product.get("stores", []),
+        }
+    else:
+        product_block = {"overall": "no_data", "message": "상품 대시보드 점검 결과 없음"}
+
+    # 전체 상태 — 시계열·교차 검증·상품 대시보드 중 가장 나쁜 쪽
+    priority = {"ok": 0, "no_data": 0, "warn": 1, "bad": 2, "missing": 2}
     cross_overall = cross_block.get("overall", "ok")
-    priority = {"ok": 0, "no_data": 0, "warn": 1, "bad": 2}
+    product_overall = product_block.get("overall", "ok")
     overall = ts_status
-    if priority.get(cross_overall, 0) > priority.get(ts_status, 0):
-        overall = cross_overall
+    for cand in (cross_overall, product_overall):
+        if priority.get(cand, 0) > priority.get(overall, 0):
+            overall = cand
 
     health = {
         "checked_at": datetime.now().isoformat(timespec="seconds"),
@@ -197,6 +218,7 @@ def main():
         "summary": status_counts,
         "stores": results,
         "cross_check": cross_block,
+        "product_health": product_block,
         "notes": {
             "수원": "1일 딜레이로 인해 이틀 전 데이터 검사",
         },
@@ -214,6 +236,11 @@ def main():
     for s in (cross_block.get("stores") or []):
         icon = {"ok":"✓", "warn":"⚠", "bad":"✗", "info":"ⓘ"}.get(s.get("level"), "·")
         print(f"  {icon} {s['store']}: {s.get('message','')} (차이 {s.get('diff',0):+,}, {s.get('pct',0):.1f}%)")
+    print(f"\n=== 상품 대시보드 일 점검 ===")
+    print(f"전체: {product_block.get('overall','no_data').upper()}")
+    for s in (product_block.get("stores") or []):
+        icon = {"ok":"✓", "warn":"⚠", "bad":"✗", "missing":"✗"}.get(s.get("status"), "·")
+        print(f"  {icon} {s['store']}: {' / '.join(s.get('messages', []))}")
     print(f"\n→ 저장: {HEALTH_PATH} (전체 상태: {overall.upper()})")
 
 
