@@ -1,84 +1,84 @@
 {
-  "checked_at": "2026-05-20T21:47:05",
-  "target_date": "2026-05-19",
-  "dow": "화",
-  "overall": "ok",
+  "checked_at": "2026-05-21T01:05:59",
+  "target_date": "2026-05-20",
+  "dow": "수",
+  "overall": "warn",
   "summary": {
-    "ok": 6,
-    "warn": 0,
+    "ok": 5,
+    "warn": 1,
     "bad": 0,
     "missing": 0
   },
   "stores": [
     {
       "store": "가산",
-      "status": "ok",
+      "status": "warn",
       "messages": [
-        "매출·영수 모두 평소 화요일 패턴 (정상)"
+        "영수건수 152건 — 평소 수요일보다 50% 적음 (의심)"
       ],
-      "target_date": "2026-05-19",
+      "target_date": "2026-05-20",
       "delayed": false,
-      "sales": 4282580,
-      "receipts": 241
+      "sales": 2315400,
+      "receipts": 152
     },
     {
       "store": "광주",
       "status": "ok",
       "messages": [
-        "매출·영수 모두 평소 화요일 패턴 (정상)"
+        "매출·영수 모두 평소 수요일 패턴 (정상)"
       ],
-      "target_date": "2026-05-19",
+      "target_date": "2026-05-20",
       "delayed": false,
-      "sales": 11277564,
-      "receipts": 824
+      "sales": 2937190,
+      "receipts": 172
     },
     {
       "store": "다산",
       "status": "ok",
       "messages": [
-        "매출·영수 모두 평소 화요일 패턴 (정상)"
+        "매출·영수 모두 평소 수요일 패턴 (정상)"
       ],
-      "target_date": "2026-05-19",
+      "target_date": "2026-05-20",
       "delayed": false,
-      "sales": 4257940,
-      "receipts": 264
+      "sales": 5702414,
+      "receipts": 337
     },
     {
       "store": "수원",
       "status": "ok",
       "messages": [
-        "매출·영수 모두 평소 월요일 패턴 (정상)"
+        "매출·영수 모두 평소 화요일 패턴 (정상)"
       ],
-      "target_date": "2026-05-18",
+      "target_date": "2026-05-19",
       "delayed": true,
-      "sales": 2372500,
-      "receipts": 195
+      "sales": 2145500,
+      "receipts": 187
     },
     {
       "store": "운정",
       "status": "ok",
       "messages": [
-        "매출·영수 모두 평소 화요일 패턴 (정상)"
+        "매출·영수 모두 평소 수요일 패턴 (정상)"
       ],
-      "target_date": "2026-05-19",
+      "target_date": "2026-05-20",
       "delayed": false,
-      "sales": 2598000,
-      "receipts": 222
+      "sales": 3826000,
+      "receipts": 289
     },
     {
       "store": "하남",
       "status": "ok",
       "messages": [
-        "매출·영수 모두 평소 화요일 패턴 (정상)"
+        "매출·영수 모두 평소 수요일 패턴 (정상)"
       ],
-      "target_date": "2026-05-19",
+      "target_date": "2026-05-20",
       "delayed": false,
-      "sales": 752780,
-      "receipts": 67
+      "sales": 608900,
+      "receipts": 51
     }
   ],
   "cross_check": {
-    "checked_at": "2026-05-20",
+    "checked_at": "2026-05-21",
     "yyyy_mm": "2026-05",
     "overall": "ok",
     "message": null,
@@ -86,8 +86,8 @@
       {
         "store": "가산",
         "level": "ok",
-        "raw_total": 98204030,
-        "ops_total": 98204030,
+        "raw_total": 100519430,
+        "ops_total": 100519430,
         "diff": 0,
         "pct": 0.0,
         "message": "OK포스 raw와 운영 대시보드 일치",
@@ -97,8 +97,8 @@
       {
         "store": "광주",
         "level": "ok",
-        "raw_total": 221032354,
-        "ops_total": 221032354,
+        "raw_total": 223969544,
+        "ops_total": 223969544,
         "diff": 0,
         "pct": 0.0,
         "message": "OK포스 raw와 운영 대시보드 일치",
@@ -108,8 +108,8 @@
       {
         "store": "다산",
         "level": "ok",
-        "raw_total": 142301435,
-        "ops_total": 142301435,
+        "raw_total": 148003849,
+        "ops_total": 148003849,
         "diff": 0,
         "pct": 0.0,
         "message": "OK포스 raw와 운영 대시보드 일치",
@@ -130,8 +130,8 @@
       {
         "store": "운정",
         "level": "ok",
-        "raw_total": 85802500,
-        "ops_total": 85802500,
+        "raw_total": 89628500,
+        "ops_total": 89628500,
         "diff": 0,
         "pct": 0.0,
         "message": "OK포스 raw와 운영 대시보드 일치",
@@ -141,13 +141,80 @@
       {
         "store": "하남",
         "level": "ok",
-        "raw_total": 15002750,
-        "ops_total": 15002750,
+        "raw_total": 15611650,
+        "ops_total": 15611650,
         "diff": 0,
         "pct": 0.0,
         "message": "OK포스 raw와 운영 대시보드 일치",
         "daily_diffs": [],
         "daily_diffs_count": 0
+      }
+    ]
+  },
+  "product_health": {
+    "checked_at": "2026-05-21",
+    "target_date": "2026-05-20",
+    "overall": "ok",
+    "summary": {
+      "ok": 6,
+      "warn": 0,
+      "bad": 0,
+      "missing": 0
+    },
+    "stores": [
+      {
+        "store": "가산",
+        "target_date": "2026-05-20",
+        "delayed": false,
+        "status": "ok",
+        "messages": [
+          "110종 / 정가매출 2,455,500원 — 정상 수집"
+        ]
+      },
+      {
+        "store": "다산",
+        "target_date": "2026-05-20",
+        "delayed": false,
+        "status": "ok",
+        "messages": [
+          "147종 / 정가매출 5,935,300원 — 정상 수집"
+        ]
+      },
+      {
+        "store": "하남",
+        "target_date": "2026-05-20",
+        "delayed": false,
+        "status": "ok",
+        "messages": [
+          "43종 / 정가매출 639,600원 — 정상 수집"
+        ]
+      },
+      {
+        "store": "광주",
+        "target_date": "2026-05-20",
+        "delayed": false,
+        "status": "ok",
+        "messages": [
+          "89종 / 정가매출 3,109,000원 — 정상 수집"
+        ]
+      },
+      {
+        "store": "수원",
+        "target_date": "2026-05-19",
+        "delayed": true,
+        "status": "ok",
+        "messages": [
+          "73종 / 정가매출 2,145,500원 — 정상 수집"
+        ]
+      },
+      {
+        "store": "운정",
+        "target_date": "2026-05-20",
+        "delayed": false,
+        "status": "ok",
+        "messages": [
+          "88종 / 정가매출 4,208,600원 — 토스 원본과 일치"
+        ]
       }
     ]
   },
