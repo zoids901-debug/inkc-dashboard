@@ -373,9 +373,7 @@ function getMonthlyTargets(start, end) {
   return res;
 }
 
-// 목표 표시 기준: 'month' = 월 전체 목표 / 'range' = 선택 기간 목표
-let TARGET_MODE = 'month';
-function setTargetMode(m){ if (m===TARGET_MODE) return; TARGET_MODE = m; render(); }
+// 목표 기준: 월 전체(월말까지) 목표 고정 — KPI·매장별 표 모두 동일 기준
 
 // 선택 범위 [start,end]가 (한 개 이상의) 달 전체를 정확히 덮는지
 function isFullMonthRange(start, end){
@@ -646,12 +644,10 @@ function render() {
 function renderPace(ad, yad, start, end, stores, monthlyTargets) {
   const totalSales   = sum(ad,'sales');
   const fullMonth    = isFullMonthRange(start, end);
-  const totalTarget  = TARGET_MODE==='range'
-    ? sum(ad,'target')
-    : Object.values(monthlyTargets).reduce((a,v)=>a+v,0);
+  const totalTarget  = Object.values(monthlyTargets).reduce((a,v)=>a+v,0);
   // 목표/실매출 일자 불일치 매장 안내
   const badStores = stores.filter(s => targetCoverage(ad[s]||[], fullMonth, s).mismatch);
-  const targetNote = (TARGET_MODE==='month' && !fullMonth) ? ' <span class="range-note">(월 전체)</span>' : '';
+  const targetNote = !fullMonth ? ' <span class="range-note">(월 전체)</span>' : '';
   const targetFlag = badStores.length
     ? \` <span class="warn-flag" title="목표/실매출 일자 불일치: \${badStores.map(s=>s+'점').join(', ')} — 매장별 실적 표 ⚠ 참고">⚠</span>\`
     : '';
@@ -769,12 +765,12 @@ function renderPace(ad, yad, start, end, stores, monthlyTargets) {
 function renderRank(ad, yad, stores, monthlyTargets) {
   const el = document.getElementById('sec-rank');
   const fullMonth = isFullMonthRange(fpStart, fpEnd);
-  const modeLabel = TARGET_MODE==='range' ? '선택 기간 목표' : '월 전체 목표';
+  const modeLabel = '월 전체 목표';
 
   const rows = stores.map(s => {
     const sales     = storeSum(ad, s, 'sales');
     const cov       = targetCoverage(ad[s]||[], fullMonth, s);
-    const target    = TARGET_MODE==='range' ? cov.rangeTarget : (monthlyTargets[s] || 0);
+    const target    = monthlyTargets[s] || 0;
     const receipts  = storeSum(ad, s, 'receipts');
     const ySales    = storeSum(yad, s, 'sales');
     const yReceipts = storeSum(yad, s, 'receipts');
@@ -832,10 +828,6 @@ function renderRank(ad, yad, stores, monthlyTargets) {
       <div class="card-title" style="margin:0">매장별 실적
         \${rows.length===2 ? '<span class="range-note" style="color:#92400E">· 페어 비교 모드</span>' : ''}
         \${!fullMonth ? '<span class="range-note">· 부분 기간 ('+modeLabel+')</span>' : ''}
-      </div>
-      <div class="tmode-wrap" title="목표 표시 기준: 월 전체 = 선택 범위가 걸친 달의 전체 목표 / 선택 기간 = 선택한 날짜 범위의 목표만 합산">
-        <button class="tmode-btn \${TARGET_MODE==='month'?'active':''}" onclick="setTargetMode('month')">월 전체 목표</button>
-        <button class="tmode-btn \${TARGET_MODE==='range'?'active':''}" onclick="setTargetMode('range')">선택 기간 목표</button>
       </div>
     </div>
     <table class="rank-table">
