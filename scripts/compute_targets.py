@@ -116,7 +116,8 @@ def compute_month(year, month, dry=False):
 
     if not dry:
         p = OPS_DIR / f"{year:04d}-{month:02d}.json"
-        p.write_text(json.dumps(cur, ensure_ascii=False, separators=(',', ':')),
+        # ops_actions_sync.py와 동일하게 indent=2로 기록 (형식 통일)
+        p.write_text(json.dumps(cur, ensure_ascii=False, indent=2),
                      encoding="utf-8")
     return changed
 
