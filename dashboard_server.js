@@ -386,8 +386,10 @@ function isFullMonthRange(start, end){
 
 // 한 매장의 선택 범위 내 목표/실매출 일자 정합성
 //   rows = ad[s] (이미 선택 범위로 필터된 해당 매장 행들)
-function targetCoverage(rows, fullMonth){
+function targetCoverage(rows, fullMonth, store){
   const td = today();
+  // 수원은 데이터가 1일 늦게 들어옴 → 최근 2일은 '실매출 누락' 판정에서 제외
+  const cutoff = (store === '수원') ? addDays(td, -2) : td;
   let salesDays=0, targetDays=0, salesNoTarget=0, pastTargetNoSales=0;
   const rangeTarget = (rows||[]).reduce((a,d)=>a+(d.target||0),0);
   (rows||[]).forEach(d=>{
@@ -395,7 +397,7 @@ function targetCoverage(rows, fullMonth){
     if (hasS) salesDays++;
     if (hasT) targetDays++;
     if (hasS && !hasT) salesNoTarget++;          // 실매출 있는데 목표 없음 → 달성률 과대
-    if (hasT && !hasS && d.date < td) pastTargetNoSales++; // 지난 날(오늘 제외)인데 실매출 누락 의심
+    if (hasT && !hasS && d.date < cutoff) pastTargetNoSales++; // 지난 날(딜레이 여유 제외) 실매출 누락 의심
   });
   // 경고: 목표/실매출 일자 자체가 어긋날 때만 (부분기간 표시는 별도 안내)
   const mismatch = salesNoTarget>0 || pastTargetNoSales>0;
@@ -648,7 +650,7 @@ function renderPace(ad, yad, start, end, stores, monthlyTargets) {
     ? sum(ad,'target')
     : Object.values(monthlyTargets).reduce((a,v)=>a+v,0);
   // 목표/실매출 일자 불일치 매장 안내
-  const badStores = stores.filter(s => targetCoverage(ad[s]||[], fullMonth).mismatch);
+  const badStores = stores.filter(s => targetCoverage(ad[s]||[], fullMonth, s).mismatch);
   const targetNote = (TARGET_MODE==='month' && !fullMonth) ? ' <span class="range-note">(월 전체)</span>' : '';
   const targetFlag = badStores.length
     ? \` <span class="warn-flag" title="목표/실매출 일자 불일치: \${badStores.map(s=>s+'점').join(', ')} — 매장별 실적 표 ⚠ 참고">⚠</span>\`
@@ -770,7 +772,7 @@ function renderRank(ad, yad, stores, monthlyTargets) {
 
   const rows = stores.map(s => {
     const sales     = storeSum(ad, s, 'sales');
-    const cov       = targetCoverage(ad[s]||[], fullMonth);
+    const cov       = targetCoverage(ad[s]||[], fullMonth, s);
     const target    = TARGET_MODE==='range' ? cov.rangeTarget : (monthlyTargets[s] || 0);
     const receipts  = storeSum(ad, s, 'receipts');
     const ySales    = storeSum(yad, s, 'sales');
