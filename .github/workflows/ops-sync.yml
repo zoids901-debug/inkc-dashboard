@@ -27,7 +27,7 @@ jobs:
 
       - name: Install Python deps
         run: |
-          pip install playwright requests
+          pip install playwright requests holidays
           python -m playwright install --with-deps chromium
 
       - name: Run sync (OKPOS + TOSS + Sheets → ops_data/{YYYY-MM}.json)
@@ -39,6 +39,9 @@ jobs:
           TOSS_ID:  ${{ secrets.TOSS_ID }}
           TOSS_PW:  ${{ secrets.TOSS_PW }}
         run: python scripts/ops_actions_sync.py
+
+      - name: 일자별 목표 자동계산 (전년 동월 평일/주말 평균 × 배율)
+        run: python scripts/compute_targets.py
 
       - name: Build docs/index.html
         run: node build.js

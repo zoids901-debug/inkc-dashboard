@@ -367,7 +367,7 @@ def patch_store_from_sheet(store, yyyy_mm, existing, okpos_by_date):
         if entry.get('receipts') == 1 and (entry.get('sales') or 0) > 200_000:
             entry['receipts'] = None
 
-        if sd.get('target') is not None: entry['target'] = int(sd['target'])
+        # 목표(target)는 compute_targets.py가 자동계산 — 시트값 미사용
         if sd.get('staff')  is not None: entry['staff']  = int(sd['staff'])
         if entry.get('sales') and entry.get('receipts'):
             entry['per_receipt'] = entry['sales'] // entry['receipts']

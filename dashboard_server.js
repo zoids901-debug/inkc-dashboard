@@ -395,7 +395,7 @@ function targetCoverage(rows, fullMonth){
     if (hasS) salesDays++;
     if (hasT) targetDays++;
     if (hasS && !hasT) salesNoTarget++;          // 실매출 있는데 목표 없음 → 달성률 과대
-    if (hasT && !hasS && d.date <= td) pastTargetNoSales++; // 지난 날인데 실매출 누락 의심
+    if (hasT && !hasS && d.date < td) pastTargetNoSales++; // 지난 날(오늘 제외)인데 실매출 누락 의심
   });
   // 경고: 목표/실매출 일자 자체가 어긋날 때만 (부분기간 표시는 별도 안내)
   const mismatch = salesNoTarget>0 || pastTargetNoSales>0;
