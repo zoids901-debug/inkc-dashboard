@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-05-21T01:05:59",
+  "checked_at": "2026-05-21T21:23:15",
   "target_date": "2026-05-20",
   "dow": "수",
   "overall": "warn",
@@ -119,8 +119,8 @@
       {
         "store": "수원",
         "level": "ok",
-        "raw_total": 71309000,
-        "ops_total": 71309000,
+        "raw_total": 74124400,
+        "ops_total": 74124400,
         "diff": 0,
         "pct": 0.0,
         "message": "OK포스 raw와 운영 대시보드 일치",

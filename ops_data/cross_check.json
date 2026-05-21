@@ -39,8 +39,8 @@
     {
       "store": "수원",
       "level": "ok",
-      "raw_total": 71309000,
-      "ops_total": 71309000,
+      "raw_total": 74124400,
+      "ops_total": 74124400,
       "diff": 0,
       "pct": 0.0,
       "message": "OK포스 raw와 운영 대시보드 일치",
