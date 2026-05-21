@@ -736,6 +736,7 @@ function renderPace(ad, yad, start, end, stores, monthlyTargets) {
         <div class="sub">목표 \${kor(totalTarget)}\${targetNote}</div>
         \${yoyHtml(yoyAch, 'p')}
         <div class="progress"><div class="progress-fill" style="width:\${Math.min(achRate||0,100)}%;background:\${fillColor}"></div></div>
+        <div class="sub" style="color:#94A3B8;font-size:10px;margin-top:4px">목표 산정: 전년 동월比 120% 초과달성 · 운정점은 수원점 154% 적용</div>
       </div>
       <div class="pace-item">
         <div class="lbl">실매출</div>
