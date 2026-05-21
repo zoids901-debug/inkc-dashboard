@@ -776,8 +776,8 @@ function renderRank(ad, yad, stores, monthlyTargets) {
       <td>${i+1}</td>
       <td><span class="store-dot" style="background:${COLORS[r.s]}"></span>${r.s}점</td>
       <td>${w(r.target)}${flag}</td>
-      <td>${w(r.sales)}${r.yoyPct!=null?'<span class="'+ySign+'">'+pctSign(r.yoyPct)+'</span>':''}</td>
       <td>${r.achR!=null?'<div class="ach-wrap"><div class="ach-bar"><div class="ach-fill '+achClass+'" style="width:'+Math.min(Math.max(r.achR,0),100)+'%"></div></div><span class="ach-chip '+achClass+'">'+r.achR+'%</span>'+flag+'</div>':'-'}</td>
+      <td>${w(r.sales)}${r.yoyPct!=null?'<span class="'+ySign+'">'+pctSign(r.yoyPct)+'</span>':''}</td>
       <td>${n0(r.receipts)}</td>
       <td>${r.perRec?r.perRec.toLocaleString()+'원':'-'}</td>
       <td>${r.prod?_fmt(r.prod/1e4,'만원'):'-'}</td>
@@ -801,8 +801,8 @@ function renderRank(ad, yad, stores, monthlyTargets) {
     pairRow = `<tr style="background:#FEF3C7;border-top:2px solid #F59E0B;font-weight:600">
       <td colspan="2" style="color:#92400E">차이 (${a.s} − ${b.s})</td>
       <td style="color:#94A3B8">-</td>
-      <td><span class="${dCls(dSales)}">${dW(dSales)}</span></td>
       <td>${dAch!=null?'<span class="'+dCls(dAch)+'">'+sgn(dAch)+Math.abs(dAch)+'%p</span>':'-'}</td>
+      <td><span class="${dCls(dSales)}">${dW(dSales)}</span></td>
       <td><span class="${dCls(dRec)}">${dN0(dRec)}</span></td>
       <td><span class="${dCls(dPerRec)}">${dWon(dPerRec)}</span></td>
       <td><span class="${dCls(dProd)}">${dProd===0?'-':sgn(dProd)+_fmt(Math.abs(dProd)/1e4,'만원')}</span></td>
@@ -818,7 +818,7 @@ function renderRank(ad, yad, stores, monthlyTargets) {
     </div>
     <table class="rank-table">
       <thead><tr>
-        <th>#</th><th>매장</th><th>목표</th><th>실매출</th><th>달성%</th>
+        <th>#</th><th>매장</th><th>목표</th><th>달성%</th><th>실매출</th>
         <th>영수</th><th>객단가</th><th>인당생산량</th>
       </tr></thead>
       <tbody>${tbody}${pairRow}</tbody>
