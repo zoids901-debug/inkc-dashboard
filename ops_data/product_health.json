@@ -1,6 +1,6 @@
 {
-  "checked_at": "2026-05-22",
-  "target_date": "2026-05-21",
+  "checked_at": "2026-05-23",
+  "target_date": "2026-05-22",
   "overall": "ok",
   "summary": {
     "ok": 6,
@@ -11,56 +11,56 @@
   "stores": [
     {
       "store": "가산",
-      "target_date": "2026-05-21",
+      "target_date": "2026-05-22",
       "delayed": false,
       "status": "ok",
       "messages": [
-        "125종 / 정가매출 4,348,200원 — 정상 수집"
+        "133종 / 정가매출 6,582,900원 — 정상 수집"
       ]
     },
     {
       "store": "다산",
-      "target_date": "2026-05-21",
+      "target_date": "2026-05-22",
       "delayed": false,
       "status": "ok",
       "messages": [
-        "144종 / 정가매출 5,709,600원 — 정상 수집"
+        "151종 / 정가매출 5,951,900원 — 정상 수집"
       ]
     },
     {
       "store": "하남",
-      "target_date": "2026-05-21",
+      "target_date": "2026-05-22",
       "delayed": false,
       "status": "ok",
       "messages": [
-        "48종 / 정가매출 867,700원 — 정상 수집"
+        "48종 / 정가매출 639,900원 — 정상 수집"
       ]
     },
     {
       "store": "광주",
-      "target_date": "2026-05-21",
+      "target_date": "2026-05-22",
       "delayed": false,
       "status": "ok",
       "messages": [
-        "135종 / 정가매출 11,488,600원 — 정상 수집"
+        "140종 / 정가매출 17,451,600원 — 정상 수집"
       ]
     },
     {
       "store": "수원",
-      "target_date": "2026-05-20",
+      "target_date": "2026-05-21",
       "delayed": true,
       "status": "ok",
       "messages": [
-        "71종 / 정가매출 2,815,400원 — 정상 수집"
+        "78종 / 정가매출 2,411,700원 — 정상 수집"
       ]
     },
     {
       "store": "운정",
-      "target_date": "2026-05-21",
+      "target_date": "2026-05-22",
       "delayed": false,
       "status": "ok",
       "messages": [
-        "91종 / 정가매출 3,350,000원 — 토스 원본과 일치"
+        "82종 / 정가매출 3,814,000원 — 토스 원본과 일치"
       ]
     }
   ]
