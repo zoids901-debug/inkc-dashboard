@@ -14,7 +14,7 @@ import os
 import sys
 import json
 import urllib.request
-from datetime import date, timedelta
+from datetime import date, timedelta, timezone
 from pathlib import Path
 
 try:
@@ -56,7 +56,7 @@ def store_net(daily, store):
 
 
 def main():
-    today = date.today()
+    today = datetime.now(timezone(timedelta(hours=9))).date()  # KST (UTC 였던 버그 수정)
     results = []
     cache = {}
 
