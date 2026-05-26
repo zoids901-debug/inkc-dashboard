@@ -8,7 +8,7 @@
 출력: ops_data/health.json
 """
 import json, os, statistics
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 REPO_ROOT = Path(os.environ.get("GITHUB_WORKSPACE", Path(__file__).resolve().parents[1]))
@@ -133,7 +133,7 @@ def main():
     if not baseline:
         print("baseline.json 없음 — 학습 먼저"); return
 
-    today = date.today()
+    today = datetime.now(timezone(timedelta(hours=9))).date()  # KST (UTC 였던 버그 수정)
     default_target = today - timedelta(days=1)
     stores_baseline = baseline.get("stores", {})
 
@@ -211,7 +211,7 @@ def main():
             overall = cand
 
     health = {
-        "checked_at": datetime.now().isoformat(timespec="seconds"),
+        "checked_at": datetime.now(timezone(timedelta(hours=9))).isoformat(timespec="seconds"),
         "target_date": default_target.isoformat(),
         "dow": DOW_NAMES[default_target.weekday()],
         "overall": overall,
