@@ -54,7 +54,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "변경 없음 — commit 생략"
           else
-            git commit -m "auto: ops 데이터 동기화 ($(date -u +%Y-%m-%d))"
+            git commit -m "auto: ops 데이터 동기화 ($(TZ=Asia/Seoul date +%Y-%m-%d))"
             git push
           fi
 
