@@ -44,7 +44,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "health.json 변경 없음 — commit 생략"
           else
-            git commit -m "health: $(date -u +%Y-%m-%d) 검사 결과"
+            git commit -m "health: $(TZ=Asia/Seoul date +%Y-%m-%d) 검사 결과"
             git push
           fi
 
