@@ -542,17 +542,12 @@
           if (typeof w.applyVatMode !== 'function') { alert('운영 탭 로딩 중입니다 — 잠시 후 다시'); return; }
           w.VAT_MODE = w.VAT_MODE === 'incl' ? 'excl' : 'incl';
           w.applyVatMode();
-          // 통합 버튼 라벨/스타일 동기화
-          const lbl = document.getElementById('vatLabelUnified');
-          if (lbl) lbl.textContent = 'VAT ' + (w.VAT_MODE === 'incl' ? '포함' : '제외');
+          // 라벨은 "VAT 제외" 고정 (액션 라벨). 활성 시 색만 강조 (=적용중)
           if (w.VAT_MODE === 'excl') {
             vatBtn.style.background = '#3B82F6'; vatBtn.style.borderColor = '#3B82F6'; vatBtn.style.color = '#fff';
           } else {
             vatBtn.style.background = '#fff'; vatBtn.style.borderColor = '#CBD5E1'; vatBtn.style.color = '#475569';
           }
-          // iframe 내부 상태 표시도 같이 갱신
-          const innerLbl = w.document.getElementById('vatLabel');
-          if (innerLbl) innerLbl.textContent = 'VAT ' + (w.VAT_MODE === 'incl' ? '포함' : '제외');
           if (typeof w.render === 'function') w.render();
         } catch (e) {
           alert('VAT 토글 실패: ' + e.message);

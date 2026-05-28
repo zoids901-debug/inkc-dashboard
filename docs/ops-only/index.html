@@ -238,7 +238,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div style="margin-left:auto;display:flex;gap:6px;align-items:center">
     <button id="btnVat" title="VAT(부가세) 제외 기준으로 보기 — 매출/목표/객단가/생산성 모두 ÷1.1. 달성률·전년비는 동일"
       style="border:1px solid #CBD5E1;background:#fff;color:#475569;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:5px">
-      <span id="vatLabel">VAT 포함</span>
+      <span id="vatLabel">VAT 제외</span>
     </button>
     <button id="btnExcel" title="현재 기간/매장 기준 엑셀 다운로드"
       style="border:1px solid #10B981;background:#10B981;color:#fff;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:5px">
@@ -275,10 +275,14 @@ let VAT_MODE = 'incl';
 function applyVatMode() {
   const f = VAT_MODE === 'excl' ? 1/1.1 : 1;
   for (const ym in _RAW_ALL_DATA) {
-    for (const store in _RAW_ALL_DATA[ym]) {
-      const raw = _RAW_ALL_DATA[ym][store];
-      const cur = ALL_DATA[ym][store];
+    const ymObj = _RAW_ALL_DATA[ym];
+    if (!ymObj || typeof ymObj !== 'object') continue;
+    for (const store in ymObj) {
+      const raw = ymObj[store];
+      const cur = ALL_DATA[ym] && ALL_DATA[ym][store];
+      if (!Array.isArray(raw) || !Array.isArray(cur)) continue;
       raw.forEach((r, i) => {
+        if (!r || !cur[i]) return;
         cur[i].sales        = r.sales        == null ? null : Math.round(r.sales        * f);
         cur[i].target       = r.target       == null ? null : Math.round(r.target       * f);
         cur[i].per_receipt  = r.per_receipt  == null ? null : Math.round(r.per_receipt  * f);
@@ -612,8 +616,7 @@ setTimeout(() => {
     v.addEventListener('click', () => {
       VAT_MODE = VAT_MODE === 'incl' ? 'excl' : 'incl';
       applyVatMode();
-      const lbl = document.getElementById('vatLabel');
-      if (lbl) lbl.textContent = 'VAT ' + (VAT_MODE === 'incl' ? '포함' : '제외');
+      // 라벨은 "VAT 제외" 고정 (액션 라벨). 활성 시 색만 강조 (=적용중)
       if (VAT_MODE === 'excl') {
         v.style.background = '#3B82F6'; v.style.borderColor = '#3B82F6'; v.style.color = '#fff';
       } else {
