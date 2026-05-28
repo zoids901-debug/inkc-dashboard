@@ -255,10 +255,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <button class="pill on" id="pillAll">전체</button>
   </div>
 
-  <button id="btnExcel" title="현재 기간/매장 기준 엑셀 다운로드"
-    style="margin-left:auto;border:1px solid #10B981;background:#10B981;color:#fff;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:5px">
-    <span>⬇</span><span>엑셀</span>
-  </button>
+  <div style="margin-left:auto;display:flex;gap:6px;align-items:center">
+    <button id="btnVat" title="VAT(부가세) 제외 기준으로 보기 — 매출/목표/객단가/생산성 모두 ÷1.1. 달성률·전년비는 동일"
+      style="border:1px solid #CBD5E1;background:#fff;color:#475569;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:5px">
+      <span id="vatLabel">VAT 포함</span>
+    </button>
+    <button id="btnExcel" title="현재 기간/매장 기준 엑셀 다운로드"
+      style="border:1px solid #10B981;background:#10B981;color:#fff;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:5px">
+      <span>⬇</span><span>엑셀</span>
+    </button>
+  </div>
 </div>
 
 <div class="main" id="main">
@@ -282,6 +288,25 @@ const HOLIDAYS = new Set([
   '2026-10-03','2026-10-09','2026-12-25',
 ]);
 const MONTHS   = Object.keys(ALL_DATA).sort();
+
+// VAT 포함/제외 토글 — 매출/목표/객단가/생산성에 ÷1.1 적용. raw는 보존.
+const _RAW_ALL_DATA = JSON.parse(JSON.stringify(ALL_DATA));
+let VAT_MODE = 'incl';
+function applyVatMode() {
+  const f = VAT_MODE === 'excl' ? 1/1.1 : 1;
+  for (const ym in _RAW_ALL_DATA) {
+    for (const store in _RAW_ALL_DATA[ym]) {
+      const raw = _RAW_ALL_DATA[ym][store];
+      const cur = ALL_DATA[ym][store];
+      raw.forEach((r, i) => {
+        cur[i].sales        = r.sales        == null ? null : Math.round(r.sales        * f);
+        cur[i].target       = r.target       == null ? null : Math.round(r.target       * f);
+        cur[i].per_receipt  = r.per_receipt  == null ? null : Math.round(r.per_receipt  * f);
+        cur[i].productivity = r.productivity == null ? null : Math.round(r.productivity * f);
+      });
+    }
+  }
+}
 
 let activeStores = new Set(STORES);
 let charts = {};
@@ -601,6 +626,22 @@ function downloadExcel() {
 setTimeout(() => {
   const b = document.getElementById('btnExcel');
   if (b && !b._bound) { b._bound = true; b.addEventListener('click', downloadExcel); }
+  const v = document.getElementById('btnVat');
+  if (v && !v._bound) {
+    v._bound = true;
+    v.addEventListener('click', () => {
+      VAT_MODE = VAT_MODE === 'incl' ? 'excl' : 'incl';
+      applyVatMode();
+      const lbl = document.getElementById('vatLabel');
+      if (lbl) lbl.textContent = 'VAT ' + (VAT_MODE === 'incl' ? '포함' : '제외');
+      if (VAT_MODE === 'excl') {
+        v.style.background = '#3B82F6'; v.style.borderColor = '#3B82F6'; v.style.color = '#fff';
+      } else {
+        v.style.background = '#fff'; v.style.borderColor = '#CBD5E1'; v.style.color = '#475569';
+      }
+      render();
+    });
+  }
 }, 50);
 
 // ── 메인 렌더 ────────────────────────────────────────────────────────────────
