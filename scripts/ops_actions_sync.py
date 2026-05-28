@@ -248,9 +248,10 @@ def scrape_toss(yyyy_mm):
     for r in result.get('success', {}).get('report', []):
         net = r.get('content', {}).get('sales', {}).get('netSalesAmount', 0) or 0
         receipts = r.get('content', {}).get('sales', {}).get('paymentCount', 0) or 0
-        # 운영 대시보드 기준 통일: 토스 netSalesAmount는 부가세 포함 → ÷1.1로 부가세 제외
-        # (OK포스 5개 매장 raw가 부가세 제외 순매출이므로 운정도 동일 기준)
-        sales = round(net / 1.1)
+        # 운영 대시보드 기준: OK포스 5매장 raw가 "VAT 포함 + 할인 제외"이므로
+        # 운정도 토스 netSalesAmount(VAT 포함, 할인 제외) 그대로 저장해 통일.
+        # 대시보드의 VAT 토글로 표시 단계에서 ÷1.1 가능.
+        sales = int(net)
         if sales > 0:
             records.append({'date': r['date'], 'sales': sales, 'receipts': receipts})
     log(f'  TOSS records: {len(records)}')
@@ -428,7 +429,7 @@ async def main():
     try:
         toss_records = scrape_toss(yyyy_mm)
         apply_toss(toss_records, existing)
-        # 운정 토스 raw도 교차검증용으로 저장 (scrape_toss는 부가세 제외 ÷1.1 적용된 값)
+        # 운정 토스 raw도 교차검증용으로 저장 (VAT 포함 + 할인 제외 — OK포스 raw와 동일 기준)
         raw_by_store['운정'] = [
             {'date': r['date'], 'sales': r['sales'], 'receipts': r['receipts']}
             for r in toss_records
