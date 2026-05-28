@@ -291,7 +291,8 @@ const MONTHS   = Object.keys(ALL_DATA).sort();
 
 // VAT 포함/제외 토글 — 매출/목표/객단가/생산성에 ÷1.1 적용. raw는 보존.
 const _RAW_ALL_DATA = JSON.parse(JSON.stringify(ALL_DATA));
-let VAT_MODE = 'incl';
+// var(=window-scope)로 선언해야 통합 대시보드의 shared.js에서 contentWindow.VAT_MODE로 읽고 쓸 수 있음
+var VAT_MODE = 'incl';
 function applyVatMode() {
   const f = VAT_MODE === 'excl' ? 1/1.1 : 1;
   for (const ym in _RAW_ALL_DATA) {
