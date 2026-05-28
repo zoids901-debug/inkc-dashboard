@@ -126,7 +126,8 @@
 </style>
 <script>
 (function() {
-  const HEALTH_URL = 'ops_data/health.json';
+  // GitHub Pages는 docs/만 발행 → ops_data/health.json은 raw URL로 직접 fetch
+  const HEALTH_URL = 'https://raw.githubusercontent.com/zoids901-debug/inkc-dashboard/main/ops_data/health.json';
   let _health = null;
   async function loadHealth() {
     try {
