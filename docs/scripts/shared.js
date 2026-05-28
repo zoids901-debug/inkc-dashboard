@@ -530,6 +530,36 @@
       });
     }
 
+    // VAT 포함/제외 토글 — 운영 탭 iframe의 applyVatMode + render 호출
+    const vatBtn = document.getElementById('btnVatUnified');
+    if (vatBtn) {
+      vatBtn.addEventListener('click', () => {
+        const panel = document.getElementById('tab-ops');
+        const frame = panel && panel.querySelector('iframe.tab-frame');
+        if (!frame || !frame.contentWindow) { alert('운영 iframe을 찾지 못했습니다'); return; }
+        try {
+          const w = frame.contentWindow;
+          if (typeof w.applyVatMode !== 'function') { alert('운영 탭 로딩 중입니다 — 잠시 후 다시'); return; }
+          w.VAT_MODE = w.VAT_MODE === 'incl' ? 'excl' : 'incl';
+          w.applyVatMode();
+          // 통합 버튼 라벨/스타일 동기화
+          const lbl = document.getElementById('vatLabelUnified');
+          if (lbl) lbl.textContent = 'VAT ' + (w.VAT_MODE === 'incl' ? '포함' : '제외');
+          if (w.VAT_MODE === 'excl') {
+            vatBtn.style.background = '#3B82F6'; vatBtn.style.borderColor = '#3B82F6'; vatBtn.style.color = '#fff';
+          } else {
+            vatBtn.style.background = '#fff'; vatBtn.style.borderColor = '#CBD5E1'; vatBtn.style.color = '#475569';
+          }
+          // iframe 내부 상태 표시도 같이 갱신
+          const innerLbl = w.document.getElementById('vatLabel');
+          if (innerLbl) innerLbl.textContent = 'VAT ' + (w.VAT_MODE === 'incl' ? '포함' : '제외');
+          if (typeof w.render === 'function') w.render();
+        } catch (e) {
+          alert('VAT 토글 실패: ' + e.message);
+        }
+      });
+    }
+
     // 서브탭 (손익 → 대시보드/업로드)
     document.querySelectorAll('.subtab').forEach(b => {
       b.addEventListener('click', () => {

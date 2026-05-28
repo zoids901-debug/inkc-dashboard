@@ -109,6 +109,8 @@ body {
 .preset-btn.active { background: #3B82F6 !important; border-color: #3B82F6 !important; color: #fff !important; box-shadow: 0 2px 6px rgba(59,130,246,.35); font-weight: 700; }
 /* 어제·이번 주: 운영/상품에서 가능 (상품도 일 단위 모드 지원), 손익은 월만 */
 body[data-tab="pl"] .preset-btn.ops-only { display: none; }
+/* VAT 토글: 운영 탭에서만 노출 (다른 탭은 자체 매출 기준 보유) */
+body:not([data-tab="ops"]) #btnVatUnified { display: none; }
 /* 최근 3·6개월: 운영 탭 전용 (상품·손익·테이블린에선 숨김) */
 body[data-tab="product"] .preset-btn.month-trend,
 body[data-tab="pl"] .preset-btn.month-trend,

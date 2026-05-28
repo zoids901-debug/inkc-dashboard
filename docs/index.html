@@ -57,10 +57,16 @@
     <button class="pill on" id="pillAll">전체</button>
   </div>
 
-  <button id="btnExcelUnified" title="현재 탭의 엑셀 다운로드"
-    style="margin-left:auto;border:1px solid #10B981;background:#10B981;color:#fff;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px">
-    <span>⬇</span><span>엑셀</span>
-  </button>
+  <div style="margin-left:auto;display:flex;gap:6px;align-items:center">
+    <button id="btnVatUnified" class="ops-only" title="VAT(부가세) 제외 기준으로 보기 — 매출/목표/객단가/생산성 모두 ÷1.1. 달성률·전년비는 동일"
+      style="border:1px solid #CBD5E1;background:#fff;color:#475569;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px">
+      <span id="vatLabelUnified">VAT 포함</span>
+    </button>
+    <button id="btnExcelUnified" title="현재 탭의 엑셀 다운로드"
+      style="border:1px solid #10B981;background:#10B981;color:#fff;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px">
+      <span>⬇</span><span>엑셀</span>
+    </button>
+  </div>
 </div>
 
 <!-- 본문 (iframe 임베드 — Step 2~4 임시. 추후 인라인 전환 예정) -->
