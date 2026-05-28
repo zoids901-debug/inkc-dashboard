@@ -540,6 +540,8 @@
         try {
           const w = frame.contentWindow;
           if (typeof w.applyVatMode !== 'function') { alert('운영 탭 로딩 중입니다 — 잠시 후 다시'); return; }
+          // 스크롤 위치 보존 (render가 main을 통째로 다시 그려서 리셋됨)
+          const scY = w.scrollY, scX = w.scrollX;
           w.VAT_MODE = w.VAT_MODE === 'incl' ? 'excl' : 'incl';
           w.applyVatMode();
           // 라벨은 "VAT 제외" 고정 (액션 라벨). 활성 시 색만 강조 (=적용중)
@@ -549,6 +551,9 @@
             vatBtn.style.background = '#fff'; vatBtn.style.borderColor = '#CBD5E1'; vatBtn.style.color = '#475569';
           }
           if (typeof w.render === 'function') w.render();
+          // 렌더 직후 동기 복원 + 다음 프레임 한 번 더 (차트 lazy 그리기 시 흔들림 방지)
+          w.scrollTo(scX, scY);
+          w.requestAnimationFrame(() => w.scrollTo(scX, scY));
         } catch (e) {
           alert('VAT 토글 실패: ' + e.message);
         }

@@ -615,6 +615,8 @@ setTimeout(() => {
   if (v && !v._bound) {
     v._bound = true;
     v.addEventListener('click', () => {
+      // 스크롤 위치 보존 (render가 main을 다시 그려 리셋됨)
+      const scY = window.scrollY, scX = window.scrollX;
       VAT_MODE = VAT_MODE === 'incl' ? 'excl' : 'incl';
       applyVatMode();
       // 라벨은 "VAT 제외" 고정 (액션 라벨). 활성 시 색만 강조 (=적용중)
@@ -624,6 +626,8 @@ setTimeout(() => {
         v.style.background = '#fff'; v.style.borderColor = '#CBD5E1'; v.style.color = '#475569';
       }
       render();
+      window.scrollTo(scX, scY);
+      requestAnimationFrame(() => window.scrollTo(scX, scY));
     });
   }
 }, 50);
