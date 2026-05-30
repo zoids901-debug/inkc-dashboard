@@ -259,8 +259,10 @@
     },
     {
       "date": "2026-05-30",
-      "per_receipt": null,
-      "target": 7016000
+      "per_receipt": 16895,
+      "target": 7016000,
+      "sales": 5998060,
+      "receipts": 355
     },
     {
       "date": "2026-05-31",
@@ -474,8 +476,10 @@
     },
     {
       "date": "2026-05-30",
-      "per_receipt": null,
-      "target": 13749000
+      "per_receipt": 20284,
+      "target": 13749000,
+      "sales": 11399740,
+      "receipts": 562
     },
     {
       "date": "2026-05-31",
@@ -738,20 +742,25 @@
     },
     {
       "date": "2026-05-29",
-      "per_receipt": null,
+      "per_receipt": 13051,
       "target": 2685000,
       "receipts": 232,
-      "staff": 6
+      "staff": 6,
+      "sales": 3027990,
+      "productivity": 504665
     },
     {
       "date": "2026-05-30",
       "per_receipt": null,
-      "target": 6036000
+      "target": 6036000,
+      "receipts": 410,
+      "staff": 8
     },
     {
       "date": "2026-05-31",
       "per_receipt": null,
-      "target": 6036000
+      "target": 6036000,
+      "staff": 9
     }
   ],
   "하남": [
@@ -1017,8 +1026,11 @@
     {
       "date": "2026-05-30",
       "staff": 3,
-      "per_receipt": null,
-      "target": 1279000
+      "per_receipt": 12308,
+      "target": 1279000,
+      "sales": 763140,
+      "receipts": 62,
+      "productivity": 254380
     },
     {
       "date": "2026-05-31",
@@ -1232,8 +1244,10 @@
     },
     {
       "date": "2026-05-30",
-      "per_receipt": null,
-      "target": 21734000
+      "per_receipt": 18122,
+      "target": 21734000,
+      "sales": 2917670,
+      "receipts": 161
     },
     {
       "date": "2026-05-31",
@@ -1471,12 +1485,15 @@
       "per_receipt": 13619,
       "target": 3445000,
       "sales": 4031500,
-      "receipts": 296
+      "receipts": 296,
+      "staff": 0
     },
     {
       "date": "2026-05-30",
-      "per_receipt": null,
-      "target": 7746000
+      "per_receipt": 12717,
+      "target": 7746000,
+      "sales": 6829300,
+      "receipts": 537
     },
     {
       "date": "2026-05-31",
