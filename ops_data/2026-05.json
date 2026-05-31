@@ -248,26 +248,36 @@
       "per_receipt": 17643,
       "target": 5561000,
       "sales": 4728548,
-      "receipts": 268
+      "receipts": 268,
+      "staff": 13,
+      "productivity": 363734
     },
     {
       "date": "2026-05-29",
       "per_receipt": 16360,
       "target": 5561000,
       "sales": 5333480,
-      "receipts": 326
+      "receipts": 326,
+      "staff": 11,
+      "productivity": 484861
     },
     {
       "date": "2026-05-30",
       "per_receipt": 16895,
       "target": 7016000,
       "sales": 5998060,
-      "receipts": 355
+      "receipts": 355,
+      "staff": 12,
+      "productivity": 499838
     },
     {
       "date": "2026-05-31",
-      "per_receipt": null,
-      "target": 7016000
+      "per_receipt": 16764,
+      "target": 7016000,
+      "sales": 6018520,
+      "receipts": 359,
+      "staff": 14,
+      "productivity": 429894
     }
   ],
   "다산": [
@@ -483,8 +493,10 @@
     },
     {
       "date": "2026-05-31",
-      "per_receipt": null,
-      "target": 13749000
+      "per_receipt": 19363,
+      "target": 13749000,
+      "sales": 11327534,
+      "receipts": 585
     }
   ],
   "수원": [
@@ -751,10 +763,12 @@
     },
     {
       "date": "2026-05-30",
-      "per_receipt": null,
+      "per_receipt": 13795,
       "target": 6036000,
       "receipts": 410,
-      "staff": 8
+      "staff": 8,
+      "sales": 5656100,
+      "productivity": 707012
     },
     {
       "date": "2026-05-31",
@@ -1034,8 +1048,12 @@
     },
     {
       "date": "2026-05-31",
-      "per_receipt": null,
-      "target": 1279000
+      "per_receipt": 12594,
+      "target": 1279000,
+      "sales": 906816,
+      "receipts": 72,
+      "staff": 3,
+      "productivity": 302272
     }
   ],
   "광주": [
@@ -1251,8 +1269,10 @@
     },
     {
       "date": "2026-05-31",
-      "per_receipt": null,
-      "target": 21734000
+      "per_receipt": 19478,
+      "target": 21734000,
+      "sales": 3856740,
+      "receipts": 198
     }
   ],
   "운정": [
@@ -1493,12 +1513,16 @@
       "per_receipt": 12717,
       "target": 7746000,
       "sales": 6829300,
-      "receipts": 537
+      "receipts": 537,
+      "staff": 0
     },
     {
       "date": "2026-05-31",
-      "per_receipt": null,
-      "target": 7746000
+      "per_receipt": 13611,
+      "target": 7746000,
+      "sales": 7459100,
+      "receipts": 548,
+      "staff": 0
     }
   ]
 }
