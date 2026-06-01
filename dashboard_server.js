@@ -930,20 +930,32 @@ function renderDonut(ad, stores) {
 }
 
 // ── 4. 일별 트렌드 라인차트 ───────────────────────────────────────────────────
+let lineAgg = 'auto';  // 일별 트렌드 차트 집계단위 수동선택 (auto/day/week/month) — 헤더 드롭다운
 function renderLine(start, end, ad, yad, stores) {
   dc('line');
   const el = document.getElementById('sec-line');
   el.innerHTML = \`
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;flex-wrap:wrap">
       <div class="card-title" style="margin:0">일별 실매출 · 영수건수</div>
-      <div class="chart-legend">
-        <div class="cl-item"><div class="cl-line" style="background:#3B82F6"></div>실매출</div>
-        <div class="cl-item"><div class="cl-line" style="background:#F59E0B"></div>영수건수</div>
-        <div class="cl-item"><div class="cl-dashed"></div>전년</div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <select id="lineAggSel" title="집계 단위 직접 선택 (자동=선택 기간에 맞춰 자동)" style="font-size:11px;padding:3px 7px;border:1px solid #E2E8F0;border-radius:6px;background:#fff;color:#334155;cursor:pointer">
+          <option value="auto">자동(기간맞춤)</option>
+          <option value="day">일자별</option>
+          <option value="week">주별</option>
+          <option value="month">월별</option>
+        </select>
+        <div class="chart-legend">
+          <div class="cl-item"><div class="cl-line" style="background:#3B82F6"></div>실매출</div>
+          <div class="cl-item"><div class="cl-line" style="background:#F59E0B"></div>영수건수</div>
+          <div class="cl-item"><div class="cl-dashed"></div>전년</div>
+        </div>
       </div>
     </div>
     <div class="chart-wrap h240"><canvas id="lineCanvas"></canvas></div>
   \`;
+
+  const aggSel = el.querySelector('#lineAggSel');
+  if (aggSel) { aggSel.value = lineAgg; aggSel.onchange = () => { lineAgg = aggSel.value; render(); }; }
 
   // 날짜별 합산
   const dList = dates(ad);
@@ -976,8 +988,9 @@ function renderLine(start, end, ad, yad, stores) {
     return v>0?v:null;
   });
 
-  // ── 기간에 따른 자동 집계: ≤90d 일별, 91~180d 주별, >180d 월별 ──
-  const aggMode = dList.length > 180 ? 'month' : dList.length > 90 ? 'week' : 'day';
+  // ── 집계 단위: 드롭다운 수동선택(lineAgg) 우선, '자동'이면 기간 길이로 (≤90d 일별, 91~180d 주별, >180d 월별) ──
+  const autoMode = dList.length > 180 ? 'month' : dList.length > 90 ? 'week' : 'day';
+  const aggMode = (lineAgg && lineAgg !== 'auto') ? lineAgg : autoMode;
   function bucketize(mode){
     if (mode==='day') return {
       labels: dList.map(d=>d.slice(5)),
