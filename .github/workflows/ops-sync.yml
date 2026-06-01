@@ -38,6 +38,7 @@ jobs:
           OKPOS_PW: ${{ secrets.OKPOS_PW }}
           TOSS_ID:  ${{ secrets.TOSS_ID }}
           TOSS_PW:  ${{ secrets.TOSS_PW }}
+          GOOGLE_SHEETS_API_KEY: ${{ secrets.GOOGLE_SHEETS_API_KEY }}
         run: python scripts/ops_actions_sync.py
 
       - name: 일자별 목표 자동계산 (전년 동월 평일/주말 평균 × 배율)
