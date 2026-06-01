@@ -18,6 +18,7 @@ import os
 import re
 import sys
 import json
+import calendar
 import urllib.request
 from urllib.parse import quote
 
@@ -192,7 +193,10 @@ def fetch_schedule(store, year, month, key=None):
         block = vals[s:e]
     else:
         block = vals
-    return _parse_block(block, work)
+    out = _parse_block(block, work)
+    # 월 길이 초과 일자 제거 (월말 뒤 합계/평균 칸이 31일 등으로 잡히는 것 방지)
+    last = calendar.monthrange(year, month)[1]
+    return {d: v for d, v in out.items() if 1 <= d <= last}
 
 
 if __name__ == "__main__":
