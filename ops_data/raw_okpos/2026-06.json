@@ -2,37 +2,37 @@
   "가산": [
     {
       "date": "2026-06-01",
-      "sales": 2963680,
-      "receipts": 186
+      "sales": 3927180,
+      "receipts": 253
     }
   ],
   "다산": [
     {
       "date": "2026-06-01",
-      "sales": 2998050,
-      "receipts": 180
+      "sales": 4165082,
+      "receipts": 262
     }
   ],
   "수원": [],
   "하남": [
     {
       "date": "2026-06-01",
-      "sales": 412160,
-      "receipts": 41
+      "sales": 518860,
+      "receipts": 50
     }
   ],
   "광주": [
     {
       "date": "2026-06-01",
-      "sales": 862760,
-      "receipts": 58
+      "sales": 1314010,
+      "receipts": 86
     }
   ],
   "운정": [
     {
       "date": "2026-06-01",
-      "sales": 2356400,
-      "receipts": 178
+      "sales": 3359200,
+      "receipts": 261
     }
   ]
 }

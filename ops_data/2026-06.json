@@ -2,11 +2,11 @@
   "가산": [
     {
       "date": "2026-06-01",
-      "sales": 2963680,
-      "receipts": 186,
-      "per_receipt": 15933,
+      "sales": 3927180,
+      "receipts": 253,
+      "per_receipt": 15522,
       "staff": 5,
-      "productivity": 592736,
+      "productivity": 785436,
       "target": 5039000
     },
     {
@@ -187,11 +187,11 @@
   "다산": [
     {
       "date": "2026-06-01",
-      "sales": 2998050,
-      "receipts": 180,
-      "per_receipt": 16655,
+      "sales": 4165082,
+      "receipts": 262,
+      "per_receipt": 15897,
       "staff": 12,
-      "productivity": 249837,
+      "productivity": 347090,
       "target": 6063000
     },
     {
@@ -374,7 +374,8 @@
       "date": "2026-06-01",
       "staff": 7,
       "per_receipt": null,
-      "target": 2551000
+      "target": 2551000,
+      "receipts": 170
     },
     {
       "date": "2026-06-02",
@@ -554,11 +555,11 @@
   "하남": [
     {
       "date": "2026-06-01",
-      "sales": 412160,
-      "receipts": 41,
-      "per_receipt": 10052,
+      "sales": 518860,
+      "receipts": 50,
+      "per_receipt": 10377,
       "staff": 5,
-      "productivity": 82432,
+      "productivity": 103772,
       "target": 961000
     },
     {
@@ -739,11 +740,11 @@
   "광주": [
     {
       "date": "2026-06-01",
-      "sales": 862760,
-      "receipts": 58,
-      "per_receipt": 14875,
+      "sales": 1314010,
+      "receipts": 86,
+      "per_receipt": 15279,
       "staff": 7,
-      "productivity": 123251,
+      "productivity": 187715,
       "target": 6700000
     },
     {
@@ -924,10 +925,12 @@
   "운정": [
     {
       "date": "2026-06-01",
-      "sales": 2356400,
-      "receipts": 178,
-      "per_receipt": 13238,
-      "target": 3274000
+      "sales": 3359200,
+      "receipts": 261,
+      "per_receipt": 12870,
+      "target": 3274000,
+      "staff": 7,
+      "productivity": 479885
     },
     {
       "date": "2026-06-02",
