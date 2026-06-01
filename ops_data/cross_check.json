@@ -1,15 +1,15 @@
 {
-  "checked_at": "2026-05-31",
-  "yyyy_mm": "2026-05",
+  "checked_at": "2026-06-01",
+  "yyyy_mm": "2026-06",
   "overall": "ok",
   "stores": [
     {
       "store": "가산",
       "level": "ok",
-      "raw_total": 151832718,
-      "ops_total": 151832718,
+      "raw_total": 0,
+      "ops_total": 0,
       "diff": 0,
-      "pct": 0.0,
+      "pct": 0,
       "message": "OK포스 raw와 운영 대시보드 일치",
       "daily_diffs": [],
       "daily_diffs_count": 0
@@ -17,10 +17,10 @@
     {
       "store": "광주",
       "level": "ok",
-      "raw_total": 330926574,
-      "ops_total": 330926574,
+      "raw_total": 0,
+      "ops_total": 0,
       "diff": 0,
-      "pct": 0.0,
+      "pct": 0,
       "message": "OK포스 raw와 운영 대시보드 일치",
       "daily_diffs": [],
       "daily_diffs_count": 0
@@ -28,10 +28,10 @@
     {
       "store": "다산",
       "level": "ok",
-      "raw_total": 224259339,
-      "ops_total": 224259339,
+      "raw_total": 0,
+      "ops_total": 0,
       "diff": 0,
-      "pct": 0.0,
+      "pct": 0,
       "message": "OK포스 raw와 운영 대시보드 일치",
       "daily_diffs": [],
       "daily_diffs_count": 0
@@ -39,10 +39,10 @@
     {
       "store": "수원",
       "level": "ok",
-      "raw_total": 112763000,
-      "ops_total": 112763000,
+      "raw_total": 0,
+      "ops_total": 0,
       "diff": 0,
-      "pct": 0.0,
+      "pct": 0,
       "message": "OK포스 raw와 운영 대시보드 일치",
       "daily_diffs": [],
       "daily_diffs_count": 0
@@ -50,10 +50,10 @@
     {
       "store": "운정",
       "level": "ok",
-      "raw_total": 147735210,
-      "ops_total": 147735210,
+      "raw_total": 0,
+      "ops_total": 0,
       "diff": 0,
-      "pct": 0.0,
+      "pct": 0,
       "message": "OK포스 raw와 운영 대시보드 일치",
       "daily_diffs": [],
       "daily_diffs_count": 0
@@ -61,10 +61,10 @@
     {
       "store": "하남",
       "level": "ok",
-      "raw_total": 22742560,
-      "ops_total": 22742560,
+      "raw_total": 0,
+      "ops_total": 0,
       "diff": 0,
-      "pct": 0.0,
+      "pct": 0,
       "message": "OK포스 raw와 운영 대시보드 일치",
       "daily_diffs": [],
       "daily_diffs_count": 0
