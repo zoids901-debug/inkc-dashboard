@@ -534,12 +534,14 @@
     const vatBtn = document.getElementById('btnVatUnified');
     if (vatBtn) {
       vatBtn.addEventListener('click', () => {
-        const panel = document.getElementById('tab-ops');
+        // 현재 활성 탭 iframe 대상 (운영·테이블린 등 applyVatMode 노출 탭 모두 지원)
+        const tab = App.state.activeTab || 'ops';
+        const panel = document.getElementById(`tab-${tab}`);
         const frame = panel && panel.querySelector('iframe.tab-frame');
-        if (!frame || !frame.contentWindow) { alert('운영 iframe을 찾지 못했습니다'); return; }
+        if (!frame || !frame.contentWindow) { alert('현재 탭 iframe을 찾지 못했습니다'); return; }
         try {
           const w = frame.contentWindow;
-          if (typeof w.applyVatMode !== 'function') { alert('운영 탭 로딩 중입니다 — 잠시 후 다시'); return; }
+          if (typeof w.applyVatMode !== 'function') { alert('이 탭은 VAT 토글을 지원하지 않거나 로딩 중입니다'); return; }
           // 스크롤 위치 보존 (render가 main을 통째로 다시 그려서 리셋됨)
           const scY = w.scrollY, scX = w.scrollX;
           w.VAT_MODE = w.VAT_MODE === 'incl' ? 'excl' : 'incl';
