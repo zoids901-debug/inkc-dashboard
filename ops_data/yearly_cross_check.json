@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-05-20",
+  "checked_at": "2026-06-01",
   "results": [
     {
       "year": "2021",
@@ -175,8 +175,8 @@
       "year": "2025",
       "store": "운정",
       "raw_total": 0,
-      "ops_total": 267810364,
-      "diff": 267810364,
+      "ops_total": 294591401,
+      "diff": 294591401,
       "pct": 100.0,
       "level": "no_raw",
       "message": "OK포스 raw 없음 (backfill 안 됨 또는 매장 오픈 전)"
@@ -184,8 +184,8 @@
     {
       "year": "2026",
       "store": "가산",
-      "raw_total": 749240291,
-      "ops_total": 749174491,
+      "raw_total": 808887499,
+      "ops_total": 808821699,
       "diff": -65800,
       "pct": 0.01,
       "level": "ok",
@@ -194,8 +194,8 @@
     {
       "year": "2026",
       "store": "다산",
-      "raw_total": 1110096782,
-      "ops_total": 1110096782,
+      "raw_total": 1203382220,
+      "ops_total": 1203382220,
       "diff": 0,
       "pct": 0.0,
       "level": "ok",
@@ -204,18 +204,18 @@
     {
       "year": "2026",
       "store": "수원",
-      "raw_total": 539848060,
-      "ops_total": 545057260,
-      "diff": 5209200,
-      "pct": 0.96,
+      "raw_total": 586734220,
+      "ops_total": 588656760,
+      "diff": 1922540,
+      "pct": 0.33,
       "level": "ok",
       "message": "미세한 차이"
     },
     {
       "year": "2026",
       "store": "하남",
-      "raw_total": 117809930,
-      "ops_total": 117809930,
+      "raw_total": 126456556,
+      "ops_total": 126456556,
       "diff": 0,
       "pct": 0.0,
       "level": "ok",
@@ -224,8 +224,8 @@
     {
       "year": "2026",
       "store": "광주",
-      "raw_total": 704476568,
-      "ops_total": 704476568,
+      "raw_total": 818227528,
+      "ops_total": 818227528,
       "diff": 0,
       "pct": 0.0,
       "level": "ok",
@@ -235,8 +235,8 @@
       "year": "2026",
       "store": "운정",
       "raw_total": 0,
-      "ops_total": 697959329,
-      "diff": 697959329,
+      "ops_total": 828566824,
+      "diff": 828566824,
       "pct": 100.0,
       "level": "no_raw",
       "message": "OK포스 raw 없음 (backfill 안 됨 또는 매장 오픈 전)"
