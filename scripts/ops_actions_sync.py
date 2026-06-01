@@ -345,6 +345,18 @@ def patch_store_from_sheet(store, yyyy_mm, existing, okpos_by_date):
             'target':   parse_num(r[target_col])   if target_col   is not None and target_col   < len(r) else None,
         }
 
+    # 근무인원: 스케줄 탭에서 직접 카운트(팀별 합산, 매장별 STAFF_COL보다 정확).
+    # 파싱 실패/해당일 없으면 기존 시트 STAFF_COL로 폴백 — 안전.
+    sched_staff = {}
+    try:
+        from schedule_parser import fetch_schedule
+        sched = fetch_schedule(store, int(y), int(m))
+        sched_staff = {d: v['count'] for d, v in sched.items() if v.get('count')}
+        if sched_staff:
+            log(f'  [{store}] 스케줄 근무인원 {len(sched_staff)}일 ({min(sched_staff.values())}~{max(sched_staff.values())}명)')
+    except Exception as e:
+        log(f'  [{store}] 스케줄 파싱 실패(시트 STAFF_COL 폴백): {e}')
+
     updated = 0
     for entry in existing.get(store, []):
         sd = sheet_by_date.get(entry['date'], {})
@@ -369,7 +381,12 @@ def patch_store_from_sheet(store, yyyy_mm, existing, okpos_by_date):
             entry['receipts'] = None
 
         # 목표(target)는 compute_targets.py가 자동계산 — 시트값 미사용
-        if sd.get('staff')  is not None: entry['staff']  = int(sd['staff'])
+        # 근무인원: 스케줄 카운트 우선, 없으면 시트 STAFF_COL 폴백
+        day = int(entry['date'].split('-')[2])
+        if day in sched_staff:
+            entry['staff'] = sched_staff[day]
+        elif sd.get('staff') is not None:
+            entry['staff'] = int(sd['staff'])
         if entry.get('sales') and entry.get('receipts'):
             entry['per_receipt'] = entry['sales'] // entry['receipts']
         else:
