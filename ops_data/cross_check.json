@@ -1,15 +1,15 @@
 {
-  "checked_at": "2026-06-01",
+  "checked_at": "2026-06-02",
   "yyyy_mm": "2026-06",
   "overall": "ok",
   "stores": [
     {
       "store": "가산",
       "level": "ok",
-      "raw_total": 0,
-      "ops_total": 0,
+      "raw_total": 3927180,
+      "ops_total": 3927180,
       "diff": 0,
-      "pct": 0,
+      "pct": 0.0,
       "message": "OK포스 raw와 운영 대시보드 일치",
       "daily_diffs": [],
       "daily_diffs_count": 0
@@ -17,10 +17,10 @@
     {
       "store": "광주",
       "level": "ok",
-      "raw_total": 0,
-      "ops_total": 0,
+      "raw_total": 1314010,
+      "ops_total": 1314010,
       "diff": 0,
-      "pct": 0,
+      "pct": 0.0,
       "message": "OK포스 raw와 운영 대시보드 일치",
       "daily_diffs": [],
       "daily_diffs_count": 0
@@ -28,10 +28,10 @@
     {
       "store": "다산",
       "level": "ok",
-      "raw_total": 0,
-      "ops_total": 0,
+      "raw_total": 4165082,
+      "ops_total": 4165082,
       "diff": 0,
-      "pct": 0,
+      "pct": 0.0,
       "message": "OK포스 raw와 운영 대시보드 일치",
       "daily_diffs": [],
       "daily_diffs_count": 0
@@ -39,10 +39,10 @@
     {
       "store": "수원",
       "level": "ok",
-      "raw_total": 0,
-      "ops_total": 0,
+      "raw_total": 2177900,
+      "ops_total": 2177900,
       "diff": 0,
-      "pct": 0,
+      "pct": 0.0,
       "message": "OK포스 raw와 운영 대시보드 일치",
       "daily_diffs": [],
       "daily_diffs_count": 0
@@ -50,10 +50,10 @@
     {
       "store": "운정",
       "level": "ok",
-      "raw_total": 0,
-      "ops_total": 0,
+      "raw_total": 3359200,
+      "ops_total": 3359200,
       "diff": 0,
-      "pct": 0,
+      "pct": 0.0,
       "message": "OK포스 raw와 운영 대시보드 일치",
       "daily_diffs": [],
       "daily_diffs_count": 0
@@ -61,10 +61,10 @@
     {
       "store": "하남",
       "level": "ok",
-      "raw_total": 0,
-      "ops_total": 0,
+      "raw_total": 518860,
+      "ops_total": 518860,
       "diff": 0,
-      "pct": 0,
+      "pct": 0.0,
       "message": "OK포스 raw와 운영 대시보드 일치",
       "daily_diffs": [],
       "daily_diffs_count": 0
