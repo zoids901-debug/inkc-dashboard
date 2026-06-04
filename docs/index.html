@@ -78,15 +78,12 @@
     <iframe class="tab-frame" data-src="https://zoids901-debug.github.io/inkc-dashboard/ops-only/" loading="lazy"></iframe>
   </section>
   <section id="tab-pl" class="tab-panel" hidden>
-    <div class="subtabs">
-      <button class="subtab active" data-subtab="dashboard">대시보드</button>
-      <button class="subtab" data-subtab="upload">엑셀 업로드</button>
-    </div>
-    <div id="pl-dashboard" class="subtab-panel">
-      <iframe class="tab-frame" data-src="https://zoids901-debug.github.io/pl-dashboard/" loading="lazy"></iframe>
-    </div>
-    <div id="pl-upload" class="subtab-panel" hidden>
-      <iframe class="tab-frame upload-frame" data-src="https://zoids901-debug.github.io/pl-dashboard/uploader.html" loading="lazy"></iframe>
+    <!-- 손익은 보안 보호(Cloudflare Access) 유지 — 통합 화면엔 임베드 않고 로그인 후 별도 열람 -->
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;gap:16px;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 60%,#0f3460 100%);color:#fff;">
+      <div style="font-size:46px;">🔒</div>
+      <h2 style="font-size:20px;font-weight:800;margin:0;">손익(P&amp;L)은 보안 보호 중</h2>
+      <p style="font-size:13px;opacity:.65;line-height:1.7;max-width:440px;margin:0;">재무 정보라 통합 화면에 직접 띄우지 않습니다.<br>아래 버튼으로 열고 인크 직원 이메일 인증 후 보실 수 있습니다.</p>
+      <a href="https://pl-dashboard-2e6.pages.dev/" target="_blank" rel="noopener" style="margin-top:6px;text-decoration:none;color:#16213e;background:#fdcb6e;font-weight:800;font-size:14px;padding:11px 26px;border-radius:10px;">손익 대시보드 열기 ↗</a>
     </div>
   </section>
   <section id="tab-tablin" class="tab-panel" hidden>
