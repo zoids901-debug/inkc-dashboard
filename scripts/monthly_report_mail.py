@@ -169,7 +169,7 @@ def build_html(prev_ym, prev_last_date, ycc, raw_data, ops_data, pcc=None):
       <div style="margin-top:24px;padding-top:16px;border-top:1px solid #E2E8F0;color:#94A3B8;font-size:11px;line-height:1.6">
         검사 시각: {datetime.now().isoformat(timespec='seconds')}<br>
         매월 2일 KST 04:00 자동 실행 · 직전 월 OK포스 재fetch + 매장×연도 누적 검증<br>
-        대시보드: <a href="https://zoids901-debug.github.io/inkc-dashboard/" style="color:#0EA5E9">inkc-dashboard.github.io</a>
+        대시보드: <a href="https://ink-korea.pages.dev/" style="color:#0EA5E9">INK-KOREA 통합 대시보드</a> (인크 직원 로그인)
       </div>
     </div>
   </div>

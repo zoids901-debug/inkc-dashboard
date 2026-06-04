@@ -203,7 +203,7 @@ def build_html(h, tablin=None):
         검사 시각: {h.get('checked_at')}<br>
         📋 원본 점검 = 수집 데이터가 원본과 일치하는지 / 📈 시계열 = 평소 패턴 대비 이상치<br>
         시계열 학습: 최근 3년 매장×요일별 평균 · 수원점은 1일 딜레이로 이틀 전 데이터로 검사<br>
-        대시보드: <a href="https://zoids901-debug.github.io/inkc-dashboard/" style="color:#0EA5E9">inkc-dashboard</a> · <a href="https://zoids901-debug.github.io/tablin-dashboard/" style="color:#0EA5E9">tablin-dashboard</a>
+        대시보드: <a href="https://ink-korea.pages.dev/" style="color:#0EA5E9">INK-KOREA 통합 대시보드</a> (인크 직원 로그인)
       </div>
     </div>
   </div>
