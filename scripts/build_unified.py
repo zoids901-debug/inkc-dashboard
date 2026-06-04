@@ -81,8 +81,9 @@ def main():
     for token in ['data-src="/product/"', 'data-src="/ops-only/"',
                   'data-src="/pl/"', 'data-src="/tablin/"', "'/health.json'"]:
         print(f'   {"OK" if token in h else "MISSING"}  {token}')
-    if 'github.io' in h:
-        print('  WARN 셸에 github.io 잔존:', h.count('github.io'))
+    leftover = [a for a, _ in repl if a in h]   # 치환 대상 소스 URL이 남았는지만 검사
+    if leftover:
+        print('  WARN 미치환 소스 URL 잔존:', leftover)
         sys.exit(1)
 
 
