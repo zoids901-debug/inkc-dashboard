@@ -14,7 +14,6 @@ from datetime import date, timedelta, datetime
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 
 import requests
-from playwright.async_api import async_playwright
 
 GH_TOKEN = os.environ['GH_TOKEN']
 GH_REPO  = os.environ.get('GH_REPO', 'zoids901-debug/inkc-dashboard')
@@ -83,74 +82,63 @@ async def scrape_okpos(yyyy_mm):
     return await scrape_okpos_range(start, end, label=yyyy_mm)
 
 
+# ── 순수 HTTP 로그인 (실시간 함수 ops-live.js 와 동일 시퀀스) ──
+OK_BASE = 'https://okasp.okpos.co.kr'
+_CSRF_U = r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+
+
+def _find_csrf(html):
+    m = re.search(rf"name=['\"]({_CSRF_U})['\"]\s+value=['\"]({_CSRF_U})['\"]", html, re.I)
+    if m: return m.group(1), m.group(2)
+    m = re.search(rf"value=['\"]({_CSRF_U})['\"]\s+name=['\"]({_CSRF_U})['\"]", html, re.I)
+    if m: return m.group(2), m.group(1)
+    return None, None
+
+
+def _okpos_http_login():
+    """브라우저 없이 순수 HTTP 로그인 + 일별총매출(day_total010) 폼 워밍업.
+    반환: (requests.Session, (csrf_key, csrf_val))."""
+    s = requests.Session()
+    s.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Trident/7.0; rv:11.0) like Gecko',
+                      'Accept-Language': 'ko-KR'})
+    ref = {'Referer': OK_BASE + '/login/login_form.jsp'}
+    ck, cv = _find_csrf(s.get(OK_BASE + '/login/login_form.jsp', timeout=30).text)
+    if not ck: raise RuntimeError('OKPOS 로그인 폼 CSRF 파싱 실패')
+    cred = [('AutoFg', 'W'), ('user_id', OKPOS_ID), ('user_pwd', OKPOS_PW)]
+    s.post(OK_BASE + '/login/login_check.jsp', data=[(ck, cv)] + cred, headers=ref, timeout=30)
+    s.post(OK_BASE + '/login/login_check_action.jsp', data=[(ck, cv), (ck, cv)] + cred, headers=ref, timeout=30)
+    sk = sv = None
+    for p in ['/login/top_frame.jsp', '/login/top_page.jsp', '/login/history.jsp', '/login/showitem.jsp']:
+        a, b = _find_csrf(s.get(OK_BASE + p, timeout=30).text)
+        if a and not sk: sk, sv = a, b
+    if not sk: raise RuntimeError('OKPOS 세션 CSRF 파싱 실패 (로그인 실패 가능)')
+    s.get(OK_BASE + '/sale/day/day_jump010.jsp', timeout=30)
+    s.get(OK_BASE + '/sale/day/day_total010.jsp',
+          headers={'Referer': OK_BASE + '/sale/day/day_jump010.jsp'}, timeout=30)
+    return s, (sk, sv)
+
+
 async def scrape_okpos_range(start, end, label=''):
-    """일자 범위로 OK포스 fetch. start='YYYY-MM-DD', end='YYYY-MM-DD'.
-    1년치 한 번에 받을 때도 사용 (backfill용)."""
-    log(f'OKPOS scraping {label or start+"~"+end}: {start} ~ {end}')
-
-    async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True, args=['--disable-popup-blocking'])
-        try:
-            page = await browser.new_page()
-            await page.goto('https://asp.netusys.com/login/login_form.jsp', wait_until='networkidle', timeout=30000)
-            await page.fill('#user_id', OKPOS_ID)
-            await page.fill('#user_pwd', OKPOS_PW)
-            await page.press('#user_pwd', 'Enter')
-            await asyncio.sleep(3)
-            # 패스워드 변경 팝업 닫기
-            try:
-                pf = next((f for f in page.frames if 'passwd' in f.url), None)
-                if pf:
-                    await pf.evaluate("""() => {
-                        const b = [...document.querySelectorAll('button,input,a,td,span')]
-                            .find(e => /닫기|취소|나중/i.test(e.textContent + (e.value||'')));
-                        if (b) b.click();
-                    }""")
-                    await asyncio.sleep(0.5)
-            except: pass
-
-            # day_jump010으로 이동
-            mf = next((f for f in page.frames if 'top_page' in f.url or f.name == 'MainFrm'), None)
-            if mf:
-                await mf.goto('https://okasp.okpos.co.kr/sale/day/day_jump010.jsp', wait_until='load', timeout=20000)
-                await asyncio.sleep(2)
-            df = next((f for f in page.frames if 'day_total010' in f.url), None)
-            if not df:
-                raise RuntimeError('day_total 프레임 못 찾음')
-
-            raw_data = []
-            async def on_route(route):
-                u = route.request.url
-                if any(k in u for k in ('day','sale','list','Search')):
-                    resp = await route.fetch()
-                    text = await resp.text()
-                    if 'SHOP_CD' in text and 'SALE_DATE' in text and 'DCM_SALE_AMT' in text:
-                        raw_data.append(text)
-                    await route.fulfill(response=resp)
-                else:
-                    await route.continue_()
-            await page.route('**/*', on_route)
-
-            await df.evaluate(f"""({{s, e}}) => {{
-                document.querySelector('#date1_1').value = s;
-                document.querySelector('#date1_2').value = e;
-                document.querySelector('#ss_SHOP_CD').value = '';
-                document.querySelector('#ss_SHOP_NM').value = '전체';
-                if (document.querySelector('#ss_SHOP_INFO')) document.querySelector('#ss_SHOP_INFO').value = '[]';
-                const chk = document.querySelector('#chkRowShow');
-                if (chk && !chk.checked) chk.click();
-                fnSearch();
-            }}""", {'s': start, 'e': end})
-            await asyncio.sleep(5)
-            await page.unroute('**/*', on_route)
-
-            if not raw_data:
-                raise RuntimeError('OKPOS AJAX 응답 없음')
-            data = json.loads(raw_data[-1])
-            log(f'  records: {len(data["Data"])}')
-            return data['Data']
-        finally:
-            await browser.close()
+    """일자 범위로 OK포스 fetch (순수 HTTP). start='YYYY-MM-DD', end='YYYY-MM-DD'.
+    day_total010 + chkRowShow=Y → 날짜별×매장별 행. 1년치 한 번에 받을 때도 사용(backfill)."""
+    log(f'OKPOS scraping(HTTP) {label or start+"~"+end}: {start} ~ {end}')
+    s, (sk, sv) = _okpos_http_login()
+    body = [
+        (sk, sv),
+        ('S_CONTROLLER', 'sale.day.day_total010'), ('S_METHOD', 'search'), ('SHEETSEQ', '1'),
+        ('date1_1', start), ('date1_2', end), ('date_period1', '1'),
+        ('ss_SHOP_CD', ''), ('ss_SHOP_NM', '전체'), ('ss_SHOP_INFO', '[]'),
+        ('ss_PAGE_NO1', '1'), ('chkRowShow', 'Y'),
+    ]
+    r = s.post(OK_BASE + '/sale/day/ddd.htmlSheetAction', data=body,
+               headers={'Referer': OK_BASE + '/sale/day/day_total010.jsp',
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+               timeout=120).json()
+    if (r.get('Result', {}) or {}).get('Code', 0) < 0:
+        raise RuntimeError((r.get('Result', {}) or {}).get('Message', 'OKPOS day_total 오류'))
+    data = r.get('Data', [])
+    log(f'  records: {len(data)}')
+    return data
 
 
 def apply_okpos(records, existing):
