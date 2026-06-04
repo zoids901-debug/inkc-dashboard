@@ -29,7 +29,20 @@ REPO_ROOT = Path(os.environ.get("GITHUB_WORKSPACE", Path(__file__).resolve().par
 OUT_PATH = REPO_ROOT / "ops_data" / "product_health.json"
 
 PROD_REPO = "zoids901-debug/product-dashboard"
-RAW_BASE = f"https://raw.githubusercontent.com/{PROD_REPO}/main"
+def _gh_token():
+    import os, sys
+    t = os.environ.get("GH_PAT") or os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    if t:
+        return t
+    try:
+        sys.path.insert(0, r"C:\Users\zoids\Scripts\creds")
+        from creds import get_cred
+        return get_cred("github_pat") or ""
+    except Exception:
+        return ""
+_GH_TOKEN = _gh_token()
+# product-dashboard 비공개 전환 대비 — Contents API + 토큰 (공개일 때도 동작)
+CONTENTS_BASE = f"https://api.github.com/repos/{PROD_REPO}/contents"
 
 OKPOS_STORES = ['가산', '다산', '하남', '광주']  # 어제 데이터 기대
 DELAYED = {'수원': 2}                            # 수원 1일 딜레이 → 이틀 전
@@ -41,9 +54,12 @@ TOSS_PCT_BAD = 5.0
 def fetch_daily(d):
     """product-dashboard data/daily/YYMMDD.json 가져오기 (없으면 None). 공개 repo."""
     fname = d.strftime('%y%m%d') + '.json'
-    url = f"{RAW_BASE}/data/daily/{fname}"
+    url = f"{CONTENTS_BASE}/data/daily/{fname}"
     try:
-        req = urllib.request.Request(url, headers={'User-Agent': 'product-health/1.0'})
+        headers = {'User-Agent': 'product-health/1.0', 'Accept': 'application/vnd.github.raw'}
+        if _GH_TOKEN:
+            headers['Authorization'] = 'token ' + _GH_TOKEN
+        req = urllib.request.Request(url, headers=headers)
         with urllib.request.urlopen(req, timeout=30) as r:
             return json.loads(r.read())
     except Exception:

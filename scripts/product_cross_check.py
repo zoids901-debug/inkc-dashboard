@@ -24,7 +24,20 @@ OUT_PATH = REPO_ROOT / "ops_data" / "product_cross_check.json"
 UNJEONG_START = date(2025, 12, 1)
 
 PROD_REPO = "zoids901-debug/product-dashboard"
-RAW_BASE = f"https://raw.githubusercontent.com/{PROD_REPO}/main"
+def _gh_token():
+    import os, sys
+    t = os.environ.get("GH_PAT") or os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    if t:
+        return t
+    try:
+        sys.path.insert(0, r"C:\Users\zoids\Scripts\creds")
+        from creds import get_cred
+        return get_cred("github_pat") or ""
+    except Exception:
+        return ""
+_GH_TOKEN = _gh_token()
+# product-dashboard 비공개 전환 대비 — Contents API + 토큰 (공개일 때도 동작)
+CONTENTS_BASE = f"https://api.github.com/repos/{PROD_REPO}/contents"
 API_TREE = f"https://api.github.com/repos/{PROD_REPO}/git/trees/main?recursive=1"
 
 PCT_WARN = 1.0
@@ -32,8 +45,13 @@ PCT_BAD = 5.0
 ABS_MIN = 100_000
 
 
-def fetch_json(url):
-    req = urllib.request.Request(url, headers={'User-Agent': 'cross-check/1.0'})
+def fetch_json(url, raw=False):
+    h = {'User-Agent': 'cross-check/1.0'}
+    if _GH_TOKEN:                       # 공개일 땐 무인증도 동작, 비공개 전환 시 토큰 사용
+        h['Authorization'] = 'token ' + _GH_TOKEN
+    if raw:
+        h['Accept'] = 'application/vnd.github.raw'
+    req = urllib.request.Request(url, headers=h)
     with urllib.request.urlopen(req, timeout=30) as r:
         return json.loads(r.read())
 
@@ -53,7 +71,7 @@ def main():
         yymm = p.split('/')[-1].replace('.json', '')
         year = str(2000 + int(yymm[:2]))
         try:
-            j = fetch_json(f"{RAW_BASE}/{p}")
+            j = fetch_json(f"{CONTENTS_BASE}/{p}", raw=True)
         except Exception as e:
             print(f"  ! {yymm} 실패: {e}")
             continue
@@ -67,7 +85,7 @@ def main():
     results = []
     for year in ['2021', '2022', '2023', '2024', '2025', '2026']:
         try:
-            raw_j = fetch_json(f"{RAW_BASE}/data/raw_okpos_yearly/{year}.json")
+            raw_j = fetch_json(f"{CONTENTS_BASE}/data/raw_okpos_yearly/{year}.json", raw=True)
         except Exception:
             continue
         raw_store = {loc: sum(int(x.get('net', 0)) for x in items)
