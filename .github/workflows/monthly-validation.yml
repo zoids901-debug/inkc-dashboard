@@ -58,6 +58,7 @@ jobs:
 
       - name: 상품 대시보드 검증 (OK포스 원본 + 운정 토스 대조)
         env:
+          GH_PAT: ${{ secrets.GH_PAT }}
           TOSS_ID: ${{ secrets.TOSS_ID }}
           TOSS_PW: ${{ secrets.TOSS_PW }}
         run: python scripts/product_cross_check.py
