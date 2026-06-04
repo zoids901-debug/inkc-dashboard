@@ -1,0 +1,62 @@
+name: unified-deploy
+
+# 통합본(ink-korea.pages.dev) 재빌드·배포:
+#  - 이 repo(운영 빌드/헬스) push 시 자동 (ops-sync 23:30 직후 등)
+#  - 낮~밤 매시 스케줄 (상품·테이블린 수시 갱신 반영)
+#  - 수동 실행(workflow_dispatch)
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'ops_data/health.json'
+      - 'scripts/build_unified.py'
+      - '.github/workflows/unified-deploy.yml'
+  schedule:
+    - cron: '0 7-14 * * *'   # 16:00~23:00 KST 매시 (UTC 07~14시)
+  workflow_dispatch:
+
+concurrency:
+  group: unified-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (셸/운영/헬스 = 이 repo)
+        uses: actions/checkout@v4
+
+      - name: Checkout 상품(product-dashboard)
+        uses: actions/checkout@v4
+        with:
+          repository: zoids901-debug/product-dashboard
+          path: _src/product-dashboard
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Checkout 손익(pl-dashboard)
+        uses: actions/checkout@v4
+        with:
+          repository: zoids901-debug/pl-dashboard
+          path: _src/pl-dashboard
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Checkout 테이블린(tablin-dashboard)
+        uses: actions/checkout@v4
+        with:
+          repository: zoids901-debug/tablin-dashboard
+          path: _src/tablin-dashboard
+          token: ${{ secrets.GH_PAT }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 통합 dist 빌드
+        run: python scripts/build_unified.py
+
+      - name: Cloudflare Pages 배포
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx --yes wrangler@4 pages deploy dist --project-name=ink-korea --branch=main --commit-dirty=true
