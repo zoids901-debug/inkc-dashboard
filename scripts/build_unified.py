@@ -41,6 +41,12 @@ def main():
     if os.path.exists(health):
         shutil.copy2(health, os.path.join(DIST, 'health.json'))
 
+    # 1b) Cloudflare Pages Functions: functions/* → dist/functions/
+    #     (/api/ops-live, /api/prod-live 등 실시간 함수. dist 루트에 있어야 CF가 인식)
+    fdir = os.path.join(SELF, 'functions')
+    if os.path.isdir(fdir):
+        copytree(fdir, os.path.join(DIST, 'functions'))
+
     # 2~4) 상품 / 손익 / 테이블린
     copytree(SRC_PRODUCT, os.path.join(DIST, 'product'))
     copytree(SRC_PL, os.path.join(DIST, 'pl'))

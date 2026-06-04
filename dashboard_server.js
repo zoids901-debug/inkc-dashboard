@@ -1363,6 +1363,40 @@ if (window.parent !== window) {
 
 // ── 초기 실행 ────────────────────────────────────────────────────────────────
 render();
+
+// ── 실시간 오버레이 (오늘 매출/영수 1분 자동갱신) ────────────────────────────
+// 통합본(ink-korea)에서는 /api/ops-live 가 OKPOS·TOSS 실시간을 내려줌.
+// 옛 github.io(함수 없음)에선 fetch 실패 → 정적 데이터 그대로(무해).
+async function _opsLiveRefresh() {
+  try {
+    const res = await fetch('/api/ops-live', { cache: 'no-store' });
+    if (!res.ok) return;
+    const live = await res.json();
+    if (!live || !live.date || !live.stores) return;
+    const ym = live.date.slice(0, 7);
+    var patched = 0;
+    for (var i = 0; i < STORES.length; i++) {
+      var store = STORES[i];
+      var u = live.stores[store];
+      if (!u) continue;
+      var rawArr = _RAW_ALL_DATA[ym] && _RAW_ALL_DATA[ym][store];
+      var curArr = ALL_DATA[ym] && ALL_DATA[ym][store];
+      if (!Array.isArray(rawArr) || !Array.isArray(curArr)) continue;
+      var rRow = rawArr.find(function (r) { return r && r.date === live.date; });
+      var cRow = curArr.find(function (r) { return r && r.date === live.date; });
+      if (!rRow || !cRow) continue;
+      if (typeof u.sales === 'number') rRow.sales = u.sales;
+      rRow.receipts = (u.receipts == null ? null : u.receipts);
+      rRow.per_receipt  = (rRow.sales && rRow.receipts) ? Math.floor(rRow.sales / rRow.receipts) : null;
+      rRow.productivity = (rRow.sales && rRow.staff)    ? Math.floor(rRow.sales / rRow.staff)    : (rRow.productivity || null);
+      cRow.receipts = rRow.receipts;   // 영수는 VAT 무관 → applyVatMode 가 안 건드림, 직접 반영
+      patched++;
+    }
+    if (patched) { applyVatMode(); render(); }
+  } catch (e) { /* 실시간 실패는 정적 데이터 유지 */ }
+}
+setInterval(_opsLiveRefresh, 60000);
+_opsLiveRefresh();
 </script>
 </body>
 </html>`;
