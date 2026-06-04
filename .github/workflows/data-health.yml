@@ -28,6 +28,7 @@ jobs:
 
       - name: Run product dashboard health (상품 대시보드 일 점검)
         env:
+          GH_PAT: ${{ secrets.GH_PAT }}
           TOSS_ID: ${{ secrets.TOSS_ID }}
           TOSS_PW: ${{ secrets.TOSS_PW }}
         run: python scripts/product_health.py
