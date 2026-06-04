@@ -10,6 +10,30 @@
 </head>
 <body>
 
+<!-- ▼ 이전 안내 배너 (옛 공개 사이트에서만, 2026-06-11까지 1주일 표시) -->
+<div id="migrateBanner" style="display:none;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;
+     background:linear-gradient(90deg,#0f3460,#16213e);color:#fff;padding:11px 16px;font-size:13.5px;line-height:1.6;
+     font-family:'Segoe UI',sans-serif;text-align:center;border-bottom:2px solid #fdcb6e;">
+  <span style="font-size:16px;">📢</span>
+  <span><b>통합 대시보드가 새 주소로 옮겨졌습니다.</b>
+    아래 새 주소로 접속해 <b>인크 직원 이메일</b>을 입력하고 로그인하세요.
+    (옛 주소는 곧 종료됩니다)</span>
+  <a href="https://ink-korea.pages.dev/" style="background:#fdcb6e;color:#16213e;font-weight:800;
+     text-decoration:none;padding:6px 16px;border-radius:8px;white-space:nowrap;">
+     새 통합 대시보드 열기 → ink-korea.pages.dev</a>
+</div>
+<script>
+(function(){
+  // 옛 공개 사이트(github.io)에서만, 2026-06-11(KST)까지 안내 표시
+  var EXPIRE = new Date('2026-06-11T23:59:59+09:00');
+  if (location.hostname.indexOf('github.io') !== -1 && new Date() < EXPIRE) {
+    var el = document.getElementById('migrateBanner');
+    if (el) el.style.display = 'flex';
+  }
+})();
+</script>
+<!-- ▲ 이전 안내 배너 -->
+
 <!-- 헤더 -->
 <div class="hdr">
   <div class="hdr-title">인케이<em>코리아</em> 통합 대시보드</div>
