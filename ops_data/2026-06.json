@@ -48,8 +48,11 @@
     {
       "date": "2026-06-06",
       "staff": 13,
-      "per_receipt": null,
-      "target": 6518000
+      "per_receipt": 16052,
+      "target": 6518000,
+      "sales": 5490046,
+      "receipts": 342,
+      "productivity": 422311
     },
     {
       "date": "2026-06-07",
@@ -245,8 +248,11 @@
     {
       "date": "2026-06-06",
       "staff": 16,
-      "per_receipt": null,
-      "target": 13506000
+      "per_receipt": 19705,
+      "target": 13506000,
+      "sales": 11862508,
+      "receipts": 602,
+      "productivity": 741406
     },
     {
       "date": "2026-06-07",
@@ -433,15 +439,18 @@
     {
       "date": "2026-06-05",
       "staff": 6,
-      "per_receipt": null,
+      "per_receipt": 12958,
       "target": 2551000,
-      "receipts": 193
+      "receipts": 193,
+      "sales": 2501020,
+      "productivity": 416836
     },
     {
       "date": "2026-06-06",
       "staff": 9,
       "per_receipt": null,
-      "target": 5816000
+      "target": 5816000,
+      "receipts": 403
     },
     {
       "date": "2026-06-07",
@@ -637,8 +646,11 @@
     {
       "date": "2026-06-06",
       "staff": 4,
-      "per_receipt": null,
-      "target": 1187000
+      "per_receipt": 12688,
+      "target": 1187000,
+      "sales": 723240,
+      "receipts": 57,
+      "productivity": 180810
     },
     {
       "date": "2026-06-07",
@@ -834,8 +846,11 @@
     {
       "date": "2026-06-06",
       "staff": 16,
-      "per_receipt": null,
-      "target": 13685000
+      "per_receipt": 16663,
+      "target": 13685000,
+      "sales": 31227910,
+      "receipts": 1874,
+      "productivity": 1951744
     },
     {
       "date": "2026-06-07",
@@ -989,7 +1004,7 @@
       "receipts": 261,
       "per_receipt": 12870,
       "target": 3274000,
-      "staff": 10,
+      "staff": 0,
       "productivity": 335920
     },
     {
@@ -998,7 +1013,7 @@
       "target": 3274000,
       "sales": 3795950,
       "receipts": 268,
-      "staff": 10,
+      "staff": 0,
       "productivity": 379595
     },
     {
@@ -1007,7 +1022,7 @@
       "target": 7464000,
       "sales": 8132900,
       "receipts": 592,
-      "staff": 11,
+      "staff": 0,
       "productivity": 739354
     },
     {
@@ -1016,7 +1031,7 @@
       "target": 3274000,
       "sales": 3444100,
       "receipts": 271,
-      "staff": 8,
+      "staff": 0,
       "productivity": 430512
     },
     {
@@ -1024,132 +1039,160 @@
       "per_receipt": 13260,
       "target": 3274000,
       "sales": 4044320,
-      "receipts": 305
+      "receipts": 305,
+      "staff": 0
     },
     {
       "date": "2026-06-06",
-      "per_receipt": null,
-      "target": 7464000
+      "per_receipt": 14358,
+      "target": 7464000,
+      "sales": 7250820,
+      "receipts": 505,
+      "staff": 0
     },
     {
       "date": "2026-06-07",
       "per_receipt": null,
-      "target": 7464000
+      "target": 7464000,
+      "staff": 0
     },
     {
       "date": "2026-06-08",
       "per_receipt": null,
-      "target": 3274000
+      "target": 3274000,
+      "staff": 0
     },
     {
       "date": "2026-06-09",
       "per_receipt": null,
-      "target": 3274000
+      "target": 3274000,
+      "staff": 0
     },
     {
       "date": "2026-06-10",
       "per_receipt": null,
-      "target": 3274000
+      "target": 3274000,
+      "staff": 0
     },
     {
       "date": "2026-06-11",
       "per_receipt": null,
-      "target": 3274000
+      "target": 3274000,
+      "staff": 0
     },
     {
       "date": "2026-06-12",
       "per_receipt": null,
-      "target": 3274000
+      "target": 3274000,
+      "staff": 0
     },
     {
       "date": "2026-06-13",
       "per_receipt": null,
-      "target": 7464000
+      "target": 7464000,
+      "staff": 0
     },
     {
       "date": "2026-06-14",
       "per_receipt": null,
-      "target": 7464000
+      "target": 7464000,
+      "staff": 0
     },
     {
       "date": "2026-06-15",
       "per_receipt": null,
-      "target": 3274000
+      "target": 3274000,
+      "staff": 0
     },
     {
       "date": "2026-06-16",
       "per_receipt": null,
-      "target": 3274000
+      "target": 3274000,
+      "staff": 0
     },
     {
       "date": "2026-06-17",
       "per_receipt": null,
-      "target": 3274000
+      "target": 3274000,
+      "staff": 0
     },
     {
       "date": "2026-06-18",
       "per_receipt": null,
-      "target": 3274000
+      "target": 3274000,
+      "staff": 0
     },
     {
       "date": "2026-06-19",
       "per_receipt": null,
-      "target": 3274000
+      "target": 3274000,
+      "staff": 0
     },
     {
       "date": "2026-06-20",
       "per_receipt": null,
-      "target": 7464000
+      "target": 7464000,
+      "staff": 0
     },
     {
       "date": "2026-06-21",
       "per_receipt": null,
-      "target": 7464000
+      "target": 7464000,
+      "staff": 0
     },
     {
       "date": "2026-06-22",
       "per_receipt": null,
-      "target": 3274000
+      "target": 3274000,
+      "staff": 0
     },
     {
       "date": "2026-06-23",
       "per_receipt": null,
-      "target": 3274000
+      "target": 3274000,
+      "staff": 0
     },
     {
       "date": "2026-06-24",
       "per_receipt": null,
-      "target": 3274000
+      "target": 3274000,
+      "staff": 0
     },
     {
       "date": "2026-06-25",
       "per_receipt": null,
-      "target": 3274000
+      "target": 3274000,
+      "staff": 0
     },
     {
       "date": "2026-06-26",
       "per_receipt": null,
-      "target": 3274000
+      "target": 3274000,
+      "staff": 0
     },
     {
       "date": "2026-06-27",
       "per_receipt": null,
-      "target": 7464000
+      "target": 7464000,
+      "staff": 0
     },
     {
       "date": "2026-06-28",
       "per_receipt": null,
-      "target": 7464000
+      "target": 7464000,
+      "staff": 0
     },
     {
       "date": "2026-06-29",
       "per_receipt": null,
-      "target": 3274000
+      "target": 3274000,
+      "staff": 0
     },
     {
       "date": "2026-06-30",
       "per_receipt": null,
-      "target": 3274000
+      "target": 3274000,
+      "staff": 0
     }
   ]
 }
