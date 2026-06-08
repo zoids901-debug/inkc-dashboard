@@ -100,6 +100,42 @@ async function fetchDayTotal(jar, csrf, dateStr) {
   return j.Data || [];
 }
 
+// 날짜 범위(start~end) day_total010 → { 'YYYY-MM-DD': {loc:{sales,receipts}} }
+// 수원처럼 하루 늦게 들어오는 매장도 OKPOS에 올라오는 즉시 최근 날짜가 채워지도록.
+async function fetchRange(jar, csrf, start, end) {
+  const params = new URLSearchParams({
+    [csrf[0]]: csrf[1],
+    S_CONTROLLER: 'sale.day.day_total010', S_METHOD: 'search', SHEETSEQ: '1',
+    date1_1: start, date1_2: end, date_period1: '1',
+    ss_SHOP_CD: '', ss_SHOP_NM: '전체', ss_SHOP_INFO: '[]',
+    ss_PAGE_NO1: '1', chkRowShow: 'Y',
+  });
+  const res = await req(jar, '/sale/day/ddd.htmlSheetAction', {
+    method: 'POST', body: params.toString(), referer: OK + '/sale/day/day_total010.jsp',
+  });
+  const j = await res.json();
+  if ((j?.Result?.Code ?? 0) < 0) throw new Error(j?.Result?.Message || 'OKPOS day_total 오류');
+  const byDate = {};
+  for (const row of (j.Data || [])) {
+    const loc = SHOP_MAP[row.SHOP_CD];
+    if (!loc) continue;
+    const raw = String(row.SALE_DATE || '');
+    if (raw.length < 8) continue;
+    const dt = `${raw.slice(0,4)}-${raw.slice(4,6)}-${raw.slice(6,8)}`;
+    const gross = parseInt(row.DCM_SALE_AMT || 0, 10);
+    const point = parseInt(row.CST_POINT_AMT || 0, 10);
+    if (!byDate[dt]) byDate[dt] = {};
+    const b = byDate[dt][loc] || (byDate[dt][loc] = { sales: 0, receipts: 0 });
+    b.sales += (gross - point);
+    b.receipts += parseInt(row.TOT_SALE_CNT || 0, 10);
+  }
+  for (const dt in byDate) for (const loc in byDate[dt]) {
+    const b = byDate[dt][loc];
+    if (b.receipts === 1 && b.sales > 200000) b.receipts = null;   // 영수증 미작동 가드
+  }
+  return byDate;
+}
+
 // ── TOSS 운정 (period/daily) ──
 async function tossLogin(id, pw) {
   const r1 = await fetch(`${TOSS_BASE}/api-public/dashboard/v2/auth/login`, {
@@ -144,6 +180,9 @@ function kstToday() {
   const t = Date.now() + 9 * 3600 * 1000;       // UTC+9
   return new Date(t).toISOString().slice(0, 10);
 }
+function addDaysISO(iso, delta) {
+  return new Date(new Date(iso + 'T00:00:00Z').getTime() + delta * 86400000).toISOString().slice(0, 10);
+}
 
 export async function onRequestGet(context) {
   const { env, request, waitUntil } = context;
@@ -151,50 +190,40 @@ export async function onRequestGet(context) {
   if (!id || !pw) {
     return Response.json({ error: 'OKPOS_ID/OKPOS_PW 환경변수 미설정' }, { status: 500 });
   }
-  // 캐시: 60초. 여러 탭/사용자가 자주 호출해도 OKPOS/TOSS엔 1분에 1회만 로그인.
   const url = new URL(request.url);
+  // 최근 N일(오늘 포함) 실시간 조회 — 수원처럼 하루 늦게 들어오는 매장도 즉시 반영. 기본 4일.
+  const days = Math.min(10, Math.max(1, parseInt(url.searchParams.get('days') || '4', 10)));
+  const today = kstToday();
+  const start = addDaysISO(today, -(days - 1));
+  // 캐시: 60초 (days 별로 분리).
   const cache = caches.default;
-  const cacheKey = new Request(url.origin + '/api/ops-live-cache', { method: 'GET' });
+  const cacheKey = new Request(url.origin + '/api/ops-live-cache?days=' + days, { method: 'GET' });
   if (!url.searchParams.get('force')) {
     const hit = await cache.match(cacheKey);
     if (hit) return hit;
   }
-  const date = kstToday();
-  const stores = {};
+  let byDate = {};
   try {
     const jar = makeJar();
     const csrf = await login(jar, id, pw);
-    const rows = await fetchDayTotal(jar, csrf, date);
-    for (const row of rows) {
-      const loc = SHOP_MAP[row.SHOP_CD];
-      if (!loc) continue;
-      const gross = parseInt(row.DCM_SALE_AMT || 0, 10);
-      const point = parseInt(row.CST_POINT_AMT || 0, 10);
-      const sales = gross - point;
-      const receipts = parseInt(row.TOT_SALE_CNT || 0, 10);
-      const b = stores[loc] || (stores[loc] = { sales: 0, receipts: 0 });
-      b.sales += sales;
-      b.receipts += receipts;
-    }
-    // 영수=1 + 매출>20만 가드 (영수증 시스템 미작동 시기 보정 — 밤배치와 동일)
-    for (const loc of Object.keys(stores)) {
-      const b = stores[loc];
-      if (b.receipts === 1 && b.sales > 200000) b.receipts = null;
-    }
+    byDate = await fetchRange(jar, csrf, start, today);
   } catch (e) {
-    return Response.json({ error: 'OKPOS: ' + String(e && e.message || e), date }, { status: 502 });
+    return Response.json({ error: 'OKPOS: ' + String(e && e.message || e), date: today }, { status: 502 });
   }
-  // 운정 (TOSS) — 실패해도 OKPOS 결과는 반환
+  // 운정 (TOSS) — 각 날짜별. 실패해도 OKPOS 결과는 반환.
   try {
     if (env.TOSS_ID && env.TOSS_PW) {
       const th = await tossLogin(env.TOSS_ID, env.TOSS_PW);
-      const u = await tossDay(th, date);
-      if (u) stores['운정'] = u;
+      for (let i = 0; i < days; i++) {
+        const dt = addDaysISO(today, -i);
+        try { const u = await tossDay(th, dt); if (u) { (byDate[dt] || (byDate[dt] = {}))['운정'] = u; } } catch (e2) { /* skip */ }
+      }
     }
   } catch (e) { /* 운정 실패 무시 */ }
 
+  const stores = byDate[today] || {};   // 오늘 (기존 오버레이 호환)
   const resp = Response.json(
-    { date, fetchedAt: new Date().toISOString(), stores },
+    { date: today, fetchedAt: new Date().toISOString(), stores, dates: Object.keys(byDate).sort(), byDate },
     { headers: { 'Cache-Control': 'public, max-age=60' } });
   waitUntil(cache.put(cacheKey, resp.clone()));
   return resp;

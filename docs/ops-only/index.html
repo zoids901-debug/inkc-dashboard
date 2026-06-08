@@ -1349,28 +1349,40 @@ render();
 // 옛 github.io(함수 없음)에선 fetch 실패 → 정적 데이터 그대로(무해).
 async function _opsLiveRefresh() {
   try {
-    const res = await fetch('/api/ops-live', { cache: 'no-store' });
+    const res = await fetch('/api/ops-live?days=4', { cache: 'no-store' });
     if (!res.ok) return;
     const live = await res.json();
-    if (!live || !live.date || !live.stores) return;
-    const ym = live.date.slice(0, 7);
+    if (!live || !live.date) return;
+    const today = live.date;
+    // byDate(최근 며칠) 우선, 없으면 옛 형식(오늘만) 호환
+    var byDate = live.byDate;
+    if (!byDate && live.stores) { byDate = {}; byDate[today] = live.stores; }
+    if (!byDate) return;
     var patched = 0;
-    for (var i = 0; i < STORES.length; i++) {
-      var store = STORES[i];
-      var u = live.stores[store];
-      if (!u) continue;
-      var rawArr = _RAW_ALL_DATA[ym] && _RAW_ALL_DATA[ym][store];
-      var curArr = ALL_DATA[ym] && ALL_DATA[ym][store];
-      if (!Array.isArray(rawArr) || !Array.isArray(curArr)) continue;
-      var rRow = rawArr.find(function (r) { return r && r.date === live.date; });
-      var cRow = curArr.find(function (r) { return r && r.date === live.date; });
-      if (!rRow || !cRow) continue;
-      if (typeof u.sales === 'number') rRow.sales = u.sales;
-      rRow.receipts = (u.receipts == null ? null : u.receipts);
-      rRow.per_receipt  = (rRow.sales && rRow.receipts) ? Math.floor(rRow.sales / rRow.receipts) : null;
-      rRow.productivity = (rRow.sales && rRow.staff)    ? Math.floor(rRow.sales / rRow.staff)    : (rRow.productivity || null);
-      cRow.receipts = rRow.receipts;   // 영수는 VAT 무관 → applyVatMode 가 안 건드림, 직접 반영
-      patched++;
+    for (var dt in byDate) {
+      var ym = dt.slice(0, 7);
+      var dayStores = byDate[dt];
+      for (var i = 0; i < STORES.length; i++) {
+        var store = STORES[i];
+        var u = dayStores[store];
+        if (!u) continue;
+        var rawArr = _RAW_ALL_DATA[ym] && _RAW_ALL_DATA[ym][store];
+        var curArr = ALL_DATA[ym] && ALL_DATA[ym][store];
+        if (!Array.isArray(rawArr) || !Array.isArray(curArr)) continue;
+        var rRow = rawArr.find(function (r) { return r && r.date === dt; });
+        var cRow = curArr.find(function (r) { return r && r.date === dt; });
+        if (!rRow || !cRow) continue;
+        // 매출: 모든 날짜·매장 실시간 덮어쓰기 (수원 등 지연 매출도 채움). 0/없음이면 정적 유지.
+        if (typeof u.sales === 'number' && u.sales > 0) rRow.sales = u.sales;
+        // 영수: 오늘만 실시간(기존 동작 유지). 과거 최근일은 정적(시트값) 유지 — 수원 영수 보존.
+        if (dt === today) {
+          rRow.receipts = (u.receipts == null ? null : u.receipts);
+          cRow.receipts = rRow.receipts;   // 영수는 VAT 무관 → 직접 반영
+        }
+        rRow.per_receipt  = (rRow.sales && rRow.receipts) ? Math.floor(rRow.sales / rRow.receipts) : null;
+        rRow.productivity = (rRow.sales && rRow.staff)    ? Math.floor(rRow.sales / rRow.staff)    : (rRow.productivity || null);
+        patched++;
+      }
     }
     if (patched) { applyVatMode(); render(); }
   } catch (e) { /* 실시간 실패는 정적 데이터 유지 */ }
