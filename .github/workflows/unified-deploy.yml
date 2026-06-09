@@ -2,7 +2,8 @@ name: unified-deploy
 
 # 통합본(ink-korea.pages.dev) 재빌드·배포:
 #  - 이 repo(운영 빌드/헬스) push 시 자동 (ops-sync 23:30 직후 등)
-#  - 낮~밤 매시 스케줄 (상품·테이블린 수시 갱신 반영)
+#  - 소스 repo(상품·손익·테이블린) push 시 즉시 (repository_dispatch: source-updated)
+#  - 낮~밤 매시 스케줄 (안전망 — 신호 누락 대비)
 #  - 수동 실행(workflow_dispatch)
 on:
   push:
@@ -12,6 +13,8 @@ on:
       - 'ops_data/health.json'
       - 'scripts/build_unified.py'
       - '.github/workflows/unified-deploy.yml'
+  repository_dispatch:
+    types: [source-updated]
   schedule:
     - cron: '0 7-14 * * *'   # 16:00~23:00 KST 매시 (UTC 07~14시)
   workflow_dispatch:
