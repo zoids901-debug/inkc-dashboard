@@ -248,5 +248,104 @@
   else loadHealth();
 })();
 </script>
+<!-- ▼ 인크 데이터 봇 위젯 — 우측 하단 💬. 자연어 질문 → /api/bot(프록시) → 서버 노트북 Vanna 봇.
+        숫자는 DB가 계산(환각 0), 답은 표로. 봇이 꺼져 있어도 이 위젯만 안내문이 뜨고 대시보드는 정상. -->
+<style>
+  #ibot-toggle{position:fixed;right:22px;bottom:22px;width:58px;height:58px;border-radius:50%;
+    background:#0f3460;color:#fff;border:none;font-size:25px;cursor:pointer;
+    box-shadow:0 6px 20px rgba(0,0,0,.28);z-index:99999}
+  #ibot-panel{position:fixed;right:22px;bottom:90px;width:380px;max-width:calc(100vw - 44px);
+    height:540px;max-height:calc(100vh - 130px);background:#fff;border-radius:16px;
+    box-shadow:0 12px 40px rgba(0,0,0,.3);display:none;flex-direction:column;overflow:hidden;
+    z-index:99999;font-family:'Segoe UI','Apple SD Gothic Neo',system-ui,sans-serif}
+  #ibot-panel.ibot-open{display:flex}
+  #ibot-panel .ibot-head{background:#0f3460;color:#fff;padding:13px 16px;font-weight:600;font-size:15px}
+  #ibot-panel .ibot-head small{display:block;font-weight:400;opacity:.85;font-size:11px;margin-top:2px}
+  #ibot-panel .ibot-body{flex:1;overflow-y:auto;padding:14px;background:#f6f8fb}
+  #ibot-panel .ibot-msg{margin-bottom:11px;display:flex}
+  #ibot-panel .ibot-msg.ibot-me{justify-content:flex-end}
+  #ibot-panel .ibot-bubble{max-width:84%;padding:10px 13px;border-radius:14px;font-size:14px;
+    line-height:1.55;white-space:pre-wrap;word-break:break-word}
+  #ibot-panel .ibot-bubble.ibot-wide{max-width:100%}
+  #ibot-panel .ibot-bot .ibot-bubble{background:#e8eef6;border-bottom-left-radius:4px;color:#16213e}
+  #ibot-panel .ibot-me .ibot-bubble{background:#0f3460;color:#fff;border-bottom-right-radius:4px}
+  #ibot-panel .ibot-tablewrap{overflow-x:auto;margin:-1px 0}
+  #ibot-panel .ibot-table{border-collapse:collapse;font-size:12.5px;width:100%}
+  #ibot-panel .ibot-table th,#ibot-panel .ibot-table td{border:1px solid #d4ddea;padding:5px 8px;
+    text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+  #ibot-panel .ibot-table th{background:#dce6f2;color:#16213e;font-weight:700;text-align:center}
+  #ibot-panel .ibot-table td:first-child,#ibot-panel .ibot-table th:first-child{text-align:left}
+  #ibot-panel .ibot-note{font-size:11px;color:#6b7689;margin-top:5px}
+  #ibot-panel .ibot-sql{margin-top:6px;font-size:11px;color:#6b7689}
+  #ibot-panel .ibot-sql summary{cursor:pointer}
+  #ibot-panel .ibot-sql code{display:block;white-space:pre-wrap;word-break:break-all;background:#eef2f7;
+    padding:6px 8px;border-radius:6px;margin-top:4px;color:#334155}
+  #ibot-panel .ibot-foot{display:flex;border-top:1px solid #eee;padding:10px;gap:8px}
+  #ibot-panel .ibot-foot input{flex:1;border:1px solid #cdd6e3;border-radius:20px;padding:9px 14px;
+    font-size:14px;outline:none}
+  #ibot-panel .ibot-foot button{background:#0f3460;color:#fff;border:none;border-radius:20px;
+    padding:0 16px;cursor:pointer;font-size:14px}
+</style>
+<button id="ibot-toggle" title="데이터 봇에게 물어보기">💬</button>
+<div id="ibot-panel">
+  <div class="ibot-head">인크 데이터 봇 <small>매출, 판매, 손익을 말로 물어보세요 (답은 표로)</small></div>
+  <div class="ibot-body" id="ibot-body">
+    <div class="ibot-msg ibot-bot"><div class="ibot-bubble">안녕하세요! 매장 매출, 상품 판매, 손익을 물어보세요.
+예) "2월 다산 음료 top10", 이어서 "일자별로", "이번달 많이 팔린 상품 top5", "2026 3월 영업이익"</div></div>
+  </div>
+  <div class="ibot-foot">
+    <input id="ibot-input" placeholder="질문을 입력하세요…" autocomplete="off">
+    <button id="ibot-send">전송</button>
+  </div>
+</div>
+<script>
+(function(){
+  var panel=document.getElementById('ibot-panel'),
+      body=document.getElementById('ibot-body'),
+      input=document.getElementById('ibot-input');
+  var hist=[];  // 최근 사용자 질문(후속질문 맥락용) — 직전 2개를 봇에 함께 보냄
+  function esc(s){return String(s==null?'':s).replace(/[&<>]/g,function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}
+  function addUser(text){
+    var m=document.createElement('div');m.className='ibot-msg ibot-me';
+    var b=document.createElement('div');b.className='ibot-bubble';b.textContent=text;
+    m.appendChild(b);body.appendChild(m);body.scrollTop=body.scrollHeight;}
+  function botBubble(){
+    var m=document.createElement('div');m.className='ibot-msg ibot-bot';
+    var b=document.createElement('div');b.className='ibot-bubble';
+    m.appendChild(b);body.appendChild(m);body.scrollTop=body.scrollHeight;return b;}
+  function renderTable(b,j){
+    var cols=j.columns||[],rows=j.rows||[];
+    if(!cols.length||!rows.length){b.textContent='조건에 맞는 데이터가 없어요.';return;}
+    b.classList.add('ibot-wide');
+    var h='<div class="ibot-tablewrap"><table class="ibot-table"><thead><tr>';
+    cols.forEach(function(c){h+='<th>'+esc(c)+'</th>';});
+    h+='</tr></thead><tbody>';
+    rows.forEach(function(r){h+='<tr>';
+      r.forEach(function(v){var d=(typeof v==='number')?v.toLocaleString():esc(v);h+='<td>'+d+'</td>';});
+      h+='</tr>';});
+    h+='</tbody></table></div>';
+    if(j.note)h+='<div class="ibot-note">'+esc(j.note)+'</div>';
+    if(j.sql)h+='<details class="ibot-sql"><summary>질의문 보기</summary><code>'+esc(j.sql)+'</code></details>';
+    b.innerHTML=h;}
+  function ask(q){
+    addUser(q);input.value='';
+    var b=botBubble();b.textContent='답변 준비 중…';
+    fetch('/api/bot',{method:'POST',headers:{'content-type':'application/json'},
+        body:JSON.stringify({q:q,hist:hist.slice(-2)})})
+      .then(function(r){return r.json();})
+      .then(function(j){
+        if(j&&j.error){b.textContent='⚠ '+j.error;}
+        else{renderTable(b,j);hist.push(q);}})
+      .catch(function(){b.textContent='봇이 잠시 응답하지 않아요. 잠시 후 다시 시도해 주세요.';})
+      .then(function(){body.scrollTop=body.scrollHeight;});}
+  document.getElementById('ibot-toggle').onclick=function(){
+    panel.classList.toggle('ibot-open');
+    if(panel.classList.contains('ibot-open'))input.focus();};
+  document.getElementById('ibot-send').onclick=function(){if(input.value.trim())ask(input.value.trim());};
+  input.addEventListener('keydown',function(e){if(e.key==='Enter'&&input.value.trim())ask(input.value.trim());});
+})();
+</script>
+<!-- ▲ 인크 데이터 봇 위젯 -->
 </body>
 </html>
