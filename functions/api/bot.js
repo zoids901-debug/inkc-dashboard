@@ -1,12 +1,15 @@
 // /api/bot — 통합 대시보드 채팅 위젯 → 서버 노트북 Vanna 봇(/api/ask) 중계 프록시.
 //   위젯이 POST {q, hist} 로 부르면, 집 노트북의 Vanna 봇으로 넘기고 표 결과를 돌려준다.
-//   봇은 집 네트워크 안 → cloudflared 고정주소 터널(BOT_URL)로만 닿는다.
+//   봇은 집 네트워크 안 → cloudflared quick 터널의 공개 주소로만 닿는다.
 //
-//   Cloudflare Pages 환경변수(Production/Preview 각각):
-//     BOT_URL    = 터널 공개 주소 (예: https://bot.ink-korea.co.kr)  ※ 끝 슬래시 없이
-//     BOT_SECRET = 봇이 검증할 공유 비밀(선택). 있으면 X-Bot-Secret 헤더로 전달.
+//   봇 주소(BOT_URL) 출처:
+//     - 1순위 KV 바인딩 BOT_KV['BOT_URL'] — 서버 노트북 tunnel_sync.py가 터널 뜰 때마다 실시간 기록.
+//       (Pages env는 변경이 다음 배포부터라, 주소가 자주 바뀌는 값은 KV로 둬서 재배포 없이 즉시 반영)
+//     - 2순위 env.BOT_URL — KV 비었을 때 폴백.
+//   Pages 환경변수:
+//     BOT_SECRET = 봇이 검증할 공유 비밀. 있으면 X-Bot-Secret 헤더로 전달.
 //
-//   안전: 봇이 꺼졌거나 BOT_URL 미설정이어도 위젯이 안 깨지게 항상 200 + {error 친절문}.
+//   안전: 봇이 꺼졌거나 주소 미설정이어도 위젯이 안 깨지게 항상 200 + {error 친절문}.
 //   Vanna 응답 형식: { sql, columns, rows, note } 또는 { error }.
 
 export async function onRequest(context) {
@@ -32,8 +35,12 @@ export async function onRequest(context) {
 
   if (!q) return json({ error: '질문을 입력해 주세요.' });
 
-  const base = (env.BOT_URL || '').replace(/\/+$/, '');
-  if (!base) return json({ error: '봇 서버 주소가 아직 설정되지 않았어요. (관리자: Pages 환경변수 BOT_URL)' });
+  // 봇 주소: KV(BOT_KV, 터널이 실시간 갱신) 우선 → env.BOT_URL 폴백.
+  let base = '';
+  try { if (env.BOT_KV) base = (await env.BOT_KV.get('BOT_URL')) || ''; } catch (_) {}
+  if (!base) base = env.BOT_URL || '';
+  base = base.replace(/\/+$/, '');
+  if (!base) return json({ error: '봇 서버 주소가 아직 설정되지 않았어요. (서버 노트북에서 터널을 켜면 자동 연결됩니다)' });
 
   const headers = { 'content-type': 'application/json', 'accept': 'application/json' };
   if (env.BOT_SECRET) headers['X-Bot-Secret'] = env.BOT_SECRET;
