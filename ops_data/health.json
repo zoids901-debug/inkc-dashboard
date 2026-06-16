@@ -1,7 +1,7 @@
 {
-  "checked_at": "2026-06-16T07:12:30+09:00",
-  "target_date": "2026-06-15",
-  "dow": "월",
+  "checked_at": "2026-06-17T07:06:39+09:00",
+  "target_date": "2026-06-16",
+  "dow": "화",
   "overall": "ok",
   "summary": {
     "ok": 6,
@@ -14,71 +14,71 @@
       "store": "가산",
       "status": "ok",
       "messages": [
-        "매출·영수 모두 평소 월요일 패턴 (정상)"
+        "매출·영수 모두 평소 화요일 패턴 (정상)"
       ],
-      "target_date": "2026-06-15",
+      "target_date": "2026-06-16",
       "delayed": false,
-      "sales": 3338630,
-      "receipts": 223
+      "sales": 3915528,
+      "receipts": 260
     },
     {
       "store": "광주",
       "status": "ok",
       "messages": [
-        "매출·영수 모두 평소 월요일 패턴 (정상)"
+        "매출·영수 모두 평소 화요일 패턴 (정상)"
       ],
-      "target_date": "2026-06-15",
+      "target_date": "2026-06-16",
       "delayed": false,
-      "sales": 1957080,
-      "receipts": 110
+      "sales": 14503540,
+      "receipts": 1036
     },
     {
       "store": "다산",
       "status": "ok",
       "messages": [
-        "매출·영수 모두 평소 월요일 패턴 (정상)"
+        "매출·영수 모두 평소 화요일 패턴 (정상)"
       ],
-      "target_date": "2026-06-15",
+      "target_date": "2026-06-16",
       "delayed": false,
-      "sales": 4814624,
-      "receipts": 321
+      "sales": 5008354,
+      "receipts": 314
     },
     {
       "store": "수원",
       "status": "ok",
       "messages": [
-        "매출·영수 모두 평소 일요일 패턴 (정상)"
+        "매출·영수 모두 평소 월요일 패턴 (정상)"
       ],
-      "target_date": "2026-06-14",
+      "target_date": "2026-06-15",
       "delayed": true,
-      "sales": 5222800,
-      "receipts": 356
+      "sales": 2309000,
+      "receipts": 154
     },
     {
       "store": "운정",
       "status": "ok",
       "messages": [
-        "매출·영수 모두 평소 월요일 패턴 (정상)"
+        "매출·영수 모두 평소 화요일 패턴 (정상)"
       ],
-      "target_date": "2026-06-15",
+      "target_date": "2026-06-16",
       "delayed": false,
-      "sales": 2940700,
-      "receipts": 241
+      "sales": 2747640,
+      "receipts": 213
     },
     {
       "store": "하남",
       "status": "ok",
       "messages": [
-        "매출·영수 모두 평소 월요일 패턴 (정상)"
+        "매출·영수 모두 평소 화요일 패턴 (정상)"
       ],
-      "target_date": "2026-06-15",
+      "target_date": "2026-06-16",
       "delayed": false,
-      "sales": 604610,
-      "receipts": 49
+      "sales": 591560,
+      "receipts": 52
     }
   ],
   "cross_check": {
-    "checked_at": "2026-06-15",
+    "checked_at": "2026-06-16",
     "yyyy_mm": "2026-06",
     "overall": "ok",
     "message": null,
@@ -86,8 +86,8 @@
       {
         "store": "가산",
         "level": "ok",
-        "raw_total": 66201433,
-        "ops_total": 66201433,
+        "raw_total": 69540063,
+        "ops_total": 69540063,
         "diff": 0,
         "pct": 0.0,
         "message": "OK포스 raw와 운영 대시보드 일치",
@@ -97,8 +97,8 @@
       {
         "store": "광주",
         "level": "ok",
-        "raw_total": 213166900,
-        "ops_total": 213166900,
+        "raw_total": 215123980,
+        "ops_total": 215123980,
         "diff": 0,
         "pct": 0.0,
         "message": "OK포스 raw와 운영 대시보드 일치",
@@ -108,8 +108,8 @@
       {
         "store": "다산",
         "level": "ok",
-        "raw_total": 100227995,
-        "ops_total": 100227995,
+        "raw_total": 105042619,
+        "ops_total": 105042619,
         "diff": 0,
         "pct": 0.0,
         "message": "OK포스 raw와 운영 대시보드 일치",
@@ -119,8 +119,8 @@
       {
         "store": "수원",
         "level": "ok",
-        "raw_total": 47341260,
-        "ops_total": 47341260,
+        "raw_total": 49650260,
+        "ops_total": 49650260,
         "diff": 0,
         "pct": 0.0,
         "message": "OK포스 raw와 운영 대시보드 일치",
@@ -130,8 +130,8 @@
       {
         "store": "운정",
         "level": "ok",
-        "raw_total": 63876550,
-        "ops_total": 63876550,
+        "raw_total": 66817250,
+        "ops_total": 66817250,
         "diff": 0,
         "pct": 0.0,
         "message": "OK포스 raw와 운영 대시보드 일치",
@@ -141,8 +141,8 @@
       {
         "store": "하남",
         "level": "ok",
-        "raw_total": 9389840,
-        "ops_total": 9389840,
+        "raw_total": 9994450,
+        "ops_total": 9994450,
         "diff": 0,
         "pct": 0.0,
         "message": "OK포스 raw와 운영 대시보드 일치",
