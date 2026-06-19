@@ -165,12 +165,15 @@
     {
       "date": "2026-06-19",
       "staff": 13,
-      "per_receipt": null,
-      "target": 5039000
+      "per_receipt": 16074,
+      "target": 5039000,
+      "sales": 3841870,
+      "receipts": 239,
+      "productivity": 295528
     },
     {
       "date": "2026-06-20",
-      "staff": 13,
+      "staff": 12,
       "per_receipt": null,
       "target": 6518000
     },
@@ -401,8 +404,11 @@
     {
       "date": "2026-06-19",
       "staff": 12,
-      "per_receipt": null,
-      "target": 6063000
+      "per_receipt": 26200,
+      "target": 6063000,
+      "sales": 131000,
+      "receipts": 5,
+      "productivity": 10916
     },
     {
       "date": "2026-06-20",
@@ -628,15 +634,18 @@
     {
       "date": "2026-06-18",
       "staff": 6,
-      "per_receipt": null,
+      "per_receipt": 12941,
       "target": 2551000,
-      "receipts": 190
+      "receipts": 190,
+      "sales": 2458820,
+      "productivity": 409803
     },
     {
       "date": "2026-06-19",
       "staff": 7,
       "per_receipt": null,
-      "target": 2551000
+      "target": 2551000,
+      "receipts": 326
     },
     {
       "date": "2026-06-20",
@@ -871,8 +880,11 @@
     {
       "date": "2026-06-19",
       "staff": 3,
-      "per_receipt": null,
-      "target": 961000
+      "per_receipt": 12751,
+      "target": 961000,
+      "sales": 586560,
+      "receipts": 46,
+      "productivity": 195520
     },
     {
       "date": "2026-06-20",
@@ -1107,8 +1119,11 @@
     {
       "date": "2026-06-19",
       "staff": 9,
-      "per_receipt": null,
-      "target": 6700000
+      "per_receipt": 19997,
+      "target": 6700000,
+      "sales": 1939780,
+      "receipts": 97,
+      "productivity": 215531
     },
     {
       "date": "2026-06-20",
@@ -1328,9 +1343,11 @@
     },
     {
       "date": "2026-06-19",
-      "per_receipt": null,
+      "per_receipt": 13875,
       "target": 3274000,
-      "staff": 0
+      "staff": 0,
+      "sales": 3441140,
+      "receipts": 248
     },
     {
       "date": "2026-06-20",
