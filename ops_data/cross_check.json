@@ -1,13 +1,13 @@
 {
-  "checked_at": "2026-06-20",
+  "checked_at": "2026-06-21",
   "yyyy_mm": "2026-06",
   "overall": "ok",
   "stores": [
     {
       "store": "가산",
       "level": "ok",
-      "raw_total": 85751811,
-      "ops_total": 85751811,
+      "raw_total": 91057871,
+      "ops_total": 91057871,
       "diff": 0,
       "pct": 0.0,
       "message": "OK포스 raw와 운영 대시보드 일치",
@@ -17,8 +17,8 @@
     {
       "store": "광주",
       "level": "ok",
-      "raw_total": 259245020,
-      "ops_total": 259245020,
+      "raw_total": 262363950,
+      "ops_total": 262363950,
       "diff": 0,
       "pct": 0.0,
       "message": "OK포스 raw와 운영 대시보드 일치",
@@ -28,8 +28,8 @@
     {
       "store": "다산",
       "level": "ok",
-      "raw_total": 120826039,
-      "ops_total": 120826039,
+      "raw_total": 133911765,
+      "ops_total": 133911765,
       "diff": 0,
       "pct": 0.0,
       "message": "OK포스 raw와 운영 대시보드 일치",
@@ -39,8 +39,8 @@
     {
       "store": "수원",
       "level": "ok",
-      "raw_total": 61327080,
-      "ops_total": 61327080,
+      "raw_total": 67678480,
+      "ops_total": 67678480,
       "diff": 0,
       "pct": 0.0,
       "message": "OK포스 raw와 운영 대시보드 일치",
@@ -50,8 +50,8 @@
     {
       "store": "운정",
       "level": "ok",
-      "raw_total": 80288130,
-      "ops_total": 80288130,
+      "raw_total": 87818400,
+      "ops_total": 87818400,
       "diff": 0,
       "pct": 0.0,
       "message": "OK포스 raw와 운영 대시보드 일치",
@@ -61,8 +61,8 @@
     {
       "store": "하남",
       "level": "ok",
-      "raw_total": 12712950,
-      "ops_total": 12712950,
+      "raw_total": 13323510,
+      "ops_total": 13323510,
       "diff": 0,
       "pct": 0.0,
       "message": "OK포스 raw와 운영 대시보드 일치",
