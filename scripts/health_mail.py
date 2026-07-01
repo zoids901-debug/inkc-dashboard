@@ -9,10 +9,13 @@ Gmail SMTP 사용 — 환경변수 SMTP_USER, SMTP_PASS 필요.
 실행: data-health.yml 워크플로우의 마지막 step
 """
 import os, json, smtplib, urllib.request
+from datetime import datetime, timezone, timedelta
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.header import Header
 from pathlib import Path
+
+_KST = timezone(timedelta(hours=9))
 
 TABLIN_HEALTH_URL = 'https://raw.githubusercontent.com/zoids901-debug/tablin-dashboard/main/health.json'
 
@@ -141,6 +144,51 @@ def _tablin_rows(t, kind):
 
 REPO_ROOT = Path(os.environ.get("GITHUB_WORKSPACE", Path(__file__).resolve().parents[1]))
 HEALTH_PATH = REPO_ROOT / "ops_data" / "health.json"
+CUBEPOS_STATUS_PATH = REPO_ROOT / "ops_data" / "cubepos_status.json"
+
+
+def _fmt_ago(hours):
+    if hours < 1:
+        return f"{int(hours * 60)}분 전"
+    if hours < 48:
+        return f"{hours:.1f}시간 전"
+    return f"{int(hours / 24)}일 전"
+
+
+def _cubepos_row():
+    """서버노트북 큐브포스 수집기 심장박동 → 통일 표 1행 + level.
+    마지막 성공 시각이 오래되면(=서버노트북 정지/차단) 경고/이상으로 승격."""
+    try:
+        s = json.loads(CUBEPOS_STATUS_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        return _row("no_data", "큐브포스 수집기(서버노트북)", "상태 파일 없음 — 아직 1회도 실행 안 됨"), ["no_data"]
+
+    host = s.get("host", "")
+    label = f"큐브포스 수집기(서버노트북 {host})".strip()
+    err = s.get("error")
+    last = s.get("last_success_kst")
+    try:
+        dt = datetime.strptime(last, "%Y-%m-%d %H:%M").replace(tzinfo=_KST)
+        h = (datetime.now(_KST) - dt).total_seconds() / 3600
+    except Exception:
+        h = None
+
+    if h is None:
+        return _row("no_data", label, "성공 기록 없음"), ["no_data"]
+    if h > 18:
+        lv = "bad"
+        msg = f"마지막 성공 {_fmt_ago(h)} — 서버노트북 꺼짐/차단 의심, 확인 필요"
+    elif h > 9:
+        lv = "warn"
+        msg = f"마지막 성공 {_fmt_ago(h)} — 수집 지연 확인 권장"
+    else:
+        lv = "ok"
+        msg = f"정상 · 마지막 성공 {last} ({_fmt_ago(h)}), 최근 반영 {s.get('applied_last', 0)}건"
+    if err:  # 마지막 실행이 오류로 끝났으면 함께 표기(성공은 그전 시각)
+        msg += f" · 최근 오류: {err}"
+        if lv == "ok":
+            lv = "warn"
+    return _row(lv, label, msg), [lv]
 
 SMTP_HOST = "smtp.gmail.com"
 SMTP_PORT = 587
@@ -163,7 +211,8 @@ def build_html(h, tablin=None):
     ops_raw, l1 = _ops_raw_rows(cc)
     prod_rows, l2 = _product_rows(h.get("product_health"))
     tab_raw, l3 = _tablin_rows(tablin, "raw")
-    raw_counts = _counts(l1 + l2 + l3)
+    cube_row, l_cube = _cubepos_row()
+    raw_counts = _counts(l1 + l2 + l3 + l_cube)
     raw_section = (
         _section_header("📋", "원본 백데이터 점검",
                         "수집된 데이터가 원본(OK포스·토스·POS)과 일치하는지 · 빠진 매장·날짜는 없는지",
@@ -171,6 +220,7 @@ def build_html(h, tablin=None):
         + _subblock(f"운영 대시보드 — OK포스 원본 ↔ 운영 대시보드 ({cc_ym} 월 합산)", ops_raw,
                     "교차 검증 결과 없음 (raw 미수집)")
         + _subblock("상품 대시보드 — 6개 매장 수집 + 운정 토스 원본 대조", prod_rows)
+        + _subblock("큐브포스 로컬 수집기 — 서버노트북 상태(하남/가산/다산)", cube_row)
         + _subblock("테이블린 — POS 수집 · 매출 결측", tab_raw)
     )
 
