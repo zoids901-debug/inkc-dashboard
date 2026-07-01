@@ -386,7 +386,8 @@
       "date": "2026-07-01",
       "staff": 11,
       "per_receipt": null,
-      "target": 3556000
+      "target": 3556000,
+      "receipts": 220
     },
     {
       "date": "2026-07-02",
@@ -763,11 +764,11 @@
   "광주": [
     {
       "date": "2026-07-01",
-      "sales": 2234270,
-      "receipts": 124,
-      "per_receipt": 18018,
+      "sales": 13479090,
+      "receipts": 935,
+      "per_receipt": 14416,
       "staff": 15,
-      "productivity": 148951,
+      "productivity": 898606,
       "target": 10553000
     },
     {
@@ -954,155 +955,185 @@
   "운정": [
     {
       "date": "2026-07-01",
-      "sales": 1204400,
-      "receipts": 101,
-      "per_receipt": 11924,
-      "target": 4564000
+      "sales": 3139400,
+      "receipts": 245,
+      "per_receipt": 12813,
+      "target": 4564000,
+      "staff": 0
     },
     {
       "date": "2026-07-02",
       "per_receipt": null,
-      "target": 4564000
+      "target": 4564000,
+      "staff": 0
     },
     {
       "date": "2026-07-03",
       "per_receipt": null,
-      "target": 4564000
+      "target": 4564000,
+      "staff": 0
     },
     {
       "date": "2026-07-04",
       "per_receipt": null,
-      "target": 8765000
+      "target": 8765000,
+      "staff": 0
     },
     {
       "date": "2026-07-05",
       "per_receipt": null,
-      "target": 8765000
+      "target": 8765000,
+      "staff": 0
     },
     {
       "date": "2026-07-06",
       "per_receipt": null,
-      "target": 4564000
+      "target": 4564000,
+      "staff": 0
     },
     {
       "date": "2026-07-07",
       "per_receipt": null,
-      "target": 4564000
+      "target": 4564000,
+      "staff": 0
     },
     {
       "date": "2026-07-08",
       "per_receipt": null,
-      "target": 4564000
+      "target": 4564000,
+      "staff": 0
     },
     {
       "date": "2026-07-09",
       "per_receipt": null,
-      "target": 4564000
+      "target": 4564000,
+      "staff": 0
     },
     {
       "date": "2026-07-10",
       "per_receipt": null,
-      "target": 4564000
+      "target": 4564000,
+      "staff": 0
     },
     {
       "date": "2026-07-11",
       "per_receipt": null,
-      "target": 8765000
+      "target": 8765000,
+      "staff": 0
     },
     {
       "date": "2026-07-12",
       "per_receipt": null,
-      "target": 8765000
+      "target": 8765000,
+      "staff": 0
     },
     {
       "date": "2026-07-13",
       "per_receipt": null,
-      "target": 4564000
+      "target": 4564000,
+      "staff": 0
     },
     {
       "date": "2026-07-14",
       "per_receipt": null,
-      "target": 4564000
+      "target": 4564000,
+      "staff": 0
     },
     {
       "date": "2026-07-15",
       "per_receipt": null,
-      "target": 4564000
+      "target": 4564000,
+      "staff": 0
     },
     {
       "date": "2026-07-16",
       "per_receipt": null,
-      "target": 4564000
+      "target": 4564000,
+      "staff": 0
     },
     {
       "date": "2026-07-17",
       "per_receipt": null,
-      "target": 8765000
+      "target": 8765000,
+      "staff": 0
     },
     {
       "date": "2026-07-18",
       "per_receipt": null,
-      "target": 8765000
+      "target": 8765000,
+      "staff": 0
     },
     {
       "date": "2026-07-19",
       "per_receipt": null,
-      "target": 8765000
+      "target": 8765000,
+      "staff": 0
     },
     {
       "date": "2026-07-20",
       "per_receipt": null,
-      "target": 4564000
+      "target": 4564000,
+      "staff": 0
     },
     {
       "date": "2026-07-21",
       "per_receipt": null,
-      "target": 4564000
+      "target": 4564000,
+      "staff": 0
     },
     {
       "date": "2026-07-22",
       "per_receipt": null,
-      "target": 4564000
+      "target": 4564000,
+      "staff": 0
     },
     {
       "date": "2026-07-23",
       "per_receipt": null,
-      "target": 4564000
+      "target": 4564000,
+      "staff": 0
     },
     {
       "date": "2026-07-24",
       "per_receipt": null,
-      "target": 4564000
+      "target": 4564000,
+      "staff": 0
     },
     {
       "date": "2026-07-25",
       "per_receipt": null,
-      "target": 8765000
+      "target": 8765000,
+      "staff": 0
     },
     {
       "date": "2026-07-26",
       "per_receipt": null,
-      "target": 8765000
+      "target": 8765000,
+      "staff": 0
     },
     {
       "date": "2026-07-27",
       "per_receipt": null,
-      "target": 4564000
+      "target": 4564000,
+      "staff": 0
     },
     {
       "date": "2026-07-28",
       "per_receipt": null,
-      "target": 4564000
+      "target": 4564000,
+      "staff": 0
     },
     {
       "date": "2026-07-29",
       "per_receipt": null,
-      "target": 4564000
+      "target": 4564000,
+      "staff": 0
     },
     {
       "date": "2026-07-30",
       "per_receipt": null,
-      "target": 4564000
+      "target": 4564000,
+      "staff": 0
     },
     {
       "date": "2026-07-31",
