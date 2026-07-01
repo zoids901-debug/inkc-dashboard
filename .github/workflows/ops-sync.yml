@@ -38,6 +38,8 @@ jobs:
           OKPOS_PW: ${{ secrets.OKPOS_PW }}
           TOSS_ID:  ${{ secrets.TOSS_ID }}
           TOSS_PW:  ${{ secrets.TOSS_PW }}
+          CUBEPOS_ID: ${{ secrets.CUBEPOS_ID }}
+          CUBEPOS_PW: ${{ secrets.CUBEPOS_PW }}
           GOOGLE_SHEETS_API_KEY: ${{ secrets.GOOGLE_SHEETS_API_KEY }}
         run: python scripts/ops_actions_sync.py
 
