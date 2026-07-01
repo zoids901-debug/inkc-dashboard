@@ -295,70 +295,6 @@ def find_col(rows, kws, scan_rows=15):
     return None
 
 
-# ── 큐브포스(CubePOS) — 하남/가산/다산 (2026-07-01 OK포스→큐브포스 전환) ──
-CUBE_BASE = 'https://www.cube-tech.co.kr'
-# 큐브포스 매장코드 → 매장키. 에스프레소바(INC03-1)는 다산에 합산(OK포스가 V67293+V67295를 다산으로 합친 것과 동일)
-CUBE_MAP = {'INC01': '하남', 'INC02': '가산', 'INC03': '다산', 'INC03-1': '다산'}
-
-
-def _cubepos_login():
-    """순수 HTTP 로그인 → 세션 쿠키. (POST /api/auth/login {username,password})"""
-    s = requests.Session()
-    s.headers.update({'User-Agent': 'Mozilla/5.0', 'Origin': CUBE_BASE, 'Accept': 'application/json'})
-    r = s.post(CUBE_BASE + '/api/auth/login',
-               data=json.dumps({'username': CUBEPOS_ID, 'password': CUBEPOS_PW}),
-               headers={'Content-Type': 'application/json'}, timeout=30)
-    if r.status_code != 200:
-        raise RuntimeError(f'큐브포스 로그인 실패 {r.status_code}: {r.text[:120]}')
-    return s
-
-
-def scrape_cubepos(yyyy_mm):
-    """월 단위 큐브포스 영수증단위 매출 fetch → {date: {store: {sales, receipts}}}.
-    매출=b_rcb_amt 합(카드+현금), 영수건수=정상(b_st='N') 행수. 삭제(b_st='D')는 영수 미포함."""
-    import calendar as _cal
-    y, m = yyyy_mm.split('-')
-    last = _cal.monthrange(int(y), int(m))[1]
-    start, end = f'{y}-{m}-01', f'{y}-{m}-{last:02d}'
-    log(f'CubePOS scraping {yyyy_mm}: {start} ~ {end}')
-    s = _cubepos_login()
-    by_date_store = {}
-    for shop_id, store in CUBE_MAP.items():
-        url = (f'{CUBE_BASE}/api/business/bm-bg-bc-bd-day'
-               f'?h_id=INC&s_id=INC01&shop_id={shop_id}&fm_dt={start}&to_dt={end}')
-        r = s.get(url, timeout=90)
-        rows = r.json() if r.status_code == 200 else []
-        if not isinstance(rows, list): rows = []
-        cnt = 0
-        for row in rows:
-            dt = (row.get('bsn_dt') or '')[:10]
-            if not dt: continue
-            d = by_date_store.setdefault(dt, {}).setdefault(store, {'sales': 0, 'receipts': 0})
-            d['sales'] += int(row.get('b_rcb_amt', 0) or 0)
-            if row.get('b_st') == 'N': d['receipts'] += 1
-            cnt += 1
-        log(f'  [{store}/{shop_id}] rows: {cnt}')
-    return by_date_store
-
-
-def apply_cubepos(by_date_store, existing):
-    updated = 0
-    for store in set(CUBE_MAP.values()):
-        for entry in existing.get(store, []):
-            ds = by_date_store.get(entry['date'], {}).get(store)
-            if not ds or ds['sales'] <= 0: continue
-            rec = ds['receipts'] or None
-            if rec == 1 and ds['sales'] > 200_000: rec = None  # OK포스와 동일 가드
-            entry['sales'] = ds['sales']
-            entry['receipts'] = rec
-            entry['per_receipt'] = (ds['sales'] // rec) if rec else None
-            if entry.get('staff') and entry['staff'] > 0:
-                entry['productivity'] = ds['sales'] // entry['staff']
-            updated += 1
-    log(f'  CubePOS updated: {updated}건')
-    return by_date_store
-
-
 def patch_store_from_sheet(store, yyyy_mm, existing, okpos_by_date):
     """매장별 시트에서 staff/target/(수원·운정의 경우 sales/receipts) 패치"""
     sid = SHEET_IDS[store]
@@ -521,11 +457,15 @@ async def main():
     except Exception as e:
         log(f'TOSS 실패: {e}')
 
-    # 2.5) 큐브포스 (하남/가산/다산 — 2026-07-01 전환). OK포스가 이 매장들을 비우면 큐브포스로 채움.
+    # 2.5) 큐브포스 (하남/가산/다산 — 2026-07-01 전환).
+    #   ※ 큐브테크 WAF가 데이터센터 IP를 차단 → 클라우드(GH Actions)에선 실패/스킵됨.
+    #     실제 수집은 서버노트북의 cubepos_local.py(주거 IP)가 담당. 여기선 시도만(되면 채움).
     try:
         if CUBEPOS_ID and CUBEPOS_PW:
-            cube_by_date = scrape_cubepos(yyyy_mm)
-            apply_cubepos(cube_by_date, existing)
+            import cubepos_lib
+            log(f'CubePOS scraping {yyyy_mm} ...')
+            cube_by_date = cubepos_lib.scrape_month(CUBEPOS_ID, CUBEPOS_PW, yyyy_mm, log)
+            cubepos_lib.apply_to_existing(cube_by_date, existing, log)
             for dt in sorted(cube_by_date.keys()):
                 for store in ('하남', '가산', '다산'):
                     rec = cube_by_date.get(dt, {}).get(store)
@@ -534,7 +474,7 @@ async def main():
         else:
             log('CubePOS 자격증명(CUBEPOS_ID/PW) 없음 — 스킵')
     except Exception as e:
-        log(f'CubePOS 실패: {e}')
+        log(f'CubePOS 실패(예상 — 클라우드 IP 차단, 서버노트북이 처리): {e}')
 
     # OK포스 + 운정 + 큐브포스 raw 저장 (교차 검증용 — 보정 전 원본)
     try:
