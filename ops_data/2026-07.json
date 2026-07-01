@@ -3,11 +3,11 @@
     {
       "date": "2026-07-01",
       "staff": 12,
-      "per_receipt": 13079,
+      "per_receipt": 13016,
       "target": 4660000,
-      "sales": 3256850,
-      "receipts": 249,
-      "productivity": 271404
+      "sales": 3267050,
+      "receipts": 251,
+      "productivity": 272254
     },
     {
       "date": "2026-07-02",
@@ -194,11 +194,11 @@
     {
       "date": "2026-07-01",
       "staff": 9,
-      "per_receipt": 11210,
+      "per_receipt": 11256,
       "target": 7580000,
-      "sales": 3845070,
-      "receipts": 343,
-      "productivity": 427230
+      "sales": 3917370,
+      "receipts": 348,
+      "productivity": 435263
     },
     {
       "date": "2026-07-02",
