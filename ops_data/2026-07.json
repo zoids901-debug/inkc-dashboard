@@ -1,0 +1,1104 @@
+{
+  "가산": [
+    {
+      "date": "2026-07-01",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 4660000
+    },
+    {
+      "date": "2026-07-02",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 4660000
+    },
+    {
+      "date": "2026-07-03",
+      "staff": 13,
+      "per_receipt": null,
+      "target": 4660000
+    },
+    {
+      "date": "2026-07-04",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 6813000
+    },
+    {
+      "date": "2026-07-05",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 6813000
+    },
+    {
+      "date": "2026-07-06",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 4660000
+    },
+    {
+      "date": "2026-07-07",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 4660000
+    },
+    {
+      "date": "2026-07-08",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 4660000
+    },
+    {
+      "date": "2026-07-09",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 4660000
+    },
+    {
+      "date": "2026-07-10",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 4660000
+    },
+    {
+      "date": "2026-07-11",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 6813000
+    },
+    {
+      "date": "2026-07-12",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 6813000
+    },
+    {
+      "date": "2026-07-13",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 4660000
+    },
+    {
+      "date": "2026-07-14",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 4660000
+    },
+    {
+      "date": "2026-07-15",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 4660000
+    },
+    {
+      "date": "2026-07-16",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 4660000
+    },
+    {
+      "date": "2026-07-17",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 6813000
+    },
+    {
+      "date": "2026-07-18",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 6813000
+    },
+    {
+      "date": "2026-07-19",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 6813000
+    },
+    {
+      "date": "2026-07-20",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 4660000
+    },
+    {
+      "date": "2026-07-21",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 4660000
+    },
+    {
+      "date": "2026-07-22",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 4660000
+    },
+    {
+      "date": "2026-07-23",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 4660000
+    },
+    {
+      "date": "2026-07-24",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 4660000
+    },
+    {
+      "date": "2026-07-25",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 6813000
+    },
+    {
+      "date": "2026-07-26",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 6813000
+    },
+    {
+      "date": "2026-07-27",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 4660000
+    },
+    {
+      "date": "2026-07-28",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 4660000
+    },
+    {
+      "date": "2026-07-29",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 4660000
+    },
+    {
+      "date": "2026-07-30",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 4660000
+    },
+    {
+      "date": "2026-07-31",
+      "staff": 13,
+      "per_receipt": null,
+      "target": 4660000
+    }
+  ],
+  "다산": [
+    {
+      "date": "2026-07-01",
+      "staff": 9,
+      "per_receipt": null,
+      "target": 7580000
+    },
+    {
+      "date": "2026-07-02",
+      "staff": 10,
+      "per_receipt": null,
+      "target": 7580000
+    },
+    {
+      "date": "2026-07-03",
+      "staff": 10,
+      "per_receipt": null,
+      "target": 7580000
+    },
+    {
+      "date": "2026-07-04",
+      "staff": 13,
+      "per_receipt": null,
+      "target": 16820000
+    },
+    {
+      "date": "2026-07-05",
+      "staff": 13,
+      "per_receipt": null,
+      "target": 16820000
+    },
+    {
+      "date": "2026-07-06",
+      "staff": 8,
+      "per_receipt": null,
+      "target": 7580000
+    },
+    {
+      "date": "2026-07-07",
+      "staff": 8,
+      "per_receipt": null,
+      "target": 7580000
+    },
+    {
+      "date": "2026-07-08",
+      "staff": 8,
+      "per_receipt": null,
+      "target": 7580000
+    },
+    {
+      "date": "2026-07-09",
+      "staff": 8,
+      "per_receipt": null,
+      "target": 7580000
+    },
+    {
+      "date": "2026-07-10",
+      "staff": 9,
+      "per_receipt": null,
+      "target": 7580000
+    },
+    {
+      "date": "2026-07-11",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 16820000
+    },
+    {
+      "date": "2026-07-12",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 16820000
+    },
+    {
+      "date": "2026-07-13",
+      "staff": 8,
+      "per_receipt": null,
+      "target": 7580000
+    },
+    {
+      "date": "2026-07-14",
+      "staff": 8,
+      "per_receipt": null,
+      "target": 7580000
+    },
+    {
+      "date": "2026-07-15",
+      "staff": 8,
+      "per_receipt": null,
+      "target": 7580000
+    },
+    {
+      "date": "2026-07-16",
+      "staff": 9,
+      "per_receipt": null,
+      "target": 7580000
+    },
+    {
+      "date": "2026-07-17",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 16820000
+    },
+    {
+      "date": "2026-07-18",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 16820000
+    },
+    {
+      "date": "2026-07-19",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 16820000
+    },
+    {
+      "date": "2026-07-20",
+      "staff": 8,
+      "per_receipt": null,
+      "target": 7580000
+    },
+    {
+      "date": "2026-07-21",
+      "staff": 8,
+      "per_receipt": null,
+      "target": 7580000
+    },
+    {
+      "date": "2026-07-22",
+      "staff": 8,
+      "per_receipt": null,
+      "target": 7580000
+    },
+    {
+      "date": "2026-07-23",
+      "staff": 8,
+      "per_receipt": null,
+      "target": 7580000
+    },
+    {
+      "date": "2026-07-24",
+      "staff": 9,
+      "per_receipt": null,
+      "target": 7580000
+    },
+    {
+      "date": "2026-07-25",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 16820000
+    },
+    {
+      "date": "2026-07-26",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 16820000
+    },
+    {
+      "date": "2026-07-27",
+      "staff": 9,
+      "per_receipt": null,
+      "target": 7580000
+    },
+    {
+      "date": "2026-07-28",
+      "staff": 9,
+      "per_receipt": null,
+      "target": 7580000
+    },
+    {
+      "date": "2026-07-29",
+      "staff": 8,
+      "per_receipt": null,
+      "target": 7580000
+    },
+    {
+      "date": "2026-07-30",
+      "staff": 8,
+      "per_receipt": null,
+      "target": 7580000
+    },
+    {
+      "date": "2026-07-31",
+      "staff": 8,
+      "per_receipt": null,
+      "target": 7580000
+    }
+  ],
+  "수원": [
+    {
+      "date": "2026-07-01",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 3556000
+    },
+    {
+      "date": "2026-07-02",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 3556000
+    },
+    {
+      "date": "2026-07-03",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 3556000
+    },
+    {
+      "date": "2026-07-04",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 6830000
+    },
+    {
+      "date": "2026-07-05",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 6830000
+    },
+    {
+      "date": "2026-07-06",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 3556000
+    },
+    {
+      "date": "2026-07-07",
+      "staff": 10,
+      "per_receipt": null,
+      "target": 3556000
+    },
+    {
+      "date": "2026-07-08",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 3556000
+    },
+    {
+      "date": "2026-07-09",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 3556000
+    },
+    {
+      "date": "2026-07-10",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 3556000
+    },
+    {
+      "date": "2026-07-11",
+      "staff": 9,
+      "per_receipt": null,
+      "target": 6830000
+    },
+    {
+      "date": "2026-07-12",
+      "staff": 10,
+      "per_receipt": null,
+      "target": 6830000
+    },
+    {
+      "date": "2026-07-13",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 3556000
+    },
+    {
+      "date": "2026-07-14",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 3556000
+    },
+    {
+      "date": "2026-07-15",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 3556000
+    },
+    {
+      "date": "2026-07-16",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 3556000
+    },
+    {
+      "date": "2026-07-17",
+      "staff": 10,
+      "per_receipt": null,
+      "target": 6830000
+    },
+    {
+      "date": "2026-07-18",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 6830000
+    },
+    {
+      "date": "2026-07-19",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 6830000
+    },
+    {
+      "date": "2026-07-20",
+      "staff": 10,
+      "per_receipt": null,
+      "target": 3556000
+    },
+    {
+      "date": "2026-07-21",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 3556000
+    },
+    {
+      "date": "2026-07-22",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 3556000
+    },
+    {
+      "date": "2026-07-23",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 3556000
+    },
+    {
+      "date": "2026-07-24",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 3556000
+    },
+    {
+      "date": "2026-07-25",
+      "staff": 10,
+      "per_receipt": null,
+      "target": 6830000
+    },
+    {
+      "date": "2026-07-26",
+      "staff": 10,
+      "per_receipt": null,
+      "target": 6830000
+    },
+    {
+      "date": "2026-07-27",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 3556000
+    },
+    {
+      "date": "2026-07-28",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 3556000
+    },
+    {
+      "date": "2026-07-29",
+      "staff": 10,
+      "per_receipt": null,
+      "target": 3556000
+    },
+    {
+      "date": "2026-07-30",
+      "staff": 10,
+      "per_receipt": null,
+      "target": 3556000
+    },
+    {
+      "date": "2026-07-31",
+      "staff": 9,
+      "per_receipt": null,
+      "target": 3556000
+    }
+  ],
+  "하남": [
+    {
+      "date": "2026-07-01",
+      "staff": 3,
+      "per_receipt": null,
+      "target": 939000
+    },
+    {
+      "date": "2026-07-02",
+      "staff": 4,
+      "per_receipt": null,
+      "target": 939000
+    },
+    {
+      "date": "2026-07-03",
+      "staff": 3,
+      "per_receipt": null,
+      "target": 939000
+    },
+    {
+      "date": "2026-07-04",
+      "staff": 4,
+      "per_receipt": null,
+      "target": 1278000
+    },
+    {
+      "date": "2026-07-05",
+      "staff": 4,
+      "per_receipt": null,
+      "target": 1278000
+    },
+    {
+      "date": "2026-07-06",
+      "staff": 4,
+      "per_receipt": null,
+      "target": 939000
+    },
+    {
+      "date": "2026-07-07",
+      "staff": 3,
+      "per_receipt": null,
+      "target": 939000
+    },
+    {
+      "date": "2026-07-08",
+      "staff": 3,
+      "per_receipt": null,
+      "target": 939000
+    },
+    {
+      "date": "2026-07-09",
+      "staff": 3,
+      "per_receipt": null,
+      "target": 939000
+    },
+    {
+      "date": "2026-07-10",
+      "staff": 4,
+      "per_receipt": null,
+      "target": 939000
+    },
+    {
+      "date": "2026-07-11",
+      "staff": 3,
+      "per_receipt": null,
+      "target": 1278000
+    },
+    {
+      "date": "2026-07-12",
+      "staff": 3,
+      "per_receipt": null,
+      "target": 1278000
+    },
+    {
+      "date": "2026-07-13",
+      "staff": 3,
+      "per_receipt": null,
+      "target": 939000
+    },
+    {
+      "date": "2026-07-14",
+      "staff": 3,
+      "per_receipt": null,
+      "target": 939000
+    },
+    {
+      "date": "2026-07-15",
+      "staff": 3,
+      "per_receipt": null,
+      "target": 939000
+    },
+    {
+      "date": "2026-07-16",
+      "staff": 3,
+      "per_receipt": null,
+      "target": 939000
+    },
+    {
+      "date": "2026-07-17",
+      "staff": 3,
+      "per_receipt": null,
+      "target": 1278000
+    },
+    {
+      "date": "2026-07-18",
+      "staff": 3,
+      "per_receipt": null,
+      "target": 1278000
+    },
+    {
+      "date": "2026-07-19",
+      "staff": 3,
+      "per_receipt": null,
+      "target": 1278000
+    },
+    {
+      "date": "2026-07-20",
+      "staff": 3,
+      "per_receipt": null,
+      "target": 939000
+    },
+    {
+      "date": "2026-07-21",
+      "staff": 4,
+      "per_receipt": null,
+      "target": 939000
+    },
+    {
+      "date": "2026-07-22",
+      "staff": 3,
+      "per_receipt": null,
+      "target": 939000
+    },
+    {
+      "date": "2026-07-23",
+      "staff": 3,
+      "per_receipt": null,
+      "target": 939000
+    },
+    {
+      "date": "2026-07-24",
+      "staff": 3,
+      "per_receipt": null,
+      "target": 939000
+    },
+    {
+      "date": "2026-07-25",
+      "staff": 3,
+      "per_receipt": null,
+      "target": 1278000
+    },
+    {
+      "date": "2026-07-26",
+      "staff": 4,
+      "per_receipt": null,
+      "target": 1278000
+    },
+    {
+      "date": "2026-07-27",
+      "staff": 4,
+      "per_receipt": null,
+      "target": 939000
+    },
+    {
+      "date": "2026-07-28",
+      "staff": 3,
+      "per_receipt": null,
+      "target": 939000
+    },
+    {
+      "date": "2026-07-29",
+      "staff": 3,
+      "per_receipt": null,
+      "target": 939000
+    },
+    {
+      "date": "2026-07-30",
+      "staff": 3,
+      "per_receipt": null,
+      "target": 939000
+    },
+    {
+      "date": "2026-07-31",
+      "staff": 4,
+      "per_receipt": null,
+      "target": 939000
+    }
+  ],
+  "광주": [
+    {
+      "date": "2026-07-01",
+      "sales": 2234270,
+      "receipts": 124,
+      "per_receipt": 18018,
+      "staff": 15,
+      "productivity": 148951,
+      "target": 10553000
+    },
+    {
+      "date": "2026-07-02",
+      "staff": 15,
+      "per_receipt": null,
+      "target": 10553000
+    },
+    {
+      "date": "2026-07-03",
+      "staff": 16,
+      "per_receipt": null,
+      "target": 10553000
+    },
+    {
+      "date": "2026-07-04",
+      "staff": 18,
+      "per_receipt": null,
+      "target": 17897000
+    },
+    {
+      "date": "2026-07-05",
+      "staff": 18,
+      "per_receipt": null,
+      "target": 17897000
+    },
+    {
+      "date": "2026-07-06",
+      "staff": 8,
+      "per_receipt": null,
+      "target": 10553000
+    },
+    {
+      "date": "2026-07-07",
+      "staff": 10,
+      "per_receipt": null,
+      "target": 10553000
+    },
+    {
+      "date": "2026-07-08",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 10553000
+    },
+    {
+      "date": "2026-07-09",
+      "staff": 10,
+      "per_receipt": null,
+      "target": 10553000
+    },
+    {
+      "date": "2026-07-10",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 10553000
+    },
+    {
+      "date": "2026-07-11",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 17897000
+    },
+    {
+      "date": "2026-07-12",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 17897000
+    },
+    {
+      "date": "2026-07-13",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 10553000
+    },
+    {
+      "date": "2026-07-14",
+      "staff": 10,
+      "per_receipt": null,
+      "target": 10553000
+    },
+    {
+      "date": "2026-07-15",
+      "staff": 12,
+      "per_receipt": null,
+      "target": 10553000
+    },
+    {
+      "date": "2026-07-16",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 10553000
+    },
+    {
+      "date": "2026-07-17",
+      "staff": 13,
+      "per_receipt": null,
+      "target": 17897000
+    },
+    {
+      "date": "2026-07-18",
+      "staff": 9,
+      "per_receipt": null,
+      "target": 17897000
+    },
+    {
+      "date": "2026-07-19",
+      "staff": 10,
+      "per_receipt": null,
+      "target": 17897000
+    },
+    {
+      "date": "2026-07-20",
+      "staff": 7,
+      "per_receipt": null,
+      "target": 10553000
+    },
+    {
+      "date": "2026-07-21",
+      "staff": 16,
+      "per_receipt": null,
+      "target": 10553000
+    },
+    {
+      "date": "2026-07-22",
+      "staff": 16,
+      "per_receipt": null,
+      "target": 10553000
+    },
+    {
+      "date": "2026-07-23",
+      "staff": 16,
+      "per_receipt": null,
+      "target": 10553000
+    },
+    {
+      "date": "2026-07-24",
+      "staff": 17,
+      "per_receipt": null,
+      "target": 10553000
+    },
+    {
+      "date": "2026-07-25",
+      "staff": 18,
+      "per_receipt": null,
+      "target": 17897000
+    },
+    {
+      "date": "2026-07-26",
+      "staff": 18,
+      "per_receipt": null,
+      "target": 17897000
+    },
+    {
+      "date": "2026-07-27",
+      "staff": 7,
+      "per_receipt": null,
+      "target": 10553000
+    },
+    {
+      "date": "2026-07-28",
+      "staff": 9,
+      "per_receipt": null,
+      "target": 10553000
+    },
+    {
+      "date": "2026-07-29",
+      "staff": 13,
+      "per_receipt": null,
+      "target": 10553000
+    },
+    {
+      "date": "2026-07-30",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 10553000
+    },
+    {
+      "date": "2026-07-31",
+      "staff": 11,
+      "per_receipt": null,
+      "target": 10553000
+    }
+  ],
+  "운정": [
+    {
+      "date": "2026-07-01",
+      "sales": 1204400,
+      "receipts": 101,
+      "per_receipt": 11924,
+      "target": 4564000
+    },
+    {
+      "date": "2026-07-02",
+      "per_receipt": null,
+      "target": 4564000
+    },
+    {
+      "date": "2026-07-03",
+      "per_receipt": null,
+      "target": 4564000
+    },
+    {
+      "date": "2026-07-04",
+      "per_receipt": null,
+      "target": 8765000
+    },
+    {
+      "date": "2026-07-05",
+      "per_receipt": null,
+      "target": 8765000
+    },
+    {
+      "date": "2026-07-06",
+      "per_receipt": null,
+      "target": 4564000
+    },
+    {
+      "date": "2026-07-07",
+      "per_receipt": null,
+      "target": 4564000
+    },
+    {
+      "date": "2026-07-08",
+      "per_receipt": null,
+      "target": 4564000
+    },
+    {
+      "date": "2026-07-09",
+      "per_receipt": null,
+      "target": 4564000
+    },
+    {
+      "date": "2026-07-10",
+      "per_receipt": null,
+      "target": 4564000
+    },
+    {
+      "date": "2026-07-11",
+      "per_receipt": null,
+      "target": 8765000
+    },
+    {
+      "date": "2026-07-12",
+      "per_receipt": null,
+      "target": 8765000
+    },
+    {
+      "date": "2026-07-13",
+      "per_receipt": null,
+      "target": 4564000
+    },
+    {
+      "date": "2026-07-14",
+      "per_receipt": null,
+      "target": 4564000
+    },
+    {
+      "date": "2026-07-15",
+      "per_receipt": null,
+      "target": 4564000
+    },
+    {
+      "date": "2026-07-16",
+      "per_receipt": null,
+      "target": 4564000
+    },
+    {
+      "date": "2026-07-17",
+      "per_receipt": null,
+      "target": 8765000
+    },
+    {
+      "date": "2026-07-18",
+      "per_receipt": null,
+      "target": 8765000
+    },
+    {
+      "date": "2026-07-19",
+      "per_receipt": null,
+      "target": 8765000
+    },
+    {
+      "date": "2026-07-20",
+      "per_receipt": null,
+      "target": 4564000
+    },
+    {
+      "date": "2026-07-21",
+      "per_receipt": null,
+      "target": 4564000
+    },
+    {
+      "date": "2026-07-22",
+      "per_receipt": null,
+      "target": 4564000
+    },
+    {
+      "date": "2026-07-23",
+      "per_receipt": null,
+      "target": 4564000
+    },
+    {
+      "date": "2026-07-24",
+      "per_receipt": null,
+      "target": 4564000
+    },
+    {
+      "date": "2026-07-25",
+      "per_receipt": null,
+      "target": 8765000
+    },
+    {
+      "date": "2026-07-26",
+      "per_receipt": null,
+      "target": 8765000
+    },
+    {
+      "date": "2026-07-27",
+      "per_receipt": null,
+      "target": 4564000
+    },
+    {
+      "date": "2026-07-28",
+      "per_receipt": null,
+      "target": 4564000
+    },
+    {
+      "date": "2026-07-29",
+      "per_receipt": null,
+      "target": 4564000
+    },
+    {
+      "date": "2026-07-30",
+      "per_receipt": null,
+      "target": 4564000
+    },
+    {
+      "date": "2026-07-31",
+      "per_receipt": null,
+      "target": 4564000
+    }
+  ]
+}
