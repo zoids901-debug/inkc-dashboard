@@ -6,4 +6,7 @@ REM 리다이렉트 시에도 파이썬 stdout/stderr을 UTF-8로 강제(안 하
 set PYTHONUTF8=1
 set PYTHONIOENCODING=utf-8
 cd /d "%~dp0.."
-py scripts\cubepos_local.py >> "%~dp0..\cubepos_local.log" 2>&1
+REM 운영 대시보드 (매출/영수)
+py scripts\cubepos_local.py   >> "%~dp0..\cubepos_local.log" 2>&1
+REM 상품 대시보드 (상품별 판매)
+py scripts\cubepos_product.py >> "%~dp0..\cubepos_local.log" 2>&1
