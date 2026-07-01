@@ -194,11 +194,11 @@
     {
       "date": "2026-07-01",
       "staff": 9,
-      "per_receipt": 11131,
+      "per_receipt": 11085,
       "target": 7580000,
-      "sales": 3439700,
-      "receipts": 309,
-      "productivity": 382188
+      "sales": 3480700,
+      "receipts": 314,
+      "productivity": 386744
     },
     {
       "date": "2026-07-02",
