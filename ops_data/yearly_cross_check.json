@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-06-01",
+  "checked_at": "2026-07-01",
   "results": [
     {
       "year": "2021",
@@ -184,8 +184,8 @@
     {
       "year": "2026",
       "store": "가산",
-      "raw_total": 808887499,
-      "ops_total": 808821699,
+      "raw_total": 946592148,
+      "ops_total": 946526348,
       "diff": -65800,
       "pct": 0.01,
       "level": "ok",
@@ -194,8 +194,8 @@
     {
       "year": "2026",
       "store": "다산",
-      "raw_total": 1203382220,
-      "ops_total": 1203382220,
+      "raw_total": 1409006863,
+      "ops_total": 1409006863,
       "diff": 0,
       "pct": 0.0,
       "level": "ok",
@@ -204,18 +204,18 @@
     {
       "year": "2026",
       "store": "수원",
-      "raw_total": 586734220,
-      "ops_total": 588656760,
-      "diff": 1922540,
-      "pct": 0.33,
+      "raw_total": 690072320,
+      "ops_total": 689173160,
+      "diff": -899160,
+      "pct": 0.13,
       "level": "ok",
       "message": "미세한 차이"
     },
     {
       "year": "2026",
       "store": "하남",
-      "raw_total": 126456556,
-      "ops_total": 126456556,
+      "raw_total": 147050056,
+      "ops_total": 147050056,
       "diff": 0,
       "pct": 0.0,
       "level": "ok",
@@ -224,8 +224,8 @@
     {
       "year": "2026",
       "store": "광주",
-      "raw_total": 818227528,
-      "ops_total": 818227528,
+      "raw_total": 1114466658,
+      "ops_total": 1114466658,
       "diff": 0,
       "pct": 0.0,
       "level": "ok",
@@ -235,8 +235,8 @@
       "year": "2026",
       "store": "운정",
       "raw_total": 0,
-      "ops_total": 828566824,
-      "diff": 828566824,
+      "ops_total": 958767344,
+      "diff": 958767344,
       "pct": 100.0,
       "level": "no_raw",
       "message": "OK포스 raw 없음 (backfill 안 됨 또는 매장 오픈 전)"
