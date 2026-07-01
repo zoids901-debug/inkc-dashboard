@@ -14,6 +14,8 @@ import requests
 CUBE_BASE = 'https://www.cube-tech.co.kr'
 # 큐브포스 매장코드 → 매장키. 에스프레소바(INC03-1)는 다산에 합산.
 CUBE_MAP = {'INC01': '하남', 'INC02': '가산', 'INC03': '다산', 'INC03-1': '다산'}
+# 하남/가산/다산 큐브포스 전환일. 이 날짜 이전은 OK포스 데이터이므로 절대 덮지 않음.
+MIGRATION_START = '2026-07-01'
 
 
 def login(uid, pw):
@@ -55,12 +57,14 @@ def scrape_month(uid, pw, yyyy_mm, log=print):
     return scrape_range(uid, pw, f'{y}-{m}-01', f'{y}-{m}-{last:02d}', log)
 
 
-def apply_to_existing(by_date_store, existing, log=print):
+def apply_to_existing(by_date_store, existing, log=print, min_date=MIGRATION_START):
     """ops_data 구조(existing[store] = [{date, staff, ...}])에 매출/영수/객단가/생산성 반영.
-    하남/가산/다산만 채움. staff는 건드리지 않고 있으면 생산성 재계산."""
+    하남/가산/다산만 채움. staff는 건드리지 않고 있으면 생산성 재계산.
+    min_date 이전(전환 전 OK포스 기간)은 절대 덮지 않음."""
     updated = 0
     for store in set(CUBE_MAP.values()):
         for entry in existing.get(store, []):
+            if min_date and entry['date'] < min_date: continue
             ds = by_date_store.get(entry['date'], {}).get(store)
             if not ds or ds['sales'] <= 0: continue
             rec = ds['receipts'] or None
