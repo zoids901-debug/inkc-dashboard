@@ -39,12 +39,16 @@ def get_creds():
     pw = os.environ.get('CUBEPOS_PW')
     if uid and pw:
         return uid, pw
+    # 이식성: keyring 직접 사용(어느 PC든 동일 서비스명 'zoids'). Scripts 경로 무의존.
     try:
-        sys.path.insert(0, r'C:\Users\zoids\Scripts')
-        from creds.creds import get_cred
-        return get_cred('cubepos_id'), get_cred('cubepos_pw')
+        import keyring
+        uid = keyring.get_password('zoids', 'cubepos_id')
+        pw = keyring.get_password('zoids', 'cubepos_pw')
+        if uid and pw:
+            return uid, pw
     except Exception as e:
-        raise SystemExit(f'큐브포스 자격증명 없음(keyring cubepos_id/pw 또는 env CUBEPOS_ID/PW): {e}')
+        raise SystemExit(f'keyring 조회 실패: {e}')
+    raise SystemExit('큐브포스 자격증명 없음 — keyring(zoids/cubepos_id·cubepos_pw) 또는 env(CUBEPOS_ID/PW) 등록 필요')
 
 
 def git(*args, check=True):
