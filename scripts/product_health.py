@@ -14,7 +14,7 @@ import os
 import sys
 import json
 import urllib.request
-from datetime import date, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 try:
@@ -46,6 +46,9 @@ CONTENTS_BASE = f"https://api.github.com/repos/{PROD_REPO}/contents"
 
 OKPOS_STORES = ['가산', '다산', '하남', '광주']  # 어제 데이터 기대
 DELAYED = {'수원': 2}                            # 수원 1일 딜레이 → 이틀 전
+# 큐브포스(CubePOS) 전환 매장 — 2026-07-01부터 상품 대시보드도 구 POS(OK포스) 피드가 끊김.
+# 데이터 없음은 오경보이므로 missing 이 아닌 migrating(무해)로 분류. 큐브포스 연동 후 제거.
+MIGRATING_STORES = {'하남', '가산', '다산'}
 TOSS_ABS_MIN = 50_000   # 운정 대조 — 절대 차이 5만원 미만은 noise
 TOSS_PCT_WARN = 1.0
 TOSS_PCT_BAD = 5.0
@@ -90,7 +93,10 @@ def main():
         daily = daily_for(target)
         net, cnt = store_net(daily, store)
         r = {"store": store, "target_date": target.isoformat(), "delayed": delayed}
-        if daily is None:
+        if (daily is None or cnt == 0) and store in MIGRATING_STORES:
+            r["status"] = "migrating"
+            r["messages"] = ["큐브포스 전환 매장 — 구 POS 피드 없음(정상, 큐브포스 연동 대기중)"]
+        elif daily is None:
             r["status"] = "missing"
             r["messages"] = [f"{target} 일자별 파일 자체가 없음 — 동기화 누락 의심"]
         elif cnt == 0:
@@ -135,7 +141,7 @@ def main():
             r["messages"] = [f"운정 {cnt}종 / {prod_net:,}원 — 토스 대조 실패({e}), 수집 자체는 정상"]
     results.append(r)
 
-    summary = {"ok": 0, "warn": 0, "bad": 0, "missing": 0}
+    summary = {"ok": 0, "warn": 0, "bad": 0, "missing": 0, "migrating": 0}
     for r in results:
         summary[r["status"]] = summary.get(r["status"], 0) + 1
     overall = "bad" if (summary["bad"] or summary["missing"]) else ("warn" if summary["warn"] else "ok")
@@ -151,7 +157,7 @@ def main():
 
     print(f"=== 상품 대시보드 일 점검 (전체: {overall.upper()}) ===")
     for r in results:
-        icon = {"ok": "✓", "warn": "⚠", "bad": "✗", "missing": "✗"}[r["status"]]
+        icon = {"ok": "✓", "warn": "⚠", "bad": "✗", "missing": "✗", "migrating": "→"}.get(r["status"], "·")
         suffix = f" ({r['target_date']} 데이터)" if r.get("delayed") else ""
         print(f"  {icon} {r['store']}{suffix}: {' / '.join(r['messages'])}")
     print(f"→ 저장: {OUT_PATH}")

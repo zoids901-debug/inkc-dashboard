@@ -23,6 +23,12 @@ Z_WARN = 2.0
 Z_BAD  = 3.0
 DELAYED_STORES = {"수원": 2}
 
+# 큐브포스(CubePOS) 전환 매장 — 2026-07-01부터 구 POS(OK포스/토스) 피드가 끊김.
+# 큐브포스 연동이 붙기 전까지 '데이터 없음'은 오경보이므로 missing 이 아닌
+# 무해한 'migrating' 으로 분류(깃허브 이슈·이상 집계 제외). 큐브포스로 데이터가
+# 다시 들어오기 시작하면 해당 매장을 이 목록에서 제거할 것.
+MIGRATING_STORES = {"하남", "가산", "다산"}
+
 
 def load_baseline():
     if not BASELINE_PATH.exists(): return None
@@ -90,6 +96,10 @@ def assess_store(store, day_data, baseline_block, dow, target_date_used, delayed
     }
 
     if sales is None or sales <= 0:
+        if store in MIGRATING_STORES:
+            result["status"] = "migrating"
+            result["messages"].append("큐브포스 전환 매장 — 구 POS 피드 없음(정상, 큐브포스 연동 대기중)")
+            return result
         result["status"] = "missing"
         if delayed:
             result["messages"].append("이틀 전 데이터도 비어있음 — 동기화 누락 의심")
@@ -149,6 +159,13 @@ def main():
         bb = stores_baseline.get(store, {})
 
         if not dd:
+            if store in MIGRATING_STORES:
+                results.append({
+                    "store": store, "status": "migrating",
+                    "messages": ["큐브포스 전환 매장 — 구 POS 피드 없음(정상, 큐브포스 연동 대기중)"],
+                    "target_date": target.isoformat(), "delayed": delayed,
+                })
+                continue
             results.append({
                 "store": store, "status": "missing",
                 "messages": ["이틀 전 데이터도 비어있음 — 동기화 누락 의심"] if delayed
@@ -167,7 +184,7 @@ def main():
 
         results.append(assess_store(store, dd, bb, dow, target, delayed))
 
-    status_counts = {"ok": 0, "warn": 0, "bad": 0, "missing": 0}
+    status_counts = {"ok": 0, "warn": 0, "bad": 0, "missing": 0, "migrating": 0}
     for r in results:
         status_counts[r["status"]] = status_counts.get(r["status"], 0) + 1
     if status_counts["bad"] or status_counts["missing"]: ts_status = "bad"
@@ -202,7 +219,7 @@ def main():
         product_block = {"overall": "no_data", "message": "상품 대시보드 점검 결과 없음"}
 
     # 전체 상태 — 시계열·교차 검증·상품 대시보드 중 가장 나쁜 쪽
-    priority = {"ok": 0, "no_data": 0, "warn": 1, "bad": 2, "missing": 2}
+    priority = {"ok": 0, "no_data": 0, "migrating": 0, "warn": 1, "bad": 2, "missing": 2}
     cross_overall = cross_block.get("overall", "ok")
     product_overall = product_block.get("overall", "ok")
     overall = ts_status
@@ -228,7 +245,7 @@ def main():
     print(f"=== 시계열 검사 ({default_target} {DOW_NAMES[default_target.weekday()]}요일 기준) ===")
     print(f"전체: {ts_status.upper()}  |  ok:{status_counts['ok']}  warn:{status_counts['warn']}  bad:{status_counts['bad']}  missing:{status_counts['missing']}")
     for r in results:
-        icon = {"ok":"✓", "warn":"⚠", "bad":"✗", "missing":"✗"}[r["status"]]
+        icon = {"ok":"✓", "warn":"⚠", "bad":"✗", "missing":"✗", "migrating":"→"}.get(r["status"], "·")
         suffix = f" ({r['target_date']} 데이터)" if r.get("delayed") else ""
         print(f"  {icon} {r['store']}{suffix}: {' / '.join(r['messages'])}")
     print(f"\n=== 교차 검증 (OK포스 raw vs 운영 대시보드 월 합산) ===")

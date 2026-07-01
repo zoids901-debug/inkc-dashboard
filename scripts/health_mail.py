@@ -16,9 +16,10 @@ from pathlib import Path
 
 TABLIN_HEALTH_URL = 'https://raw.githubusercontent.com/zoids901-debug/tablin-dashboard/main/health.json'
 
-_ICON = {"ok": "✓", "warn": "⚠", "bad": "✗", "missing": "✗", "info": "ⓘ", "no_data": "·"}
+_ICON = {"ok": "✓", "warn": "⚠", "bad": "✗", "missing": "✗", "info": "ⓘ", "no_data": "·",
+         "migrating": "🔄"}
 _COLOR = {"ok": "#10B981", "warn": "#F59E0B", "bad": "#EF4444", "missing": "#EF4444",
-          "info": "#0EA5E9", "no_data": "#94A3B8"}
+          "info": "#0EA5E9", "no_data": "#94A3B8", "migrating": "#3B82F6"}
 
 
 def fetch_tablin_health():

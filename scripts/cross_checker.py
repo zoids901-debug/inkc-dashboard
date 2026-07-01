@@ -25,6 +25,11 @@ ABS_MIN  = 50_000  # 절대 차이 5만원 미만은 noise 무시
 # (수원: raw_okpos와 100% 일치 확인됨 / 운정: 토스 raw도 raw_okpos에 저장되어 비교 가능)
 EXPECTED_DIFF_STORES = set()
 
+# 큐브포스(CubePOS) 전환 매장 — 2026-07-01부터 OK포스 raw엔 데이터가 없고(피드 끊김)
+# 대시보드(ops)는 큐브포스로 채워지므로 raw 대비 차이가 정상. 큐브포스 raw 교차검증이
+# 붙기 전까지 info 로 처리해 오경보를 막는다. 연동 후 큐브포스 raw로 비교 전환 예정.
+MIGRATING_STORES = {"하남", "가산", "다산"}
+
 
 def load_month(path):
     if not path.exists(): return None
@@ -81,6 +86,9 @@ def main():
         if store in EXPECTED_DIFF_STORES:
             level = "info"
             message = f"시트/TOSS fallback 매장 — raw와 차이는 정상"
+        elif store in MIGRATING_STORES:
+            level = "info"
+            message = f"큐브포스 전환 매장 — OK포스 raw와 차이는 정상(연동 대기)"
         elif abs(diff) < ABS_MIN:
             level = "ok"
             message = f"OK포스 raw와 운영 대시보드 일치"
