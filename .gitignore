@@ -1,4 +1,6 @@
 logs/
+cubepos_local.log
+_test_*.py
 node_modules/
 *.png
 *.tmp
