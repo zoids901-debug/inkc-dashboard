@@ -98,11 +98,15 @@ def main():
     if total == 0:
         log('반영 건수 0 — 커밋 생략'); return
 
-    # 4) 빌드
-    r = subprocess.run(['node', 'build.js'], cwd=str(REPO), capture_output=True, text=True, encoding='utf-8', errors='replace')
-    if r.returncode != 0:
-        log('build.js 실패:', r.stderr.strip()[:300]); return
-    log('build.js OK')
+    # 4) 빌드 (node 필요). 실패해도 데이터는 잃지 않게 커밋은 진행.
+    try:
+        r = subprocess.run(['node', 'build.js'], cwd=str(REPO), capture_output=True, text=True, encoding='utf-8', errors='replace')
+        if r.returncode != 0:
+            log('⚠ build.js 실패(데이터는 커밋함, docs 재생성은 다음 실행/노드설치 후):', r.stderr.strip()[:200])
+        else:
+            log('build.js OK')
+    except FileNotFoundError:
+        log('⚠ node 없음 — docs 미빌드(데이터만 커밋). 서버노트북에 node 설치 권장.')
 
     # 5) commit & push (충돌 시 rebase 후 1회 재시도)
     git('add', 'ops_data', 'docs')
